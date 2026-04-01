@@ -53,12 +53,12 @@ def pnl_class(value):
     return "flat"
 
 
-def card(label, value, subtext):
+def card(label, value, subtext, tone="flat"):
     return f"""
     <div class="card">
       <div class="card-label">{html.escape(label)}</div>
-      <div class="card-value">{html.escape(value)}</div>
-      <div class="card-sub">{html.escape(subtext)}</div>
+      <div class="card-value {html.escape(tone)}">{html.escape(value)}</div>
+      <div class="card-sub {html.escape(tone)}">{html.escape(subtext)}</div>
     </div>
     """
 
@@ -104,6 +104,7 @@ def build_cards(lot_state, latest_snapshot):
                     "Net PnL",
                     f"${fmt_num(summary['total_net_pnl'])}",
                     fmt_pct(summary["total_net_pnl_pct"]),
+                    pnl_class(summary["total_net_pnl"]),
                 ),
             ]
         )
@@ -223,6 +224,8 @@ def render_html(lot_state, snapshots):
       .card-label {{ color: var(--muted); font-size: 0.88rem; margin-bottom: 8px; }}
       .card-value {{ font-size: 1.5rem; }}
       .card-sub {{ color: var(--muted); font-size: 0.92rem; margin-top: 6px; }}
+      .card-value.flat,
+      .card-sub.flat {{ color: inherit; }}
       .panel {{
         background: rgba(20,24,27,0.90);
         border: 1px solid var(--border);
@@ -332,6 +335,10 @@ def render_html(lot_state, snapshots):
         <p>
           This tracker treats confirmed <code>buy_xsol</code> events as deployment lots and carries them forward across repeated marks.
           If future confirmed <code>sell_xsol</code> events appear, the monitor applies them FIFO against the open lots.
+        </p>
+        <p>
+          Source repo used for the on-chain event and instruction mapping:
+          <a href="https://github.com/hylo-so/sdk">hylo-so/sdk</a>.
         </p>
       </section>
     </div>

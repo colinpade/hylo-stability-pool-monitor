@@ -44,6 +44,8 @@
       .card-label { color: var(--muted); font-size: 0.88rem; margin-bottom: 8px; }
       .card-value { font-size: 1.5rem; }
       .card-sub { color: var(--muted); font-size: 0.92rem; margin-top: 6px; }
+      .card-value.flat,
+      .card-sub.flat { color: inherit; }
       .panel {
         background: rgba(20,24,27,0.90);
         border: 1px solid var(--border);
@@ -102,50 +104,50 @@
         
     <div class="card">
       <div class="card-label">Deployments</div>
-      <div class="card-value">6</div>
-      <div class="card-sub">confirmed buy_xsol lots</div>
+      <div class="card-value flat">6</div>
+      <div class="card-sub flat">confirmed buy_xsol lots</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Open Deployments</div>
-      <div class="card-value">6</div>
-      <div class="card-sub">2026-04-01T04:56:36.730443+00:00</div>
+      <div class="card-value flat">6</div>
+      <div class="card-sub flat">2026-04-01T04:56:36.730443+00:00</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Current xSOL Price</div>
-      <div class="card-value">0.065468416</div>
-      <div class="card-sub">hylo_stats.exchangeStats.levercoinNav</div>
+      <div class="card-value flat">0.065468416</div>
+      <div class="card-sub flat">hylo_stats.exchangeStats.levercoinNav</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Remaining xSOL</div>
-      <div class="card-value">7,250,688.316976</div>
-      <div class="card-sub">open lot exposure</div>
+      <div class="card-value flat">7,250,688.316976</div>
+      <div class="card-sub flat">open lot exposure</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Entry Value</div>
-      <div class="card-value">$415,135.31</div>
-      <div class="card-sub">total deployed hyUSD</div>
+      <div class="card-value flat">$415,135.31</div>
+      <div class="card-sub flat">total deployed hyUSD</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Current Value</div>
-      <div class="card-value">$474,691.08</div>
-      <div class="card-sub">mark-to-market</div>
+      <div class="card-value flat">$474,691.08</div>
+      <div class="card-sub flat">mark-to-market</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Net PnL</div>
-      <div class="card-value">$59,555.77</div>
-      <div class="card-sub">+14.35%</div>
+      <div class="card-value up">$59,555.77</div>
+      <div class="card-sub up">+14.35%</div>
     </div>
     
       </section>
@@ -359,6 +361,10 @@
         <p>
           This tracker treats confirmed <code>buy_xsol</code> events as deployment lots and carries them forward across repeated marks.
           If future confirmed <code>sell_xsol</code> events appear, the monitor applies them FIFO against the open lots.
+        </p>
+        <p>
+          Source repo used for the on-chain event and instruction mapping:
+          <a href="https://github.com/hylo-so/sdk">hylo-so/sdk</a>.
         </p>
       </section>
     </div>
