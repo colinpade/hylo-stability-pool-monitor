@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-04-01T05:47:34.168113+00:00",
+  "generated_at_utc": "2026-04-01T05:49:30.260191+00:00",
   "strict_mode": true,
-  "source_event_count": 326,
+  "source_event_count": 488,
   "source_buy_event_count": 6,
   "source_sell_event_count": 0,
   "deployment_count": 6,
@@ -14,7 +14,7 @@
       "slot": 409693777,
       "block_time": 1774804841,
       "utc": "2026-03-29T17:20:41+00:00",
-      "local": "2026-03-29T10:20:41-07:00",
+      "local": "2026-03-29T17:20:41+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -39,7 +39,7 @@
       "slot": 409694064,
       "block_time": 1774804953,
       "utc": "2026-03-29T17:22:33+00:00",
-      "local": "2026-03-29T10:22:33-07:00",
+      "local": "2026-03-29T17:22:33+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -64,7 +64,7 @@
       "slot": 409694544,
       "block_time": 1774805142,
       "utc": "2026-03-29T17:25:42+00:00",
-      "local": "2026-03-29T10:25:42-07:00",
+      "local": "2026-03-29T17:25:42+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -89,7 +89,7 @@
       "slot": 409695303,
       "block_time": 1774805441,
       "utc": "2026-03-29T17:30:41+00:00",
-      "local": "2026-03-29T10:30:41-07:00",
+      "local": "2026-03-29T17:30:41+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -114,7 +114,7 @@
       "slot": 409743075,
       "block_time": 1774824153,
       "utc": "2026-03-29T22:42:33+00:00",
-      "local": "2026-03-29T15:42:33-07:00",
+      "local": "2026-03-29T22:42:33+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -139,7 +139,7 @@
       "slot": 409744327,
       "block_time": 1774824642,
       "utc": "2026-03-29T22:50:42+00:00",
-      "local": "2026-03-29T15:50:42-07:00",
+      "local": "2026-03-29T22:50:42+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
