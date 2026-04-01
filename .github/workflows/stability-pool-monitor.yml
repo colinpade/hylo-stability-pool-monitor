@@ -1,6 +1,9 @@
 name: Stability Pool Monitor
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     - cron: "*/10 * * * *"
@@ -16,6 +19,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'push' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     env:
       NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
@@ -122,7 +126,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/live_hylo_stats.json data/stability_pool_deployments.json data/stability_pool_deployment_marks.jsonl stability_pool_deployments.html
           if ! git diff --cached --quiet; then
-            git commit -m "Update stability pool tracker"
+            git commit -m "Update stability pool tracker [skip ci]"
             git push
           fi
 
@@ -158,6 +162,7 @@ jobs:
           path: site
 
   deploy:
+    if: needs.build.result == 'success'
     needs: build
     runs-on: ubuntu-latest
     environment:
