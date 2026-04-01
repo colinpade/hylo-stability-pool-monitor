@@ -85,6 +85,11 @@
         line-height: 1.5;
         font-size: 0.92rem;
       }
+      .live-note {
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
       @media (max-width: 760px) {
         .wrap { padding: 20px 12px 30px; }
         h1 { font-size: 1.75rem; }
@@ -99,55 +104,65 @@
         when the Stability Pool spends <code>hyUSD</code>, receives <code>xSOL</code>, and the transaction logs include the
         expected rebalance hints. Mark snapshots let you monitor these lots over time instead of only seeing a single screenshot.
       </div>
+      <div class="live-note" id="live-refresh-status">
+        Waiting for live DexScreener pricing. Current values will refresh in-browser every 60 seconds.
+      </div>
 
       <section class="cards">
         
-    <div class="card">
+    <div class="card" id="card-deployments">
       <div class="card-label">Deployments</div>
-      <div class="card-value flat">6</div>
+      <div class="card-value flat" id="summary-deployment-count">6</div>
       <div class="card-sub flat">confirmed buy_xsol lots</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-open-deployments">
       <div class="card-label">Open Deployments</div>
-      <div class="card-value flat">6</div>
-      <div class="card-sub flat">2026-04-01T05:06:58.174583+00:00</div>
+      <div class="card-value flat" id="summary-open-deployment-count">6</div>
+      <div class="card-sub flat" id="summary-open-deployment-sub">2026-04-01T05:06:58.174583+00:00</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-xsol-price">
       <div class="card-label">Current xSOL Price</div>
-      <div class="card-value flat">0.065468416</div>
-      <div class="card-sub flat">hylo_stats.exchangeStats.levercoinNav</div>
+      <div class="card-value flat" id="summary-xsol-price">0.065468416</div>
+      <div class="card-sub flat" id="summary-xsol-price-sub">hylo_stats.exchangeStats.levercoinNav</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-remaining-xsol">
       <div class="card-label">Remaining xSOL</div>
-      <div class="card-value flat">7,250,688.316976</div>
-      <div class="card-sub flat">open lot exposure</div>
+      <div class="card-value flat" id="summary-remaining-xsol">7,250,688.316976</div>
+      <div class="card-sub flat" id="summary-remaining-xsol-sub">open lot exposure</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-entry-value">
       <div class="card-label">Entry Value</div>
-      <div class="card-value flat">$415,135.31</div>
-      <div class="card-sub flat">total deployed hyUSD</div>
+      <div class="card-value flat" id="summary-entry-value">$415,135.31</div>
+      <div class="card-sub flat" id="summary-entry-value-sub">total deployed hyUSD</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-current-value">
       <div class="card-label">Current Value</div>
-      <div class="card-value flat">$474,691.08</div>
-      <div class="card-sub flat">mark-to-market</div>
+      <div class="card-value flat" id="summary-current-value">$474,691.08</div>
+      <div class="card-sub flat" id="summary-current-value-sub">mark-to-market</div>
     </div>
     
 
-    <div class="card">
+    <div class="card" id="card-net-pnl">
       <div class="card-label">Net PnL</div>
-      <div class="card-value up">$59,555.77</div>
-      <div class="card-sub up">+14.35%</div>
+      <div class="card-value up" id="summary-net-pnl">$59,555.77</div>
+      <div class="card-sub up" id="summary-net-pnl-sub">+14.35%</div>
+    </div>
+    
+
+    <div class="card" id="card-sol-price">
+      <div class="card-label">Latest SOL Price</div>
+      <div class="card-value flat" id="summary-sol-price">Loading...</div>
+      <div class="card-sub flat" id="summary-sol-price-sub">live refresh every 60s</div>
     </div>
     
       </section>
@@ -170,7 +185,7 @@
           </thead>
           <tbody>
             
-            <tr>
+            <tr data-lot-id="lot-6">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">22:50:42</div>
@@ -181,18 +196,18 @@
               </td>
               <td class="num">$0.055081</td>
               <td class="num">$206,746.66</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$245,737.95</td>
-              <td class="num up">
-                <div>$38,991.29</div>
-                <div class="subline up">+18.86%</div>
+              <td class="num"><span id="lot-6-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-6-current-value">$245,737.95</span></td>
+              <td class="num">
+                <div id="lot-6-net-pnl" class="up">$38,991.29</div>
+                <div id="lot-6-net-pnl-pct" class="subline up">+18.86%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-6-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/5nJq6D9EXT3W6Cdb83PStHpjvN3udmBm9GaJvvckLPQ9TmjGKLCMsJWZueXvYtSUUupAm52TBEYUJkZ1g5heyjjF">5nJq6D9EXT...</a></td>
             </tr>
             
 
-            <tr>
+            <tr data-lot-id="lot-5">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">22:42:33</div>
@@ -203,18 +218,18 @@
               </td>
               <td class="num">$0.058844</td>
               <td class="num">$122,162.87</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$135,914.42</td>
-              <td class="num up">
-                <div>$13,751.54</div>
-                <div class="subline up">+11.26%</div>
+              <td class="num"><span id="lot-5-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-5-current-value">$135,914.42</span></td>
+              <td class="num">
+                <div id="lot-5-net-pnl" class="up">$13,751.54</div>
+                <div id="lot-5-net-pnl-pct" class="subline up">+11.26%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-5-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/3hYrVvpBCKbo7Vm2teTudVA96Kpjppt2BLf9NoKTXWfEeiwaSDbDj6H4p8R2hNY3pub6YU4UKck7xNhseSVZpbMR">3hYrVvpBCK...</a></td>
             </tr>
             
 
-            <tr>
+            <tr data-lot-id="lot-4">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">17:30:41</div>
@@ -225,18 +240,18 @@
               </td>
               <td class="num">$0.060445</td>
               <td class="num">$30,131.23</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$32,635.55</td>
-              <td class="num up">
-                <div>$2,504.31</div>
-                <div class="subline up">+8.31%</div>
+              <td class="num"><span id="lot-4-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-4-current-value">$32,635.55</span></td>
+              <td class="num">
+                <div id="lot-4-net-pnl" class="up">$2,504.31</div>
+                <div id="lot-4-net-pnl-pct" class="subline up">+8.31%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-4-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/2bBRYnLM9P7VYdaDWHdxTBxEvFzXA4yELBrtpTJwUaxXMi2BLQR75ZsNZ6jL3Fi13ND6iqYBGGcrRDZJUr586Uk7">2bBRYnLM9P...</a></td>
             </tr>
             
 
-            <tr>
+            <tr data-lot-id="lot-3">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">17:25:42</div>
@@ -247,18 +262,18 @@
               </td>
               <td class="num">$0.060512</td>
               <td class="num">$11,552.79</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$12,499.00</td>
-              <td class="num up">
-                <div>$946.21</div>
-                <div class="subline up">+8.19%</div>
+              <td class="num"><span id="lot-3-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-3-current-value">$12,499.00</span></td>
+              <td class="num">
+                <div id="lot-3-net-pnl" class="up">$946.21</div>
+                <div id="lot-3-net-pnl-pct" class="subline up">+8.19%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-3-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/1XPqZtv6sP4fdEe4DneJgEDBGa1UuXTANjT517KkCEbJArKHYkcaTRpo5JyMNZG796VCAQHN8Tsrud31XLWmbmy">1XPqZtv6sP...</a></td>
             </tr>
             
 
-            <tr>
+            <tr data-lot-id="lot-2">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">17:22:33</div>
@@ -269,18 +284,18 @@
               </td>
               <td class="num">$0.060712</td>
               <td class="num">$23,479.77</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$25,319.44</td>
-              <td class="num up">
-                <div>$1,839.67</div>
-                <div class="subline up">+7.84%</div>
+              <td class="num"><span id="lot-2-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-2-current-value">$25,319.44</span></td>
+              <td class="num">
+                <div id="lot-2-net-pnl" class="up">$1,839.67</div>
+                <div id="lot-2-net-pnl-pct" class="subline up">+7.84%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-2-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/2va9je3QTm8YzJQ3aBHfzoNk7XYVLLDKu6VCLvgF1NnRvrNDX8EPE371jCGRnnvmmht8TSxGzdfcn9CjK5KWVp9p">2va9je3QTm...</a></td>
             </tr>
             
 
-            <tr>
+            <tr data-lot-id="lot-1">
               <td>
                 <div class="date-main">Mar 29</div>
                 <div class="date-sub">17:20:41</div>
@@ -291,13 +306,13 @@
               </td>
               <td class="num">$0.061054</td>
               <td class="num">$21,061.98</td>
-              <td class="num">$0.065468</td>
-              <td class="num">$22,584.73</td>
-              <td class="num up">
-                <div>$1,522.74</div>
-                <div class="subline up">+7.23%</div>
+              <td class="num"><span id="lot-1-current-price">$0.065468</span></td>
+              <td class="num"><span id="lot-1-current-value">$22,584.73</span></td>
+              <td class="num">
+                <div id="lot-1-net-pnl" class="up">$1,522.74</div>
+                <div id="lot-1-net-pnl-pct" class="subline up">+7.23%</div>
               </td>
-              <td class="num">2d</td>
+              <td class="num"><span id="lot-1-days-held">2d</span></td>
               <td><a href="https://solscan.io/tx/3CtFCHqTPmNuNdNEzQMhf2cvtcV4UpqyWci7ivziV3ijfvgvVP76gy5fHfAW5cvCNQUHjck1ri4coNsbG3yYJ5yp">3CtFCHqTPm...</a></td>
             </tr>
             
@@ -379,5 +394,238 @@
         </p>
       </section>
     </div>
+    <script id="live-lot-state" type="application/json">{"generated_at_utc":"2026-04-01T05:06:58.174060+00:00","initial_xsol_price":0.065468416,"initial_price_source":"hylo_stats.exchangeStats.levercoinNav","lots":[{"block_time":1774804841,"current_price":0.065468416,"current_value":22584.726448071877,"days_held":2.4904765576736114,"days_held_display":"2d","entry_price":0.06105430200013629,"entry_value":21061.983677,"local":"2026-03-29T17:20:41+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-1","net_pnl":1522.7427710718766,"net_pnl_pct":7.229816499832988,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":21061.983677,"remaining_xsol":344971.328588,"sell_allocations":[],"signature":"3CtFCHqTPmNuNdNEzQMhf2cvtcV4UpqyWci7ivziV3ijfvgvVP76gy5fHfAW5cvCNQUHjck1ri4coNsbG3yYJ5yp","slot":409693777,"solscan_url":"https://solscan.io/tx/3CtFCHqTPmNuNdNEzQMhf2cvtcV4UpqyWci7ivziV3ijfvgvVP76gy5fHfAW5cvCNQUHjck1ri4coNsbG3yYJ5yp","status":"open","strictly_confirmed":true,"unrealized_pnl":1522.7427710718766,"utc":"2026-03-29T17:20:41+00:00","xsol_bought":344971.328588},{"block_time":1774804953,"current_price":0.065468416,"current_value":25319.438411244548,"days_held":2.489180261377315,"days_held_display":"2d","entry_price":0.06071158800006655,"entry_value":23479.769439,"local":"2026-03-29T17:22:33+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-2","net_pnl":1839.668972244548,"net_pnl_pct":7.835123666882563,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":23479.769439,"remaining_xsol":386742.798409,"sell_allocations":[],"signature":"2va9je3QTm8YzJQ3aBHfzoNk7XYVLLDKu6VCLvgF1NnRvrNDX8EPE371jCGRnnvmmht8TSxGzdfcn9CjK5KWVp9p","slot":409694064,"solscan_url":"https://solscan.io/tx/2va9je3QTm8YzJQ3aBHfzoNk7XYVLLDKu6VCLvgF1NnRvrNDX8EPE371jCGRnnvmmht8TSxGzdfcn9CjK5KWVp9p","status":"open","strictly_confirmed":true,"unrealized_pnl":1839.668972244548,"utc":"2026-03-29T17:22:33+00:00","xsol_bought":386742.798409},{"block_time":1774805142,"current_price":0.065468416,"current_value":12499.001318302828,"days_held":2.486992761377315,"days_held_display":"2d","entry_price":0.060512277000274554,"entry_value":11552.792571,"local":"2026-03-29T17:25:42+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-3","net_pnl":946.2087473028278,"net_pnl_pct":8.190303266398253,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":11552.792571,"remaining_xsol":190916.507256,"sell_allocations":[],"signature":"1XPqZtv6sP4fdEe4DneJgEDBGa1UuXTANjT517KkCEbJArKHYkcaTRpo5JyMNZG796VCAQHN8Tsrud31XLWmbmy","slot":409694544,"solscan_url":"https://solscan.io/tx/1XPqZtv6sP4fdEe4DneJgEDBGa1UuXTANjT517KkCEbJArKHYkcaTRpo5JyMNZG796VCAQHN8Tsrud31XLWmbmy","status":"open","strictly_confirmed":true,"unrealized_pnl":946.2087473028278,"utc":"2026-03-29T17:25:42+00:00","xsol_bought":190916.507256},{"block_time":1774805441,"current_price":0.065468416,"current_value":32635.547537886843,"days_held":2.483532113229167,"days_held_display":"2d","entry_price":0.060444647000110714,"entry_value":30131.233824,"local":"2026-03-29T17:30:41+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-4","net_pnl":2504.313713886844,"net_pnl_pct":8.31135468436118,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":30131.233824,"remaining_xsol":498493.006733,"sell_allocations":[],"signature":"2bBRYnLM9P7VYdaDWHdxTBxEvFzXA4yELBrtpTJwUaxXMi2BLQR75ZsNZ6jL3Fi13ND6iqYBGGcrRDZJUr586Uk7","slot":409695303,"solscan_url":"https://solscan.io/tx/2bBRYnLM9P7VYdaDWHdxTBxEvFzXA4yELBrtpTJwUaxXMi2BLQR75ZsNZ6jL3Fi13ND6iqYBGGcrRDZJUr586Uk7","status":"open","strictly_confirmed":true,"unrealized_pnl":2504.313713886844,"utc":"2026-03-29T17:30:41+00:00","xsol_bought":498493.006733},{"block_time":1774824153,"current_price":0.065468416,"current_value":135914.41544360787,"days_held":2.2669580391550928,"days_held_display":"2d","entry_price":0.05884445500001411,"entry_value":122162.871688,"local":"2026-03-29T22:42:33+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-5","net_pnl":13751.543755607869,"net_pnl_pct":11.256729287380264,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":122162.871688,"remaining_xsol":2076030.302056,"sell_allocations":[],"signature":"3hYrVvpBCKbo7Vm2teTudVA96Kpjppt2BLf9NoKTXWfEeiwaSDbDj6H4p8R2hNY3pub6YU4UKck7xNhseSVZpbMR","slot":409743075,"solscan_url":"https://solscan.io/tx/3hYrVvpBCKbo7Vm2teTudVA96Kpjppt2BLf9NoKTXWfEeiwaSDbDj6H4p8R2hNY3pub6YU4UKck7xNhseSVZpbMR","status":"open","strictly_confirmed":true,"unrealized_pnl":13751.543755607869,"utc":"2026-03-29T22:42:33+00:00","xsol_bought":2076030.302056},{"block_time":1774824642,"current_price":0.065468416,"current_value":245737.94986301067,"days_held":2.2612983169328706,"days_held_display":"2d","entry_price":0.055080529000008385,"entry_value":206746.658936,"local":"2026-03-29T22:50:42+00:00","log_hints":["SwapStableToLever","RebalanceStableToLever","Swap","Burn"],"lot_id":"lot-6","net_pnl":38991.290927010676,"net_pnl_pct":18.859453946039693,"realized_hyusd":0.0,"realized_pnl":0.0,"remaining_entry_value":206746.658936,"remaining_xsol":3753534.373934,"sell_allocations":[],"signature":"5nJq6D9EXT3W6Cdb83PStHpjvN3udmBm9GaJvvckLPQ9TmjGKLCMsJWZueXvYtSUUupAm52TBEYUJkZ1g5heyjjF","slot":409744327,"solscan_url":"https://solscan.io/tx/5nJq6D9EXT3W6Cdb83PStHpjvN3udmBm9GaJvvckLPQ9TmjGKLCMsJWZueXvYtSUUupAm52TBEYUJkZ1g5heyjjF","status":"open","strictly_confirmed":true,"unrealized_pnl":38991.290927010676,"utc":"2026-03-29T22:50:42+00:00","xsol_bought":3753534.373934}]}</script>
+    <script>
+      (() => {
+        const REFRESH_SECONDS = 60;
+        const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
+        const SOL_TOKEN = "So11111111111111111111111111111111111111112";
+        const payload = JSON.parse(document.getElementById("live-lot-state").textContent);
+        const lotRows = payload.lots || [];
+        let countdown = REFRESH_SECONDS;
+        let livePriceState = {
+          xsol: payload.initial_xsol_price,
+          xsolSource: payload.initial_price_source || "saved mark",
+          sol: null,
+          solSource: "",
+          lastUpdated: null,
+          lastError: "",
+        };
+
+        function formatNum(value, digits = 2) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "n/a";
+          }
+          return Number(value).toLocaleString(undefined, {
+            minimumFractionDigits: digits,
+            maximumFractionDigits: digits,
+          });
+        }
+
+        function formatCurrency(value, digits = 2) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "n/a";
+          }
+          return `$${formatNum(value, digits)}`;
+        }
+
+        function formatPct(value, digits = 2) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "n/a";
+          }
+          const sign = value > 0 ? "+" : "";
+          return `${sign}${Number(value).toFixed(digits)}%`;
+        }
+
+        function pnlClass(value) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "flat";
+          }
+          if (value > 0) {
+            return "up";
+          }
+          if (value < 0) {
+            return "down";
+          }
+          return "flat";
+        }
+
+        function setTone(element, value) {
+          if (!element) {
+            return;
+          }
+          element.classList.remove("up", "down", "flat");
+          element.classList.add(pnlClass(value));
+        }
+
+        function setText(id, value) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = value;
+          }
+        }
+
+        function formatDaysHeld(utc) {
+          if (!utc) {
+            return "n/a";
+          }
+          const ms = Date.now() - Date.parse(utc);
+          const days = Math.max(0, Math.floor(ms / 86400000));
+          return `${days}d`;
+        }
+
+        function bestPair(pairs, filterFn = null) {
+          const filtered = (pairs || []).filter((pair) => {
+            if (!filterFn) {
+              return true;
+            }
+            return filterFn(pair);
+          });
+          if (!filtered.length) {
+            return null;
+          }
+          return filtered.sort((a, b) => (Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0)))[0];
+        }
+
+        async function fetchDexPrice(tokenMint, filterFn = null) {
+          const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenMint}`, {
+            cache: "no-store",
+          });
+          if (!response.ok) {
+            throw new Error(`DexScreener returned ${response.status}`);
+          }
+          const data = await response.json();
+          const pair = bestPair(data.pairs || [], filterFn);
+          if (!pair || !pair.priceUsd) {
+            throw new Error("No liquid pair found");
+          }
+          return {
+            price: Number(pair.priceUsd),
+            dexId: pair.dexId || "dexscreener",
+            pairAddress: pair.pairAddress || "",
+            liquidityUsd: Number(pair?.liquidity?.usd || 0),
+            quoteSymbol: pair?.quoteToken?.symbol || "",
+          };
+        }
+
+        function recomputeView() {
+          const xsolPrice = Number(livePriceState.xsol);
+          if (!xsolPrice) {
+            return;
+          }
+          let totalEntryValue = 0;
+          let totalCurrentValue = 0;
+          let totalNetPnl = 0;
+          let totalRemainingXsol = 0;
+          let openDeploymentCount = 0;
+
+          for (const lot of lotRows) {
+            const remainingXsol = Number(lot.remaining_xsol || 0);
+            const remainingEntryValue = Number(lot.remaining_entry_value || 0);
+            const realizedPnl = Number(lot.realized_pnl || 0);
+            const currentValue = remainingXsol * xsolPrice;
+            const unrealizedPnl = currentValue - remainingEntryValue;
+            const netPnl = realizedPnl + unrealizedPnl;
+            const netPnlPct = Number(lot.entry_value || 0) > 0 ? (netPnl / Number(lot.entry_value)) * 100 : null;
+
+            totalEntryValue += Number(lot.entry_value || 0);
+            totalCurrentValue += currentValue;
+            totalNetPnl += netPnl;
+            totalRemainingXsol += remainingXsol;
+            if (remainingXsol > 0) {
+              openDeploymentCount += 1;
+            }
+
+            setText(`${lot.lot_id}-current-price`, formatCurrency(xsolPrice, 6));
+            setText(`${lot.lot_id}-current-value`, formatCurrency(currentValue));
+            setText(`${lot.lot_id}-net-pnl`, formatCurrency(netPnl));
+            setText(`${lot.lot_id}-net-pnl-pct`, formatPct(netPnlPct));
+            setText(`${lot.lot_id}-days-held`, formatDaysHeld(lot.utc));
+            setTone(document.getElementById(`${lot.lot_id}-net-pnl`), netPnl);
+            setTone(document.getElementById(`${lot.lot_id}-net-pnl-pct`), netPnl);
+          }
+
+          const totalNetPnlPct = totalEntryValue > 0 ? (totalNetPnl / totalEntryValue) * 100 : null;
+          setText("summary-open-deployment-count", String(openDeploymentCount));
+          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
+          setText("summary-entry-value", formatCurrency(totalEntryValue));
+          setText("summary-current-value", formatCurrency(totalCurrentValue));
+          setText("summary-net-pnl", formatCurrency(totalNetPnl));
+          setText("summary-net-pnl-sub", formatPct(totalNetPnlPct));
+          setText("summary-current-value-sub", "mark-to-market");
+          setText("summary-xsol-price", formatNum(xsolPrice, 9));
+          setTone(document.getElementById("summary-net-pnl"), totalNetPnl);
+          setTone(document.getElementById("summary-net-pnl-sub"), totalNetPnl);
+        }
+
+        function renderLiveState() {
+          if (livePriceState.xsol) {
+            setText(
+              "summary-xsol-price-sub",
+              `${livePriceState.xsolSource} • refresh in ${countdown}s`
+            );
+          }
+          if (livePriceState.sol) {
+            setText("summary-sol-price", formatCurrency(livePriceState.sol));
+            setText(
+              "summary-sol-price-sub",
+              `${livePriceState.solSource} • refresh in ${countdown}s`
+            );
+          } else {
+            setText("summary-sol-price", "Loading...");
+            setText("summary-sol-price-sub", `refresh in ${countdown}s`);
+          }
+          if (livePriceState.lastUpdated) {
+            const localTime = livePriceState.lastUpdated.toLocaleTimeString();
+            setText("live-refresh-status", `Live prices updated at ${localTime}. Next refresh in ${countdown}s.`);
+          } else if (livePriceState.lastError) {
+            setText("live-refresh-status", `Live price refresh failed: ${livePriceState.lastError}. Retrying in ${countdown}s.`);
+          } else {
+            setText("live-refresh-status", `Waiting for live DexScreener pricing. Current values will refresh in-browser every ${REFRESH_SECONDS} seconds.`);
+          }
+        }
+
+        async function refreshPrices() {
+          try {
+            const [xsolResult, solResult] = await Promise.all([
+              fetchDexPrice(XSOL_TOKEN),
+              fetchDexPrice(
+                SOL_TOKEN,
+                (pair) => {
+                  const quote = pair?.quoteToken?.symbol;
+                  return quote === "USDC" || quote === "USDT";
+                }
+              ),
+            ]);
+            livePriceState = {
+              xsol: xsolResult.price,
+              xsolSource: `DexScreener ${xsolResult.dexId}`,
+              sol: solResult.price,
+              solSource: `DexScreener ${solResult.dexId}`,
+              lastUpdated: new Date(),
+              lastError: "",
+            };
+            recomputeView();
+          } catch (error) {
+            console.error(error);
+            livePriceState.lastError = error?.message || "unknown error";
+          }
+          countdown = REFRESH_SECONDS;
+          renderLiveState();
+        }
+
+        recomputeView();
+        renderLiveState();
+        refreshPrices();
+        window.setInterval(() => {
+          countdown -= 1;
+          if (countdown <= 0) {
+            refreshPrices();
+            return;
+          }
+          renderLiveState();
+        }, 1000);
+      })();
+    </script>
   </body>
 </html>

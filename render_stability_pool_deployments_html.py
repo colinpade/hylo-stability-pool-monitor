@@ -53,12 +53,19 @@ def pnl_class(value):
     return "flat"
 
 
-def card(label, value, subtext, tone="flat"):
+def json_for_script(payload):
+    return json.dumps(payload, separators=(",", ":")).replace("<", "\\u003c")
+
+
+def card(label, value, subtext, tone="flat", card_id=None, value_id=None, subtext_id=None):
+    card_attr = f' id="{html.escape(card_id)}"' if card_id else ""
+    value_attr = f' id="{html.escape(value_id)}"' if value_id else ""
+    subtext_attr = f' id="{html.escape(subtext_id)}"' if subtext_id else ""
     return f"""
-    <div class="card">
+    <div class="card"{card_attr}>
       <div class="card-label">{html.escape(label)}</div>
-      <div class="card-value {html.escape(tone)}">{html.escape(value)}</div>
-      <div class="card-sub {html.escape(tone)}">{html.escape(subtext)}</div>
+      <div class="card-value {html.escape(tone)}"{value_attr}>{html.escape(value)}</div>
+      <div class="card-sub {html.escape(tone)}"{subtext_attr}>{html.escape(subtext)}</div>
     </div>
     """
 
@@ -70,6 +77,8 @@ def build_cards(lot_state, latest_snapshot):
             "Deployments",
             str(lot_state.get("deployment_count", 0)),
             "confirmed buy_xsol lots",
+            card_id="card-deployments",
+            value_id="summary-deployment-count",
         )
     ]
     if latest_snapshot:
@@ -79,32 +88,58 @@ def build_cards(lot_state, latest_snapshot):
                     "Open Deployments",
                     str(summary["open_deployment_count"]),
                     latest_snapshot["captured_at_local"],
+                    card_id="card-open-deployments",
+                    value_id="summary-open-deployment-count",
+                    subtext_id="summary-open-deployment-sub",
                 ),
                 card(
                     "Current xSOL Price",
                     fmt_num(latest_snapshot["xsol_price"], 9),
                     latest_snapshot["price_source"],
+                    card_id="card-xsol-price",
+                    value_id="summary-xsol-price",
+                    subtext_id="summary-xsol-price-sub",
                 ),
                 card(
                     "Remaining xSOL",
                     fmt_num(summary["total_remaining_xsol"], 6),
                     "open lot exposure",
+                    card_id="card-remaining-xsol",
+                    value_id="summary-remaining-xsol",
+                    subtext_id="summary-remaining-xsol-sub",
                 ),
                 card(
                     "Entry Value",
                     f"${fmt_num(summary['total_entry_value'])}",
                     "total deployed hyUSD",
+                    card_id="card-entry-value",
+                    value_id="summary-entry-value",
+                    subtext_id="summary-entry-value-sub",
                 ),
                 card(
                     "Current Value",
                     f"${fmt_num(summary['total_current_value'])}",
                     "mark-to-market",
+                    card_id="card-current-value",
+                    value_id="summary-current-value",
+                    subtext_id="summary-current-value-sub",
                 ),
                 card(
                     "Net PnL",
                     f"${fmt_num(summary['total_net_pnl'])}",
                     fmt_pct(summary["total_net_pnl_pct"]),
                     pnl_class(summary["total_net_pnl"]),
+                    card_id="card-net-pnl",
+                    value_id="summary-net-pnl",
+                    subtext_id="summary-net-pnl-sub",
+                ),
+                card(
+                    "Latest SOL Price",
+                    "Loading...",
+                    "live refresh every 60s",
+                    card_id="card-sol-price",
+                    value_id="summary-sol-price",
+                    subtext_id="summary-sol-price-sub",
                 ),
             ]
         )
@@ -118,9 +153,10 @@ def build_lot_rows(lots):
         current_price = lot.get("current_price")
         current_value = lot.get("current_value")
         net_pnl = lot.get("net_pnl")
+        row_class = pnl_class(net_pnl)
         rows.append(
             f"""
-            <tr>
+            <tr data-lot-id="{html.escape(lot['lot_id'])}">
               <td>
                 <div class="date-main">{html.escape(day_label)}</div>
                 <div class="date-sub">{html.escape(time_label)}</div>
@@ -131,13 +167,13 @@ def build_lot_rows(lots):
               </td>
               <td class="num">${fmt_num(lot['entry_price'], 6)}</td>
               <td class="num">${fmt_num(lot['entry_value'])}</td>
-              <td class="num">${fmt_num(current_price, 6) if current_price is not None else 'n/a'}</td>
-              <td class="num">${fmt_num(current_value)}</td>
-              <td class="num {pnl_class(net_pnl)}">
-                <div>${fmt_num(net_pnl)}</div>
-                <div class="subline {pnl_class(net_pnl)}">{fmt_pct(lot.get('net_pnl_pct'))}</div>
+              <td class="num"><span id="{html.escape(lot['lot_id'])}-current-price">${fmt_num(current_price, 6) if current_price is not None else 'n/a'}</span></td>
+              <td class="num"><span id="{html.escape(lot['lot_id'])}-current-value">${fmt_num(current_value)}</span></td>
+              <td class="num">
+                <div id="{html.escape(lot['lot_id'])}-net-pnl" class="{row_class}">${fmt_num(net_pnl)}</div>
+                <div id="{html.escape(lot['lot_id'])}-net-pnl-pct" class="subline {row_class}">{fmt_pct(lot.get('net_pnl_pct'))}</div>
               </td>
-              <td class="num">{html.escape(lot.get('days_held_display', 'n/a'))}</td>
+              <td class="num"><span id="{html.escape(lot['lot_id'])}-days-held">{html.escape(lot.get('days_held_display', 'n/a'))}</span></td>
               <td><a href="{html.escape(lot['solscan_url'])}">{html.escape(lot['signature'][:10])}...</a></td>
             </tr>
             """
@@ -169,6 +205,12 @@ def render_html(lot_state, snapshots):
     latest_snapshot = snapshots[-1] if snapshots else None
     lots = latest_snapshot["lots"] if latest_snapshot else lot_state.get("lots", [])
     price_details = latest_snapshot.get("price_source_details") if latest_snapshot else None
+    live_payload = {
+        "generated_at_utc": lot_state.get("generated_at_utc"),
+        "initial_xsol_price": latest_snapshot.get("xsol_price") if latest_snapshot else None,
+        "initial_price_source": latest_snapshot.get("price_source") if latest_snapshot else None,
+        "lots": lots,
+    }
     details_html = ""
     if price_details:
         details_html = f"""
@@ -265,6 +307,11 @@ def render_html(lot_state, snapshots):
         line-height: 1.5;
         font-size: 0.92rem;
       }}
+      .live-note {{
+        margin-top: 10px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }}
       @media (max-width: 760px) {{
         .wrap {{ padding: 20px 12px 30px; }}
         h1 {{ font-size: 1.75rem; }}
@@ -278,6 +325,9 @@ def render_html(lot_state, snapshots):
         Persistent lot tracker built from confirmed on-chain <code>buy_xsol</code> events. A new deployment is created
         when the Stability Pool spends <code>hyUSD</code>, receives <code>xSOL</code>, and the transaction logs include the
         expected rebalance hints. Mark snapshots let you monitor these lots over time instead of only seeing a single screenshot.
+      </div>
+      <div class="live-note" id="live-refresh-status">
+        Waiting for live DexScreener pricing. Current values will refresh in-browser every 60 seconds.
       </div>
 
       <section class="cards">
@@ -342,6 +392,239 @@ def render_html(lot_state, snapshots):
         </p>
       </section>
     </div>
+    <script id="live-lot-state" type="application/json">{html.escape(json_for_script(live_payload), quote=False)}</script>
+    <script>
+      (() => {{
+        const REFRESH_SECONDS = 60;
+        const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
+        const SOL_TOKEN = "So11111111111111111111111111111111111111112";
+        const payload = JSON.parse(document.getElementById("live-lot-state").textContent);
+        const lotRows = payload.lots || [];
+        let countdown = REFRESH_SECONDS;
+        let livePriceState = {{
+          xsol: payload.initial_xsol_price,
+          xsolSource: payload.initial_price_source || "saved mark",
+          sol: null,
+          solSource: "",
+          lastUpdated: null,
+          lastError: "",
+        }};
+
+        function formatNum(value, digits = 2) {{
+          if (value === null || value === undefined || Number.isNaN(value)) {{
+            return "n/a";
+          }}
+          return Number(value).toLocaleString(undefined, {{
+            minimumFractionDigits: digits,
+            maximumFractionDigits: digits,
+          }});
+        }}
+
+        function formatCurrency(value, digits = 2) {{
+          if (value === null || value === undefined || Number.isNaN(value)) {{
+            return "n/a";
+          }}
+          return `$${{formatNum(value, digits)}}`;
+        }}
+
+        function formatPct(value, digits = 2) {{
+          if (value === null || value === undefined || Number.isNaN(value)) {{
+            return "n/a";
+          }}
+          const sign = value > 0 ? "+" : "";
+          return `${{sign}}${{Number(value).toFixed(digits)}}%`;
+        }}
+
+        function pnlClass(value) {{
+          if (value === null || value === undefined || Number.isNaN(value)) {{
+            return "flat";
+          }}
+          if (value > 0) {{
+            return "up";
+          }}
+          if (value < 0) {{
+            return "down";
+          }}
+          return "flat";
+        }}
+
+        function setTone(element, value) {{
+          if (!element) {{
+            return;
+          }}
+          element.classList.remove("up", "down", "flat");
+          element.classList.add(pnlClass(value));
+        }}
+
+        function setText(id, value) {{
+          const el = document.getElementById(id);
+          if (el) {{
+            el.textContent = value;
+          }}
+        }}
+
+        function formatDaysHeld(utc) {{
+          if (!utc) {{
+            return "n/a";
+          }}
+          const ms = Date.now() - Date.parse(utc);
+          const days = Math.max(0, Math.floor(ms / 86400000));
+          return `${{days}}d`;
+        }}
+
+        function bestPair(pairs, filterFn = null) {{
+          const filtered = (pairs || []).filter((pair) => {{
+            if (!filterFn) {{
+              return true;
+            }}
+            return filterFn(pair);
+          }});
+          if (!filtered.length) {{
+            return null;
+          }}
+          return filtered.sort((a, b) => (Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0)))[0];
+        }}
+
+        async function fetchDexPrice(tokenMint, filterFn = null) {{
+          const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${{tokenMint}}`, {{
+            cache: "no-store",
+          }});
+          if (!response.ok) {{
+            throw new Error(`DexScreener returned ${{response.status}}`);
+          }}
+          const data = await response.json();
+          const pair = bestPair(data.pairs || [], filterFn);
+          if (!pair || !pair.priceUsd) {{
+            throw new Error("No liquid pair found");
+          }}
+          return {{
+            price: Number(pair.priceUsd),
+            dexId: pair.dexId || "dexscreener",
+            pairAddress: pair.pairAddress || "",
+            liquidityUsd: Number(pair?.liquidity?.usd || 0),
+            quoteSymbol: pair?.quoteToken?.symbol || "",
+          }};
+        }}
+
+        function recomputeView() {{
+          const xsolPrice = Number(livePriceState.xsol);
+          if (!xsolPrice) {{
+            return;
+          }}
+          let totalEntryValue = 0;
+          let totalCurrentValue = 0;
+          let totalNetPnl = 0;
+          let totalRemainingXsol = 0;
+          let openDeploymentCount = 0;
+
+          for (const lot of lotRows) {{
+            const remainingXsol = Number(lot.remaining_xsol || 0);
+            const remainingEntryValue = Number(lot.remaining_entry_value || 0);
+            const realizedPnl = Number(lot.realized_pnl || 0);
+            const currentValue = remainingXsol * xsolPrice;
+            const unrealizedPnl = currentValue - remainingEntryValue;
+            const netPnl = realizedPnl + unrealizedPnl;
+            const netPnlPct = Number(lot.entry_value || 0) > 0 ? (netPnl / Number(lot.entry_value)) * 100 : null;
+
+            totalEntryValue += Number(lot.entry_value || 0);
+            totalCurrentValue += currentValue;
+            totalNetPnl += netPnl;
+            totalRemainingXsol += remainingXsol;
+            if (remainingXsol > 0) {{
+              openDeploymentCount += 1;
+            }}
+
+            setText(`${{lot.lot_id}}-current-price`, formatCurrency(xsolPrice, 6));
+            setText(`${{lot.lot_id}}-current-value`, formatCurrency(currentValue));
+            setText(`${{lot.lot_id}}-net-pnl`, formatCurrency(netPnl));
+            setText(`${{lot.lot_id}}-net-pnl-pct`, formatPct(netPnlPct));
+            setText(`${{lot.lot_id}}-days-held`, formatDaysHeld(lot.utc));
+            setTone(document.getElementById(`${{lot.lot_id}}-net-pnl`), netPnl);
+            setTone(document.getElementById(`${{lot.lot_id}}-net-pnl-pct`), netPnl);
+          }}
+
+          const totalNetPnlPct = totalEntryValue > 0 ? (totalNetPnl / totalEntryValue) * 100 : null;
+          setText("summary-open-deployment-count", String(openDeploymentCount));
+          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
+          setText("summary-entry-value", formatCurrency(totalEntryValue));
+          setText("summary-current-value", formatCurrency(totalCurrentValue));
+          setText("summary-net-pnl", formatCurrency(totalNetPnl));
+          setText("summary-net-pnl-sub", formatPct(totalNetPnlPct));
+          setText("summary-current-value-sub", "mark-to-market");
+          setText("summary-xsol-price", formatNum(xsolPrice, 9));
+          setTone(document.getElementById("summary-net-pnl"), totalNetPnl);
+          setTone(document.getElementById("summary-net-pnl-sub"), totalNetPnl);
+        }}
+
+        function renderLiveState() {{
+          if (livePriceState.xsol) {{
+            setText(
+              "summary-xsol-price-sub",
+              `${{livePriceState.xsolSource}} • refresh in ${{countdown}}s`
+            );
+          }}
+          if (livePriceState.sol) {{
+            setText("summary-sol-price", formatCurrency(livePriceState.sol));
+            setText(
+              "summary-sol-price-sub",
+              `${{livePriceState.solSource}} • refresh in ${{countdown}}s`
+            );
+          }} else {{
+            setText("summary-sol-price", "Loading...");
+            setText("summary-sol-price-sub", `refresh in ${{countdown}}s`);
+          }}
+          if (livePriceState.lastUpdated) {{
+            const localTime = livePriceState.lastUpdated.toLocaleTimeString();
+            setText("live-refresh-status", `Live prices updated at ${{localTime}}. Next refresh in ${{countdown}}s.`);
+          }} else if (livePriceState.lastError) {{
+            setText("live-refresh-status", `Live price refresh failed: ${{livePriceState.lastError}}. Retrying in ${{countdown}}s.`);
+          }} else {{
+            setText("live-refresh-status", `Waiting for live DexScreener pricing. Current values will refresh in-browser every ${{REFRESH_SECONDS}} seconds.`);
+          }}
+        }}
+
+        async function refreshPrices() {{
+          try {{
+            const [xsolResult, solResult] = await Promise.all([
+              fetchDexPrice(XSOL_TOKEN),
+              fetchDexPrice(
+                SOL_TOKEN,
+                (pair) => {{
+                  const quote = pair?.quoteToken?.symbol;
+                  return quote === "USDC" || quote === "USDT";
+                }}
+              ),
+            ]);
+            livePriceState = {{
+              xsol: xsolResult.price,
+              xsolSource: `DexScreener ${{xsolResult.dexId}}`,
+              sol: solResult.price,
+              solSource: `DexScreener ${{solResult.dexId}}`,
+              lastUpdated: new Date(),
+              lastError: "",
+            }};
+            recomputeView();
+          }} catch (error) {{
+            console.error(error);
+            livePriceState.lastError = error?.message || "unknown error";
+          }}
+          countdown = REFRESH_SECONDS;
+          renderLiveState();
+        }}
+
+        recomputeView();
+        renderLiveState();
+        refreshPrices();
+        window.setInterval(() => {{
+          countdown -= 1;
+          if (countdown <= 0) {{
+            refreshPrices();
+            return;
+          }}
+          renderLiveState();
+        }}, 1000);
+      }})();
+    </script>
   </body>
 </html>
 """
