@@ -80,7 +80,7 @@ jobs:
       - name: Update stability pool dashboard
         shell: bash
         run: |
-          zsh ./update_stability_pool_deployments.sh --hylo-stats-file data/live_hylo_stats.json
+          bash ./update_stability_pool_deployments.sh --hylo-stats-file data/live_hylo_stats.json
 
       - name: Record new deployment count
         id: current

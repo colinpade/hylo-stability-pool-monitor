@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 events_out="${EVENTS_OUT:-data/stability_pool_balance_changes_full.jsonl}"
