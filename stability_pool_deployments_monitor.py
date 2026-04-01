@@ -42,6 +42,14 @@ def append_jsonl(path, row):
         handle.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def write_jsonl(path, rows):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        for row in rows:
+            handle.write(json.dumps(row, sort_keys=True) + "\n")
+
+
 def parse_iso(ts):
     return datetime.fromisoformat(ts)
 
@@ -259,6 +267,59 @@ def existing_snapshot_keys(path):
     return keys
 
 
+def rounded(value, digits=12):
+    if value is None:
+        return None
+    return round(float(value), digits)
+
+
+def snapshot_signature(snapshot):
+    summary = snapshot.get("summary") or {}
+    lots = []
+    for lot in snapshot.get("lots") or []:
+        lots.append(
+            {
+                "lot_id": lot.get("lot_id"),
+                "status": lot.get("status"),
+                "signature": lot.get("signature"),
+                "remaining_xsol": rounded(lot.get("remaining_xsol")),
+                "remaining_entry_value": rounded(lot.get("remaining_entry_value")),
+                "realized_hyusd": rounded(lot.get("realized_hyusd")),
+                "realized_pnl": rounded(lot.get("realized_pnl")),
+            }
+        )
+    payload = {
+        "xsol_price": rounded(snapshot.get("xsol_price")),
+        "price_source": snapshot.get("price_source"),
+        "summary": {
+            "deployment_count": summary.get("deployment_count"),
+            "open_deployment_count": summary.get("open_deployment_count"),
+            "total_entry_value": rounded(summary.get("total_entry_value")),
+            "total_remaining_entry_value": rounded(summary.get("total_remaining_entry_value")),
+            "total_remaining_xsol": rounded(summary.get("total_remaining_xsol")),
+            "total_current_value": rounded(summary.get("total_current_value")),
+            "total_realized_pnl": rounded(summary.get("total_realized_pnl")),
+            "total_net_pnl": rounded(summary.get("total_net_pnl")),
+            "total_net_pnl_pct": rounded(summary.get("total_net_pnl_pct")),
+        },
+        "lots": lots,
+    }
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def condense_snapshots(rows):
+    condensed = []
+    last_signature = None
+    for row in rows:
+        signature = snapshot_signature(row)
+        if signature == last_signature:
+            condensed[-1] = row
+            continue
+        condensed.append(row)
+        last_signature = signature
+    return condensed
+
+
 def resolve_price(args):
     if args.xsol_price is not None:
         return {
@@ -298,14 +359,16 @@ def run_update(args):
         price_source_details=price_info["price_source_details"],
         captured_at=args.captured_at,
     )
-    snapshot_key = (
-        snapshot["captured_at_utc"],
-        snapshot["xsol_price"],
-        snapshot["price_source"],
-    )
-    keys = existing_snapshot_keys(args.marks_out)
-    if snapshot_key not in keys:
-        append_jsonl(args.marks_out, snapshot)
+    existing_rows = load_jsonl(args.marks_out)
+    before_count = len(existing_rows)
+    condensed_before = condense_snapshots(existing_rows)
+    before_condensed_count = len(condensed_before)
+    candidate_rows = condensed_before + [snapshot]
+    condensed_after = condense_snapshots(candidate_rows)
+    appended = len(condensed_after) > before_condensed_count
+    removed_duplicates = before_count - before_condensed_count
+    if appended or removed_duplicates > 0 or before_count != len(condensed_after):
+        write_jsonl(args.marks_out, condensed_after)
     print(
         json.dumps(
             {
@@ -315,6 +378,10 @@ def run_update(args):
                 "price_source": snapshot["price_source"],
                 "total_current_value": snapshot["summary"]["total_current_value"],
                 "total_net_pnl": snapshot["summary"]["total_net_pnl"],
+                "appended_mark": appended,
+                "existing_marks_before": before_count,
+                "marks_after": len(condensed_after),
+                "removed_duplicate_marks": removed_duplicates,
             },
             indent=2,
         )
