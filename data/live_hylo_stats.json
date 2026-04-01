@@ -1,0 +1,27 @@
+{
+  "exchangeStats": {
+    "totalValueLocked": 22039867.57605511,
+    "stablecoinNav": 1,
+    "stablecoinSupply": 16246951.292107,
+    "levercoinNav": 0.065468416,
+    "levercoinSupply": 88978820.858976,
+    "collateralRatio": 1.35655405,
+    "stabilityMode": {
+      "mode1": {}
+    },
+    "yieldHarvestCache": {
+      "epoch": "948",
+      "stabilityPoolCap": 9592203.745022,
+      "stablecoinYieldToPool": 6300.330853
+    }
+  },
+  "stabilityPoolStats": {
+    "lpTokenNav": 1.284628,
+    "lpTokenSupply": 7513352.362722,
+    "stabilityPoolCap": 9651856.969346,
+    "stablecoinInPool": 8964040.637708,
+    "stablecoinNav": 1,
+    "levercoinInPool": 10564814.660916,
+    "levercoinNav": 0.065104439
+  }
+}

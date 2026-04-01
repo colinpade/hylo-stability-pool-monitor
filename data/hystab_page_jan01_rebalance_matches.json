@@ -1,0 +1,11 @@
+{
+  "source": "data/hystab_page_jan01_signatures.json",
+  "start_utc": null,
+  "end_utc": null,
+  "patterns": [
+    "RebalanceStableToLever",
+    "SwapStableToLever"
+  ],
+  "inspected": 100,
+  "matches": []
+}

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hylo Stability Pool Deployments</title>
+    <style>
+      :root {
+        --bg: #0c0f11;
+        --panel: #14181b;
+        --panel-2: #1a1f23;
+        --border: #2b3338;
+        --text: #eef2f4;
+        --muted: #9baab3;
+        --up: #4ed38a;
+        --down: #e07163;
+        --flat: #d9b86b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        font-family: "Iowan Old Style", Georgia, serif;
+        background:
+          radial-gradient(circle at top right, rgba(96, 145, 255, 0.08), transparent 24%),
+          radial-gradient(circle at left top, rgba(217, 184, 107, 0.10), transparent 30%),
+          linear-gradient(180deg, #0b0e10 0%, #090b0d 100%);
+      }
+      .wrap { max-width: 1240px; margin: 0 auto; padding: 32px 22px 44px; }
+      h1 { margin: 0 0 10px; font-size: 2.2rem; }
+      .sub { color: var(--muted); line-height: 1.55; max-width: 900px; }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 14px;
+        margin: 24px 0;
+      }
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00)), var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+      }
+      .card-label { color: var(--muted); font-size: 0.88rem; margin-bottom: 8px; }
+      .card-value { font-size: 1.5rem; }
+      .card-sub { color: var(--muted); font-size: 0.92rem; margin-top: 6px; }
+      .panel {
+        background: rgba(20,24,27,0.90);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      h2 { margin: 0 0 12px; font-size: 1.1rem; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td {
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        color: var(--muted);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      td.num { text-align: right; font-variant-numeric: tabular-nums; }
+      .date-main { font-size: 1rem; }
+      .date-sub, .subline { color: var(--muted); font-size: 0.92rem; margin-top: 4px; }
+      .up { color: var(--up); }
+      .down { color: var(--down); }
+      .flat { color: var(--flat); }
+      a { color: #91d4f1; text-decoration: none; }
+      code { color: #f4d48f; word-break: break-all; }
+      .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+      }
+      .foot {
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.92rem;
+      }
+      @media (max-width: 760px) {
+        .wrap { padding: 20px 12px 30px; }
+        h1 { font-size: 1.75rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Hylo Stability Pool Deployments</h1>
+      <div class="sub">
+        Persistent lot tracker built from confirmed on-chain <code>buy_xsol</code> events. A new deployment is created
+        when the Stability Pool spends <code>hyUSD</code>, receives <code>xSOL</code>, and the transaction logs include the
+        expected rebalance hints. Mark snapshots let you monitor these lots over time instead of only seeing a single screenshot.
+      </div>
+
+      <section class="cards">
+        
+    <div class="card">
+      <div class="card-label">Deployments</div>
+      <div class="card-value">6</div>
+      <div class="card-sub">confirmed buy_xsol lots</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Open Deployments</div>
+      <div class="card-value">6</div>
+      <div class="card-sub">2026-03-30T23:34:29.058880-07:00</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Current xSOL Price</div>
+      <div class="card-value">0.065468416</div>
+      <div class="card-sub">hylo_stats.exchangeStats.levercoinNav</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Remaining xSOL</div>
+      <div class="card-value">7,250,688.316976</div>
+      <div class="card-sub">open lot exposure</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Entry Value</div>
+      <div class="card-value">$415,135.31</div>
+      <div class="card-sub">total deployed hyUSD</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Current Value</div>
+      <div class="card-value">$474,691.08</div>
+      <div class="card-sub">mark-to-market</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Net PnL</div>
+      <div class="card-value">$59,555.77</div>
+      <div class="card-sub">+14.35%</div>
+    </div>
+    
+      </section>
+
+      <section class="panel">
+        <h2>Open And Historical Deployment Lots</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Entry Price</th>
+              <th>Entry Value</th>
+              <th>Current Price</th>
+              <th>Current Value</th>
+              <th>PnL</th>
+              <th>Days Held</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">15:50:42</div>
+              </td>
+              <td class="num">
+                <div>3,753,534.37</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.055081</td>
+              <td class="num">$206,746.66</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$245,737.95</td>
+              <td class="num up">
+                <div>$38,991.29</div>
+                <div class="subline up">+18.86%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/5nJq6D9EXT3W6Cdb83PStHpjvN3udmBm9GaJvvckLPQ9TmjGKLCMsJWZueXvYtSUUupAm52TBEYUJkZ1g5heyjjF">5nJq6D9EXT...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">15:42:33</div>
+              </td>
+              <td class="num">
+                <div>2,076,030.30</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.058844</td>
+              <td class="num">$122,162.87</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$135,914.42</td>
+              <td class="num up">
+                <div>$13,751.54</div>
+                <div class="subline up">+11.26%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/3hYrVvpBCKbo7Vm2teTudVA96Kpjppt2BLf9NoKTXWfEeiwaSDbDj6H4p8R2hNY3pub6YU4UKck7xNhseSVZpbMR">3hYrVvpBCK...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">10:30:41</div>
+              </td>
+              <td class="num">
+                <div>498,493.01</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.060445</td>
+              <td class="num">$30,131.23</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$32,635.55</td>
+              <td class="num up">
+                <div>$2,504.31</div>
+                <div class="subline up">+8.31%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/2bBRYnLM9P7VYdaDWHdxTBxEvFzXA4yELBrtpTJwUaxXMi2BLQR75ZsNZ6jL3Fi13ND6iqYBGGcrRDZJUr586Uk7">2bBRYnLM9P...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">10:25:42</div>
+              </td>
+              <td class="num">
+                <div>190,916.51</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.060512</td>
+              <td class="num">$11,552.79</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$12,499.00</td>
+              <td class="num up">
+                <div>$946.21</div>
+                <div class="subline up">+8.19%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/1XPqZtv6sP4fdEe4DneJgEDBGa1UuXTANjT517KkCEbJArKHYkcaTRpo5JyMNZG796VCAQHN8Tsrud31XLWmbmy">1XPqZtv6sP...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">10:22:33</div>
+              </td>
+              <td class="num">
+                <div>386,742.80</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.060712</td>
+              <td class="num">$23,479.77</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$25,319.44</td>
+              <td class="num up">
+                <div>$1,839.67</div>
+                <div class="subline up">+7.84%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/2va9je3QTm8YzJQ3aBHfzoNk7XYVLLDKu6VCLvgF1NnRvrNDX8EPE371jCGRnnvmmht8TSxGzdfcn9CjK5KWVp9p">2va9je3QTm...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Mar 29</div>
+                <div class="date-sub">10:20:41</div>
+              </td>
+              <td class="num">
+                <div>344,971.33</div>
+                <div class="subline">open</div>
+              </td>
+              <td class="num">$0.061054</td>
+              <td class="num">$21,061.98</td>
+              <td class="num">$0.065468</td>
+              <td class="num">$22,584.73</td>
+              <td class="num up">
+                <div>$1,522.74</div>
+                <div class="subline up">+7.23%</div>
+              </td>
+              <td class="num">1d</td>
+              <td><a href="https://solscan.io/tx/3CtFCHqTPmNuNdNEzQMhf2cvtcV4UpqyWci7ivziV3ijfvgvVP76gy5fHfAW5cvCNQUHjck1ri4coNsbG3yYJ5yp">3CtFCHqTPm...</a></td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>Mark History</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Captured</th>
+              <th>xSOL Price</th>
+              <th>Price Source</th>
+              <th>Open Lots</th>
+              <th>Current Value</th>
+              <th>Net PnL</th>
+              <th>Net PnL %</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td>2026-03-30T23:34:29.058880-07:00</td>
+              <td class="num">0.065468416</td>
+              <td>hylo_stats.exchangeStats.levercoinNav</td>
+              <td class="num">6</td>
+              <td class="num">$474,691.08</td>
+              <td class="num up">$59,555.77</td>
+              <td class="num up">+14.35%</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>Latest Price Context</h2>
+        
+        <div class="details-grid">
+          <div><strong>Exchange NAV</strong><br><code>0.065468416</code></div>
+          <div><strong>Pool NAV</strong><br><code>0.065104439</code></div>
+          <div><strong>Mode</strong><br><code>{&quot;mode1&quot;: {}}</code></div>
+        </div>
+        
+      </section>
+
+      <section class="foot">
+        <p>
+          This tracker treats confirmed <code>buy_xsol</code> events as deployment lots and carries them forward across repeated marks.
+          If future confirmed <code>sell_xsol</code> events appear, the monitor applies them FIFO against the open lots.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

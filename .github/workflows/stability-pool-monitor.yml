@@ -1,0 +1,168 @@
+name: Stability Pool Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: stability-pool-monitor
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      new_deployments: ${{ steps.diff.outputs.new_deployments }}
+      pages_url: ${{ steps.meta.outputs.pages_url }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Compute Pages URL
+        id: meta
+        shell: bash
+        run: |
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          if [[ "$repo_name" == "${GITHUB_REPOSITORY_OWNER}.github.io" ]]; then
+            echo "pages_url=https://${GITHUB_REPOSITORY_OWNER}.github.io/" >> "$GITHUB_OUTPUT"
+          else
+            echo "pages_url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${repo_name}/" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Record previous deployment count
+        id: previous
+        shell: bash
+        run: |
+          if [[ -f data/stability_pool_deployments.json ]]; then
+            echo "count=$(jq '.deployment_count // 0' data/stability_pool_deployments.json)" >> "$GITHUB_OUTPUT"
+          else
+            echo "count=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch latest Hylo stats
+        shell: bash
+        run: |
+          tmp_file="$(mktemp)"
+          if curl --fail --silent --show-error \
+            'https://hylo.so/api/hylo-stats' \
+            -H 'accept: */*' \
+            -H 'accept-language: en-US,en;q=0.9' \
+            -H 'referer: https://hylo.so/stats' \
+            -H 'sec-fetch-dest: empty' \
+            -H 'sec-fetch-mode: cors' \
+            -H 'sec-fetch-site: same-origin' \
+            -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36' \
+            > "$tmp_file"; then
+            if jq -e '.exchangeStats.levercoinNav and .stabilityPoolStats.levercoinInPool' "$tmp_file" >/dev/null; then
+              mv "$tmp_file" data/live_hylo_stats.json
+              exit 0
+            fi
+          fi
+          rm -f "$tmp_file"
+
+      - name: Update stability pool dashboard
+        shell: bash
+        run: |
+          zsh ./update_stability_pool_deployments.sh --hylo-stats-file data/live_hylo_stats.json
+
+      - name: Record new deployment count
+        id: current
+        shell: bash
+        run: |
+          echo "count=$(jq '.deployment_count // 0' data/stability_pool_deployments.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Detect new deployments
+        id: diff
+        shell: bash
+        run: |
+          prev="${{ steps.previous.outputs.count }}"
+          curr="${{ steps.current.outputs.count }}"
+          if (( curr > prev )); then
+            echo "new_deployments=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "new_deployments=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Pages artifact
+        shell: bash
+        run: |
+          rm -rf site
+          mkdir -p site/data
+          cp stability_pool_deployments.html site/index.html
+          cp stability_pool_deployments.html site/stability_pool_deployments.html
+          cp stability_pool_onchain_tracker.html site/stability_pool_onchain_tracker.html
+          cp hylo_stability_pool_trace_report.html site/hylo_stability_pool_trace_report.html
+          cp hylo_viability_report.html site/hylo_viability_report.html
+          cp current_buy_xsol_events.html site/current_buy_xsol_events.html
+          cp data/stability_pool_deployments.json site/data/stability_pool_deployments.json
+          cp data/stability_pool_deployment_marks.jsonl site/data/stability_pool_deployment_marks.jsonl
+          cp data/current_buy_xsol_events.json site/data/current_buy_xsol_events.json
+
+      - name: Commit updated tracker artifacts
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/live_hylo_stats.json data/stability_pool_deployments.json data/stability_pool_deployment_marks.jsonl stability_pool_deployments.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Update stability pool tracker"
+            git push
+          fi
+
+      - name: Send ntfy alert
+        if: steps.diff.outputs.new_deployments == 'true' && secrets.NTFY_TOPIC != ''
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_AUTH_HEADER: ${{ secrets.NTFY_AUTH_HEADER }}
+          PAGES_URL: ${{ steps.meta.outputs.pages_url }}
+        shell: bash
+        run: |
+          latest_json="$(jq -r '.lots[-1] | @json' data/stability_pool_deployments.json)"
+          amount="$(echo "$latest_json" | jq -r '.xsol_bought | tostring')"
+          spent="$(echo "$latest_json" | jq -r '.entry_value | tostring')"
+          local_time="$(echo "$latest_json" | jq -r '.local')"
+          tx="$(echo "$latest_json" | jq -r '.signature')"
+          title="Hylo Stability Pool bought xSOL"
+          body="New confirmed deployment at ${local_time}\nxSOL: ${amount}\nhyUSD spent: ${spent}\nDashboard: ${PAGES_URL}\nTx: https://solscan.io/tx/${tx}"
+          if [[ -n "$NTFY_AUTH_HEADER" ]]; then
+            curl --silent --show-error \
+              -H "$NTFY_AUTH_HEADER" \
+              -H "Title: ${title}" \
+              -d "$body" \
+              "https://ntfy.sh/${NTFY_TOPIC}"
+          else
+            curl --silent --show-error \
+              -H "Title: ${title}" \
+              -d "$body" \
+              "https://ntfy.sh/${NTFY_TOPIC}"
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

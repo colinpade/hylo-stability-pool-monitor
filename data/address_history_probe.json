@@ -1,0 +1,74 @@
+{
+  "exchange": {
+    "address": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn",
+    "newest_block_time": 1774846381,
+    "newest_signature": "3UkrcL5fW6eUE5Tb6kusAMmAsaJarLrrpEzbSMdLxVgh7w5uPJWvdoRUsqaDijDeCksevn6wQnGZnHGedeNZ9ze5",
+    "newest_utc": "2026-03-30T04:53:01+00:00",
+    "oldest_block_time": 1774568743,
+    "oldest_signature": "BNbxCgRAm4nHeyBA4Nivk4A8anMHSPvWUxFka7YaSN2Ew1o5FUMmwjEhffBGaWGFvNWLvjznboJExZMcR9v9FTb",
+    "oldest_utc": "2026-03-26T23:45:43+00:00",
+    "pages_scanned": 8,
+    "reached_end": true,
+    "signatures_scanned": 7568
+  },
+  "hyUSD": {
+    "address": "5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E",
+    "newest_block_time": 1774846529,
+    "newest_signature": "2wSrpSd83mPjVkNZ4KUGxJhDqXYPGZidySad8QKyhBSo3b6PkoCSvX4unNwAQPRka2U85PQt4tDA3D9tTmVsCMDg",
+    "newest_utc": "2026-03-30T04:55:29+00:00",
+    "oldest_block_time": 1774568743,
+    "oldest_signature": "BNbxCgRAm4nHeyBA4Nivk4A8anMHSPvWUxFka7YaSN2Ew1o5FUMmwjEhffBGaWGFvNWLvjznboJExZMcR9v9FTb",
+    "oldest_utc": "2026-03-26T23:45:43+00:00",
+    "pages_scanned": 20,
+    "reached_end": true,
+    "signatures_scanned": 19260
+  },
+  "keeper": {
+    "address": "CcUrRBMqrCuMPVfd6sVTBJhyhBA1dE7qDoJkSy95bbcw",
+    "newest_block_time": 1774846384,
+    "newest_signature": "51BNc8VbPfTPuj8cNvMNwpBokAWQHPMkHPUUzppQxSrvojRb44YxviFRWD8ctjeGQ4zBRXjtw1PsKevjxaGrUT9e",
+    "newest_utc": "2026-03-30T04:53:04+00:00",
+    "oldest_block_time": 1774569822,
+    "oldest_signature": "F7dGWhwTwTNrvFzjFvqhYmGaGXSF1fXHVgR4tXMFhpyG7JBhXMzq8T4WUHvLhT8EoR22tVsMUQXVyEv7fqjHHhM",
+    "oldest_utc": "2026-03-27T00:03:42+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 989
+  },
+  "stability_pool": {
+    "address": "HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ",
+    "newest_block_time": 1774846381,
+    "newest_signature": "3UkrcL5fW6eUE5Tb6kusAMmAsaJarLrrpEzbSMdLxVgh7w5uPJWvdoRUsqaDijDeCksevn6wQnGZnHGedeNZ9ze5",
+    "newest_utc": "2026-03-30T04:53:01+00:00",
+    "oldest_block_time": 1774573555,
+    "oldest_signature": "3DaFzagbvtoJdJNUxHZ8LXaL63UHT9f4D7u5mmNwuF1Xax7R6UBVBXw7jq9sDzFGVQqjG3iC9K9MBbEBdEcc1c4P",
+    "oldest_utc": "2026-03-27T01:05:55+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 319
+  },
+  "vault_owner": {
+    "address": "5YrRAQag9BbJkauDtJkd1vsTquXT6N46oU8rJ66GDxHd",
+    "newest_block_time": 1774846381,
+    "newest_signature": "3UkrcL5fW6eUE5Tb6kusAMmAsaJarLrrpEzbSMdLxVgh7w5uPJWvdoRUsqaDijDeCksevn6wQnGZnHGedeNZ9ze5",
+    "newest_utc": "2026-03-30T04:53:01+00:00",
+    "oldest_block_time": 1774573555,
+    "oldest_signature": "3DaFzagbvtoJdJNUxHZ8LXaL63UHT9f4D7u5mmNwuF1Xax7R6UBVBXw7jq9sDzFGVQqjG3iC9K9MBbEBdEcc1c4P",
+    "oldest_utc": "2026-03-27T01:05:55+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 319
+  },
+  "xSOL": {
+    "address": "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs",
+    "newest_block_time": 1774846564,
+    "newest_signature": "sGgAouDvtjYnogCyicwuC1oxndTZocto8fJmLE3cVXdsdkX2dN53DAueJRJypppfYLAvRaUekG8uLjiVqxU1Cwp",
+    "newest_utc": "2026-03-30T04:56:04+00:00",
+    "oldest_block_time": 1774568743,
+    "oldest_signature": "BNbxCgRAm4nHeyBA4Nivk4A8anMHSPvWUxFka7YaSN2Ew1o5FUMmwjEhffBGaWGFvNWLvjznboJExZMcR9v9FTb",
+    "oldest_utc": "2026-03-26T23:45:43+00:00",
+    "pages_scanned": 22,
+    "reached_end": true,
+    "signatures_scanned": 21245
+  }
+}

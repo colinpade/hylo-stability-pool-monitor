@@ -1,0 +1,54 @@
+{
+  "conclusion": "yes_pre_march_mainnet_deployment_existed",
+  "programs": {
+    "exchange": {
+      "program_id": "HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn",
+      "program_data": "BA5b6FzvZ77m7MZbsMEVSCFW1x86f7jM98wjcecVwzYN",
+      "initial_deploy_signature": "22Zs7waPESNUdG5g9D7QwiKFg3v6MJy4nf98jEoQvdG54jUWGzsvRJDidWPZVqpLTQaYWrKkYS6aVmZrnF3ix6bt",
+      "initial_deploy_utc": "2025-04-11T21:37:28+00:00",
+      "initial_deploy_local": "2025-04-11T14:37:28-07:00",
+      "initial_deploy_instruction": "deployWithMaxDataLen",
+      "initial_deploy_log": "Deployed program HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn",
+      "latest_programdata_slot": 396561417,
+      "latest_programdata_utc": "2026-01-28T21:26:01+00:00",
+      "latest_programdata_local": "2026-01-28T13:26:01-08:00"
+    },
+    "stability_pool": {
+      "program_id": "HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ",
+      "program_data": "9Zzs2JU8kA3odcwGBkXYSw9e39UpTAGgYnkhbmpY3p26",
+      "initial_deploy_signature": "5giigaQ6kGXdxxWiPRhH75EA4xAVyNZoDe9yDLmEA3dvC1bwXaW3oFvp9Wehp3XnEH4uY9f7UGMgyHPLSrA7UoWB",
+      "initial_deploy_utc": "2025-04-11T21:55:04+00:00",
+      "initial_deploy_local": "2025-04-11T14:55:04-07:00",
+      "initial_deploy_instruction": "deployWithMaxDataLen",
+      "initial_deploy_log": "Deployed program HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ",
+      "latest_programdata_slot": 396559373,
+      "latest_programdata_utc": "2026-01-28T21:12:15+00:00",
+      "latest_programdata_local": "2026-01-28T13:12:15-08:00",
+      "latest_upgrade_signature": "3hoSNogB9ZuHQDLJdY37g72aLgjM7wqYV5C3ybCtkfZvoqTy5CFcoWnpzm8wqxfZdHRLFth153fAP3qLR1oxrHkz",
+      "latest_upgrade_log": "Upgraded program HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ"
+    }
+  },
+  "current_pool_visibility_boundary": {
+    "pool_auth": "5YrRAQag9BbJkauDtJkd1vsTquXT6N46oU8rJ66GDxHd",
+    "hyusd_pool": "EqozKyMj7FVnLHc2cJj3VC25aBr4AhVh1cGM2WDajGe9",
+    "xsol_pool": "4GPXVXuzk8ABAUkoXeBJg8r9kccEXQjoi5vqSxE9rhk1",
+    "earliest_visible_signature": "4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv",
+    "earliest_visible_utc": "2026-03-27T16:43:41+00:00",
+    "earliest_visible_local": "2026-03-27T09:43:41-07:00",
+    "earliest_visible_action": "UserDeposit",
+    "preexisting_balances": {
+      "hyusd_pre_amount": 9420245.035451,
+      "xsol_pre_amount": 3366664.232443
+    },
+    "interpretation": "The current pool was already funded before the earliest currently visible pool transaction, so March 27 is not the true start of the pool."
+  },
+  "external_corroboration": {
+    "source": "Accretion Hylo audit, December 2025",
+    "notes": [
+      "Lists current program IDs HYEXCH... and HysTab...",
+      "Marks both programs as Verified",
+      "States the verified build matched what was on-chain",
+      "Timeline places the verified on-chain state in November 2025"
+    ]
+  }
+}

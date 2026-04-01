@@ -1,0 +1,84 @@
+{
+  "address": "HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ",
+  "description": "Checkpointed pagination depth for the current Hylo Stability Pool program invocation history.",
+  "segments": [
+    {
+      "file": "data/hystab_pages_25.jsonl",
+      "pages": 25,
+      "newest_block_time": 1774923362,
+      "newest_local": "2026-03-30T19:16:02-07:00",
+      "oldest_block_time": 1773223010,
+      "oldest_local": "2026-03-11T02:56:50-07:00",
+      "oldest_signature": "gc4s3DV76U98oCZKH2id1za6fMpmEj7yTgPz3TzAbmxaCAgvji9UgR4AVJAyb6VrL1ZvY65m7WvxqwbKJ7n3M5i"
+    },
+    {
+      "file": "data/hystab_pages_25_70.jsonl",
+      "pages": 45,
+      "newest_block_time": 1773223010,
+      "newest_local": "2026-03-11T02:56:50-07:00",
+      "oldest_block_time": 1771430755,
+      "oldest_local": "2026-02-18T08:05:55-08:00",
+      "oldest_signature": "32uYNh43nxtejSPpRSGztX9vdL82jLGJJ6Jwv8CEcAetkXSdU6PvVRqiYZueb45jgQ2FjPy4yCYbRGQiMPm42Pev"
+    },
+    {
+      "file": "data/hystab_pages_130_250.jsonl",
+      "pages_saved": 73,
+      "newest_block_time": 1770819355,
+      "newest_local": "2026-02-11T06:15:55-08:00",
+      "oldest_block_time": 1768198834,
+      "oldest_local": "2026-01-11T22:20:34-08:00",
+      "oldest_signature": "63nRtRwxQ2jjCw4bfv9bsuJsCqWsQfAeSMMqAAHoXDPyn2ga76NuzR6FqAfmJCbAgwUdjkkzzLfun6rjCmdBKLDx"
+    },
+    {
+      "file": "data/hystab_pages_330_370.jsonl",
+      "pages_saved": 14,
+      "newest_block_time": 1768198218,
+      "newest_local": "2026-01-11T22:10:18-08:00",
+      "oldest_block_time": 1766878665,
+      "oldest_local": "2025-12-27T15:37:45-08:00",
+      "oldest_signature": "3VKF6mUB1frxNZZ9orLvf5z8ZUy7TmE4MZTWnFbXmCf8qj5qxjs8GF3sxkUVPMXpLSDdrA5qwCDMjZvBiDrjrYFH"
+    }
+  ],
+  "sampled_transactions": [
+    {
+      "signature": "4nvCzidi87yTzDRTxDwWtgc9u8SPUSS1QKwnZthgxfaMiFf8TJRbvaQes4rqatSbK6VnwsUt3tRjjFDw7KZ1Wq1z",
+      "local_time": "2026-02-27T15:57:15-08:00",
+      "classification": "UserWithdraw"
+    },
+    {
+      "signature": "gc4s3DV76U98oCZKH2id1za6fMpmEj7yTgPz3TzAbmxaCAgvji9UgR4AVJAyb6VrL1ZvY65m7WvxqwbKJ7n3M5i",
+      "local_time": "2026-03-11T02:56:50-07:00",
+      "classification": "helper swap orchestration plus Stability Pool UserDeposit"
+    },
+    {
+      "signature": "3VhBn4kc45TiiQKMrQgfXzoJgxK4PhE9YXdnoU8e5qpgdEkazqf68mxppCo7cLLZGyq4Ky6shZEd5EM2Fy84Ktsi",
+      "local_time": "2026-02-27T22:18:23-08:00",
+      "classification": "external swap plus Stability Pool UserDeposit, not RebalanceStableToLever"
+    },
+    {
+      "signature": "3fP1nGvsX9TDUabNLvBBGA16TtJSeDWfzZrXHnHsRBhWpEn9JJ5B7CzTYhAhpp5LpWz5LesoRQdzynwBStMqjLA4",
+      "local_time": "2026-01-13T01:45:31-08:00",
+      "classification": "loan actions plus external routing and Stability Pool UserWithdraw, not RebalanceStableToLever"
+    },
+    {
+      "signature": "63nRtRwxQ2jjCw4bfv9bsuJsCqWsQfAeSMMqAAHoXDPyn2ga76NuzR6FqAfmJCbAgwUdjkkzzLfun6rjCmdBKLDx",
+      "local_time": "2026-01-11T22:20:34-08:00",
+      "classification": "external routing plus Stability Pool UserDeposit, not RebalanceStableToLever"
+    }
+  ],
+  "current_read": {
+    "confirmed": [
+      "The current Stability Pool program invocation stream is much deeper than the current derived pool-account history.",
+      "Public program history is currently recovered back to at least 2025-12-27 local time, so 2026-01-01 is inside the visible window.",
+      "The exact March 29 buy pattern is: HysTab Instruction RebalanceStableToLever followed by HYEXCH Instruction SwapStableToLever."
+    ],
+    "not_yet_confirmed": [
+      "A clean extracted set of pre-2026-03-27 buy_xsol events.",
+      "Whether the same current public stream reaches all the way to 2026-01-01 without switching methods."
+    ],
+    "early_sample_read": [
+      "Sampled late-February and mid-January transactions so far look like UserDeposit or UserWithdraw flow with external swaps, not the March 29 rebalance-buy pattern.",
+      "That is preliminary negative evidence, not a full exclusion of older buy events."
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "hyusd_pool": {
+    "address": "EqozKyMj7FVnLHc2cJj3VC25aBr4AhVh1cGM2WDajGe9",
+    "newest_block_time": 1774897983,
+    "newest_signature": "61BtYvdgz6mzVTrribh2cmLomrVZtDeVyBwEgWoy1GY2shFCymFixsSJxJWVFqSWVm2nmdM3wjwHQxteipkyr9jW",
+    "newest_utc": "2026-03-30T19:13:03+00:00",
+    "oldest_block_time": 1774629821,
+    "oldest_signature": "4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv",
+    "oldest_utc": "2026-03-27T16:43:41+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 370
+  },
+  "pool_auth": {
+    "address": "5YrRAQag9BbJkauDtJkd1vsTquXT6N46oU8rJ66GDxHd",
+    "newest_block_time": 1774897983,
+    "newest_signature": "61BtYvdgz6mzVTrribh2cmLomrVZtDeVyBwEgWoy1GY2shFCymFixsSJxJWVFqSWVm2nmdM3wjwHQxteipkyr9jW",
+    "newest_utc": "2026-03-30T19:13:03+00:00",
+    "oldest_block_time": 1774629821,
+    "oldest_signature": "4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv",
+    "oldest_utc": "2026-03-27T16:43:41+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 364
+  },
+  "xsol_pool": {
+    "address": "4GPXVXuzk8ABAUkoXeBJg8r9kccEXQjoi5vqSxE9rhk1",
+    "newest_block_time": 1774897983,
+    "newest_signature": "61BtYvdgz6mzVTrribh2cmLomrVZtDeVyBwEgWoy1GY2shFCymFixsSJxJWVFqSWVm2nmdM3wjwHQxteipkyr9jW",
+    "newest_utc": "2026-03-30T19:13:03+00:00",
+    "oldest_block_time": 1774629821,
+    "oldest_signature": "4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv",
+    "oldest_utc": "2026-03-27T16:43:41+00:00",
+    "pages_scanned": 1,
+    "reached_end": true,
+    "signatures_scanned": 370
+  }
+}

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hylo Pre-March 2026 Deployment Report</title>
+    <style>
+      :root {
+        --bg: #101114;
+        --panel: #17191e;
+        --text: #f5f7fb;
+        --muted: #b3bccb;
+        --line: #2b313d;
+        --accent: #5ed4a8;
+        --accent-2: #73a7ff;
+        --warn: #ffd36b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(115, 167, 255, 0.14), transparent 34%),
+          radial-gradient(circle at top right, rgba(94, 212, 168, 0.10), transparent 30%),
+          linear-gradient(180deg, #0d0f13, #12151a 35%, #0f1115);
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 40px 24px 72px;
+      }
+      h1, h2 { margin: 0 0 12px; line-height: 1.12; }
+      h1 { font-size: 38px; letter-spacing: -0.03em; }
+      h2 { font-size: 22px; margin-top: 28px; }
+      p { color: var(--muted); line-height: 1.58; }
+      .hero, .card, table {
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+      }
+      .hero {
+        padding: 28px;
+        margin-bottom: 22px;
+      }
+      .summary {
+        margin-top: 18px;
+        padding: 16px 18px;
+        border-radius: 14px;
+        background: rgba(94, 212, 168, 0.08);
+        border: 1px solid rgba(94, 212, 168, 0.28);
+      }
+      .summary strong { color: var(--accent); }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+        margin: 22px 0 8px;
+      }
+      .metric {
+        padding: 18px;
+        border-radius: 16px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+      .metric .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .metric .value {
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .metric .sub {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .card {
+        padding: 22px;
+        margin-top: 18px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        margin-top: 14px;
+      }
+      th, td {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: rgba(255,255,255,0.02);
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      tr:last-child td { border-bottom: 0; }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        background: rgba(255,255,255,0.06);
+        border-radius: 8px;
+        padding: 2px 6px;
+        color: #dce7ff;
+      }
+      .chip {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        background: rgba(115, 167, 255, 0.10);
+        border: 1px solid rgba(115, 167, 255, 0.24);
+        color: #dbe6ff;
+        font-size: 13px;
+      }
+      ul { margin: 12px 0 0 18px; color: var(--muted); }
+      li { margin: 8px 0; line-height: 1.5; }
+      a { color: var(--accent-2); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      .note {
+        margin-top: 16px;
+        padding: 14px 16px;
+        border-radius: 14px;
+        background: rgba(255, 211, 107, 0.08);
+        border: 1px solid rgba(255, 211, 107, 0.24);
+        color: #f7e6b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <h1>Hylo Pre-March 2026 Deployment Report</h1>
+        <p>
+          Narrow question: did a mainnet Hylo Stability Pool deployment exist before <strong>March 27, 2026</strong>?
+        </p>
+        <div class="summary">
+          <strong>Answer: yes.</strong> The current Hylo program IDs were first deployed on mainnet on
+          <strong>April 11, 2025</strong>. The current binaries were later upgraded on
+          <strong>January 28, 2026</strong>. The visible pool-account history only starts on March 27, 2026, but that is
+          <strong>not</strong> the real start of the pool: the first visible pool transaction already shows millions of
+          <code>hyUSD</code> and <code>xSOL</code> in the pool before the transaction begins.
+        </div>
+        <div class="grid">
+          <div class="metric">
+            <div class="label">Exchange Deploy</div>
+            <div class="value">2025-04-11 2:37:28 PM PDT</div>
+            <div class="sub"><code>HYEXCH...</code> initial deploy tx</div>
+          </div>
+          <div class="metric">
+            <div class="label">Stability Pool Deploy</div>
+            <div class="value">2025-04-11 2:55:04 PM PDT</div>
+            <div class="sub"><code>HysTab...</code> initial deploy tx</div>
+          </div>
+          <div class="metric">
+            <div class="label">Latest Program Upgrade</div>
+            <div class="value">2026-01-28</div>
+            <div class="sub">Both current program-data accounts point here</div>
+          </div>
+          <div class="metric">
+            <div class="label">Earliest Visible Pool Tx</div>
+            <div class="value">2026-03-27 9:43:41 AM PDT</div>
+            <div class="sub">Already operating on a funded pool</div>
+          </div>
+        </div>
+        <div>
+          <span class="chip">Current program IDs are older than March 2026</span>
+          <span class="chip">January 28 was an upgrade, not a first deployment</span>
+          <span class="chip">March 27 pool history is a visibility cutoff, not genesis</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Direct On-Chain Proof</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Program</th>
+              <th>Initial Deploy</th>
+              <th>Proof</th>
+              <th>Latest Upgrade Time</th>
+              <th>ProgramData</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hylo Exchange<br><code>HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn</code></td>
+              <td>2025-04-11 14:37:28 PDT<br>2025-04-11 21:37:28 UTC</td>
+              <td>
+                Tx
+                <a href="https://solscan.io/tx/22Zs7waPESNUdG5g9D7QwiKFg3v6MJy4nf98jEoQvdG54jUWGzsvRJDidWPZVqpLTQaYWrKkYS6aVmZrnF3ix6bt"><code>22Zs7wa...</code></a><br>
+                parsed instruction: <code>deployWithMaxDataLen</code><br>
+                log: <code>Deployed program HYEXCH...</code>
+              </td>
+              <td>2026-01-28 13:26:01 PST<br>2026-01-28 21:26:01 UTC</td>
+              <td><code>BA5b6FzvZ77m7MZbsMEVSCFW1x86f7jM98wjcecVwzYN</code></td>
+            </tr>
+            <tr>
+              <td>Hylo Stability Pool<br><code>HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ</code></td>
+              <td>2025-04-11 14:55:04 PDT<br>2025-04-11 21:55:04 UTC</td>
+              <td>
+                Tx
+                <a href="https://solscan.io/tx/5giigaQ6kGXdxxWiPRhH75EA4xAVyNZoDe9yDLmEA3dvC1bwXaW3oFvp9Wehp3XnEH4uY9f7UGMgyHPLSrA7UoWB"><code>5giigaQ...</code></a><br>
+                parsed instruction: <code>deployWithMaxDataLen</code><br>
+                log: <code>Deployed program HysTab...</code>
+              </td>
+              <td>2026-01-28 13:12:15 PST<br>2026-01-28 21:12:15 UTC</td>
+              <td><code>9Zzs2JU8kA3odcwGBkXYSw9e39UpTAGgYnkhbmpY3p26</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="note">
+          The <code>programData.slot</code> field on an upgradeable loader account tracks the most recent deploy or
+          upgrade. For the current Hylo program IDs, that field lands on January 28, 2026 for both programs.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>What March 27 Actually Means</h2>
+        <p>
+          The earlier direct pool-account probe only showed history back to March 27, 2026. That looked like a possible
+          launch boundary, but the first visible transaction itself disproves that interpretation.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Current pool evidence</th>
+              <th>What it shows</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                Earliest visible current pool tx:
+                <a href="https://solscan.io/tx/4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv"><code>4ccAo8Ac...</code></a><br>
+                2026-03-27 09:43:41 PDT
+              </td>
+              <td>
+                This is a <code>UserDeposit</code>, not pool initialization.
+              </td>
+            </tr>
+            <tr>
+              <td>Pool balances before that tx</td>
+              <td>
+                <strong>9,420,245.035451 hyUSD</strong> already in the pool<br>
+                <strong>3,366,664.232443 xSOL</strong> already in the pool
+              </td>
+            </tr>
+            <tr>
+              <td>Interpretation</td>
+              <td>
+                The current pool was already funded before the first transaction that public direct pagination exposed.
+                So March 27 is a <strong>history visibility boundary</strong>, not the real start of the pool.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>External Corroboration</h2>
+        <p>
+          Hylo’s public December 2025 Accretion audit matches the on-chain result.
+        </p>
+        <ul>
+          <li>The audit lists the same current program IDs: <code>HYEXCH...</code> and <code>HysTab...</code>.</li>
+          <li>It marks both as <code>Status: Verified</code> and says the verified build matched what was on-chain.</li>
+          <li>The report timeline places that verified on-chain state in late November 2025.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Bottom Line</h2>
+        <ul>
+          <li>Yes, a pre-March 27, 2026 mainnet Hylo Stability Pool deployment existed.</li>
+          <li>The current Exchange and Stability Pool program IDs were first deployed on <strong>April 11, 2025</strong>.</li>
+          <li>The current code was upgraded on <strong>January 28, 2026</strong>.</li>
+          <li>The current pool accounts were already materially funded before the first visible March 27 pool transaction.</li>
+          <li>So the earlier “late March start” reading was too aggressive. The available public pool-account history is incomplete.</li>
+        </ul>
+        <div class="note">
+          Still open: recovering the full pre-March pool transaction stream. That likely needs an archival indexer, a Hylo
+          frontend/indexer feed, or explorer-side history beyond what direct public RPC pagination exposed.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://docs.hylo.so/security/onchain-addresses">Hylo docs: On-chain Addresses</a></li>
+          <li><a href="https://docs.hylo.so/security/audits">Hylo docs: Audits</a></li>
+          <li><a href="https://hylo-audits.s3.us-east-2.amazonaws.com/Accretion-Hylo-Dec2025.pdf">Accretion Hylo audit, December 2025</a></li>
+          <li><a href="https://solscan.io/tx/22Zs7waPESNUdG5g9D7QwiKFg3v6MJy4nf98jEoQvdG54jUWGzsvRJDidWPZVqpLTQaYWrKkYS6aVmZrnF3ix6bt">Initial Exchange deploy tx</a></li>
+          <li><a href="https://solscan.io/tx/5giigaQ6kGXdxxWiPRhH75EA4xAVyNZoDe9yDLmEA3dvC1bwXaW3oFvp9Wehp3XnEH4uY9f7UGMgyHPLSrA7UoWB">Initial Stability Pool deploy tx</a></li>
+          <li><a href="https://solscan.io/tx/3hoSNogB9ZuHQDLJdY37g72aLgjM7wqYV5C3ybCtkfZvoqTy5CFcoWnpzm8wqxfZdHRLFth153fAP3qLR1oxrHkz">January 28, 2026 Stability Pool upgrade tx</a></li>
+          <li><a href="https://solscan.io/tx/4ccAo8AcC8dD6Tn5dcqzdG1EspxW4RnwrHTMWw8QcmQS6TWPCbxXnL2yWqjexYwFz87DgEQPv7kpXLboRPf7K1Gv">Earliest currently visible pool tx</a></li>
+        </ul>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Current Hylo buy_xsol Events</title>
+    <style>
+      :root {
+        --bg: #11161b;
+        --panel: #171f26;
+        --border: #2d3944;
+        --text: #eef4f7;
+        --muted: #9eb0ba;
+        --accent: #d9b369;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at top right, rgba(217,179,105,0.15), transparent 28%),
+          radial-gradient(circle at left center, rgba(78,122,153,0.12), transparent 32%),
+          linear-gradient(180deg, #0f1418 0%, #0a0d10 100%);
+        color: var(--text);
+        font-family: "Iowan Old Style", Georgia, serif;
+      }
+      .wrap { max-width: 1180px; margin: 0 auto; padding: 34px 22px 42px; }
+      h1 { margin: 0 0 10px; font-size: 2.15rem; }
+      .sub { color: var(--muted); line-height: 1.55; max-width: 900px; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 22px 0;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+      }
+      .label { color: var(--muted); font-size: 0.88rem; margin-bottom: 8px; }
+      .value { font-size: 1.55rem; }
+      .panel {
+        background: rgba(23,31,38,0.9);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px;
+      }
+      table { width: 100%; border-collapse: collapse; }
+      th, td {
+        padding: 11px 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        text-align: left;
+      }
+      th { color: var(--muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      td.num { text-align: right; font-variant-numeric: tabular-nums; }
+      a { color: #95d1f2; text-decoration: none; }
+      .foot { color: var(--muted); margin-top: 16px; line-height: 1.5; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Current Hylo buy_xsol Events</h1>
+      <div class="sub">
+        Exhaustive clean <code>buy_xsol</code> rows recovered from the current Stability Pool deployment by scanning the full
+        public history of the derived pool accounts. Four of these rows exactly match the screenshot amounts.
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="label">Current Deployment Window</div>
+          <div class="value">2026-03-27 to 2026-03-30</div>
+        </div>
+        <div class="card">
+          <div class="label">buy_xsol Event Count</div>
+          <div class="value">6</div>
+        </div>
+        <div class="card">
+          <div class="label">Total hyUSD Spent</div>
+          <div class="value">415,135.310135</div>
+        </div>
+        <div class="card">
+          <div class="label">Total xSOL Bought</div>
+          <div class="value">7,250,688.316976</div>
+        </div>
+      </div>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Local Time</th>
+              <th>hyUSD Spent</th>
+              <th>xSOL Bought</th>
+              <th>Implied hyUSD/xSOL</th>
+              <th>1h</th>
+              <th>6h</th>
+              <th>24h</th>
+              <th>Screenshot Match</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td>2026-03-29T10:20:41-07:00</td>
+              <td class="num">21,061.983677</td>
+              <td class="num">344,971.328588</td>
+              <td class="num">0.061054302</td>
+              <td class="num">1.06%</td>
+              <td class="num">-2.89%</td>
+              <td class="num">n/a</td>
+              <td>Yes</td>
+              <td><a href="https://solscan.io/tx/3CtFCHqTPmNuNdNEzQMhf2cvtcV4UpqyWci7ivziV3ijfvgvVP76gy5fHfAW5cvCNQUHjck1ri4coNsbG3yYJ5yp">3CtFCHqTPm...</a></td>
+            </tr>
+            
+            <tr>
+              <td>2026-03-29T10:22:33-07:00</td>
+              <td class="num">23,479.769439</td>
+              <td class="num">386,742.798409</td>
+              <td class="num">0.060711588</td>
+              <td class="num">1.06%</td>
+              <td class="num">-2.89%</td>
+              <td class="num">n/a</td>
+              <td>Yes</td>
+              <td><a href="https://solscan.io/tx/2va9je3QTm8YzJQ3aBHfzoNk7XYVLLDKu6VCLvgF1NnRvrNDX8EPE371jCGRnnvmmht8TSxGzdfcn9CjK5KWVp9p">2va9je3QTm...</a></td>
+            </tr>
+            
+            <tr>
+              <td>2026-03-29T10:25:42-07:00</td>
+              <td class="num">11,552.792571</td>
+              <td class="num">190,916.507256</td>
+              <td class="num">0.060512277</td>
+              <td class="num">1.93%</td>
+              <td class="num">-2.05%</td>
+              <td class="num">n/a</td>
+              <td>Yes</td>
+              <td><a href="https://solscan.io/tx/1XPqZtv6sP4fdEe4DneJgEDBGa1UuXTANjT517KkCEbJArKHYkcaTRpo5JyMNZG796VCAQHN8Tsrud31XLWmbmy">1XPqZtv6sP...</a></td>
+            </tr>
+            
+            <tr>
+              <td>2026-03-29T10:30:41-07:00</td>
+              <td class="num">30,131.233824</td>
+              <td class="num">498,493.006733</td>
+              <td class="num">0.060444647</td>
+              <td class="num">2.02%</td>
+              <td class="num">-1.51%</td>
+              <td class="num">n/a</td>
+              <td>Yes</td>
+              <td><a href="https://solscan.io/tx/2bBRYnLM9P7VYdaDWHdxTBxEvFzXA4yELBrtpTJwUaxXMi2BLQR75ZsNZ6jL3Fi13ND6iqYBGGcrRDZJUr586Uk7">2bBRYnLM9P...</a></td>
+            </tr>
+            
+            <tr>
+              <td>2026-03-29T15:42:33-07:00</td>
+              <td class="num">122,162.871688</td>
+              <td class="num">2,076,030.302056</td>
+              <td class="num">0.058844455</td>
+              <td class="num">1.70%</td>
+              <td class="num">n/a</td>
+              <td class="num">n/a</td>
+              <td></td>
+              <td><a href="https://solscan.io/tx/3hYrVvpBCKbo7Vm2teTudVA96Kpjppt2BLf9NoKTXWfEeiwaSDbDj6H4p8R2hNY3pub6YU4UKck7xNhseSVZpbMR">3hYrVvpBCK...</a></td>
+            </tr>
+            
+            <tr>
+              <td>2026-03-29T15:50:42-07:00</td>
+              <td class="num">206,746.658936</td>
+              <td class="num">3,753,534.373934</td>
+              <td class="num">0.055080529</td>
+              <td class="num">7.91%</td>
+              <td class="num">n/a</td>
+              <td class="num">n/a</td>
+              <td></td>
+              <td><a href="https://solscan.io/tx/5nJq6D9EXT3W6Cdb83PStHpjvN3udmBm9GaJvvckLPQ9TmjGKLCMsJWZueXvYtSUUupAm52TBEYUJkZ1g5heyjjF">5nJq6D9EXT...</a></td>
+            </tr>
+            
+          </tbody>
+        </table>
+        <div class="foot">
+          24h returns are only shown when the cached 5-minute market file extends far enough into the future. This report does not yet prove whether Hylo had a separate pre-March 27 deployment with different mainnet addresses.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

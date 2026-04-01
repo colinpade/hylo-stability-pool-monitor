@@ -1,0 +1,11 @@
+{
+  "source": "data/hystab_sig_jan11_feb18.json",
+  "start_utc": null,
+  "end_utc": null,
+  "patterns": [
+    "RebalanceStableToLever",
+    "SwapStableToLever"
+  ],
+  "inspected": 9454,
+  "matches": []
+}

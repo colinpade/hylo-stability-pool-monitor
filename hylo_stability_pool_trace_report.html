@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hylo Stability Pool Trace Report</title>
+  <style>
+    :root {
+      --bg: #0c0f12;
+      --panel: rgba(20, 24, 30, 0.88);
+      --panel-2: rgba(14, 18, 23, 0.92);
+      --text: #edf2f7;
+      --muted: #9aa7b4;
+      --line: rgba(255, 255, 255, 0.08);
+      --green: #68d391;
+      --amber: #f6c454;
+      --blue: #4ea4ff;
+      --pink: #ff7ab6;
+      --chip: rgba(255, 255, 255, 0.06);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(78, 164, 255, 0.12), transparent 32%),
+        radial-gradient(circle at top right, rgba(255, 122, 182, 0.10), transparent 28%),
+        radial-gradient(circle at bottom, rgba(104, 211, 145, 0.08), transparent 30%),
+        linear-gradient(180deg, #0a0d10 0%, #10151b 100%);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 40px 20px 64px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(19, 25, 33, 0.94), rgba(12, 17, 23, 0.94));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -10% -50% auto;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(78, 164, 255, 0.16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.02;
+      margin: 0 0 14px;
+      max-width: 820px;
+    }
+
+    .lede {
+      max-width: 880px;
+      color: #c9d4de;
+      font-size: 17px;
+      margin: 0;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .chip {
+      background: var(--chip);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      backdrop-filter: blur(12px);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-7 { grid-column: span 7; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-4 { grid-column: span 4; }
+
+    @media (max-width: 920px) {
+      .span-7, .span-5, .span-6, .span-4 { grid-column: span 12; }
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 0 0 12px;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: #d6dee7;
+    }
+
+    .callout {
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      margin-top: 12px;
+    }
+
+    .callout strong { color: var(--text); }
+    .ok { border-color: rgba(104, 211, 145, 0.28); }
+    .warn { border-color: rgba(246, 196, 84, 0.28); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: #dbe7f3;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 2px 6px;
+      word-break: break-all;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #d6dee7;
+    }
+
+    li { margin: 8px 0; }
+
+    a {
+      color: #8cc5ff;
+      text-decoration: none;
+    }
+
+    a:hover { text-decoration: underline; }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .pill-green {
+      background: rgba(104, 211, 145, 0.12);
+      color: var(--green);
+      border: 1px solid rgba(104, 211, 145, 0.24);
+    }
+
+    .pill-amber {
+      background: rgba(246, 196, 84, 0.12);
+      color: var(--amber);
+      border: 1px solid rgba(246, 196, 84, 0.24);
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <p class="eyebrow">Investigation Report</p>
+      <h1>Hylo Stability Pool / xSOL Screenshot Trace</h1>
+      <p class="lede">
+        I traced the screenshot against Hylo’s public docs, on-chain program history, signer/vault activity,
+        published IDLs, and public market-data APIs. I still did <strong>not</strong> recover a 1:1 public
+        on-chain match for the four exact screenshot rows, but I did recover a repeated public pattern of
+        Stability Pool-linked keeper buys where <code>hyUSD</code> is spent and <code>xSOL</code> is acquired.
+        The newer finding in this revision is that the March 26-29 account history is a <strong>recent RPC-visible
+        slice</strong>, not the full age of Hylo or xSOL.
+      </p>
+      <div class="meta">
+        <span class="chip">Report generated: 2026-03-29</span>
+        <span class="chip">Primary chain: Solana mainnet</span>
+        <span class="chip">Scope: Hylo Exchange, Stability Pool, keeper/vault accounts, xSOL market feeds</span>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card span-7">
+        <span class="pill pill-amber">Bottom Line</span>
+        <p>
+          The screenshot is consistent with a <strong>`hyUSD -> xSOL` stability-mode style conversion</strong>, and the
+          implied xSOL price in the image is internally consistent with current public xSOL market pricing. I still did
+          not recover those four exact rows as direct public matches, but I did recover a real recurring public pattern:
+        </p>
+        <ul>
+          <li>3,000 recent <strong>Hylo Exchange</strong> transactions, including decoded <code>SwapStableToLeverEventV1</code> logs.</li>
+          <li>1,000 recent <strong>Hylo Stability Pool</strong> transactions, including decoded <code>RebalanceStableToLeverEvent</code> logs.</li>
+          <li>1,000 recent transactions for the likely <strong>keeper signer</strong> and 1,000 for the labeled <strong>vault owner</strong>.</li>
+          <li>144 public keeper-buy transactions grouped into <strong>34 time clusters</strong> from <strong>March 26, 2026</strong> through <strong>March 29, 2026</strong> in the current directly retrievable RPC slice.</li>
+          <li>Public xSOL market data from <strong>DexScreener</strong> and <strong>GeckoTerminal</strong>, including 5-minute OHLC bars.</li>
+        </ul>
+        <div class="callout warn">
+          <strong>Best working interpretation:</strong> the tweet is pointing at a real recurring Stability Pool
+          xSOL-acquisition mechanism, but the screenshot itself likely comes from a Hylo-specific aggregation or
+          indexer layer rather than a simple 1:1 explorer row.
+        </div>
+        <div class="callout">
+          <strong>Important scope note:</strong> official docs, repo dates, and GeckoTerminal pool-creation metadata all
+          show that Hylo / xSOL / hyUSD predate this March window by months. So the public account pagination here is
+          useful for recent pattern work, but it is <strong>not</strong> a full year-to-date ledger reconstruction.
+        </div>
+      </section>
+
+      <section class="card span-5">
+        <span class="pill pill-green">Screenshot Rows</span>
+        <table>
+          <thead>
+            <tr>
+              <th>hyUSD</th>
+              <th>xSOL</th>
+              <th>USD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>30,131.233824</td><td>498,493.006733</td><td>$29,702.42</td></tr>
+            <tr><td>11,552.792571</td><td>190,916.507256</td><td>$11,688.81</td></tr>
+            <tr><td>23,479.769439</td><td>386,742.798409</td><td>$23,678.22</td></tr>
+            <tr><td>21,061.983677</td><td>344,971.328588</td><td>$21,324.08</td></tr>
+          </tbody>
+        </table>
+        <p class="small" style="margin-top:12px;">
+          Implied xSOL price from the screenshot is roughly <strong>$0.0595 to $0.0610</strong>, which matches public xSOL market data.
+        </p>
+      </section>
+
+      <section class="card span-6">
+        <h2>Confirmed On-Chain Entities</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Entity</th>
+              <th>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hylo Stability Pool</td>
+              <td><a href="https://solscan.io/account/HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ"><code>HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ</code></a></td>
+            </tr>
+            <tr>
+              <td>Hylo Exchange</td>
+              <td><a href="https://solscan.io/account/HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn"><code>HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn</code></a></td>
+            </tr>
+            <tr>
+              <td>Hylo Stability Pool Vaults (label)</td>
+              <td><a href="https://solscan.io/account/5YrRAQag9BbJkauDtJkd1vsTquXT6N46oU8rJ66GDxHd"><code>5YrRAQag9BbJkauDtJkd1vsTquXT6N46oU8rJ66GDxHd</code></a></td>
+            </tr>
+            <tr>
+              <td>Likely keeper signer seen in related txs</td>
+              <td><a href="https://solscan.io/account/CcUrRBMqrCuMPVfd6sVTBJhyhBA1dE7qDoJkSy95bbcw"><code>CcUrRBMqrCuMPVfd6sVTBJhyhBA1dE7qDoJkSy95bbcw</code></a></td>
+            </tr>
+            <tr>
+              <td>xSOL mint</td>
+              <td><a href="https://solscan.io/token/4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs"><code>4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs</code></a></td>
+            </tr>
+            <tr>
+              <td>hyUSD mint</td>
+              <td><a href="https://solscan.io/token/5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E"><code>5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E</code></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card span-6">
+        <h2>Decoded Event Types</h2>
+        <p>
+          The published <a href="https://docs.rs/hylo-sdk/latest/hylo_sdk/all.html">Hylo SDK docs</a> and crate IDLs show the two
+          most relevant on-chain events for this investigation:
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th>Fields</th>
+              <th>Usefulness</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="https://docs.rs/hylo-sdk/latest/hylo_sdk/hylo_exchange/events/struct.SwapStableToLeverEventV1.html"><code>SwapStableToLeverEventV1</code></a></td>
+              <td><code>stablecoin_burned</code>, <code>stablecoin_fees</code>, <code>stablecoin_nav</code>, <code>levercoin_minted</code>, <code>levercoin_nav</code></td>
+              <td>Best candidate for exact screenshot rows.</td>
+            </tr>
+            <tr>
+              <td><a href="https://docs.rs/hylo-sdk/latest/hylo_sdk/hylo_stability_pool/events/struct.RebalanceStableToLeverEvent.html"><code>RebalanceStableToLeverEvent</code></a></td>
+              <td><code>stablecoin_swapped</code></td>
+              <td>Confirms Stability Pool drawdown/rebalance on the pool side.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout ok">
+          I decoded those event discriminators from the published crate IDLs and used them in the scan.
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>What I Scanned</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>UTC Range</th>
+              <th>What I looked for</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Hylo Exchange, page 1 (1,000 sigs)</td>
+              <td>2026-03-29 22:41:58 to 2026-03-29 23:12:55</td>
+              <td>Exact amount pairs via transfers, balance deltas, and decoded <code>SwapStableToLeverEventV1</code></td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Hylo Exchange, page 2 (1,000 sigs)</td>
+              <td>2026-03-29 15:27:31 to 2026-03-29 22:41:58</td>
+              <td>Same exact-pair scan</td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Hylo Exchange, page 3 (1,000 sigs)</td>
+              <td>2026-03-28 13:40:59 to 2026-03-29 15:27:31</td>
+              <td>Same exact-pair scan</td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Hylo Stability Pool (1,000 sigs)</td>
+              <td>2026-03-19 19:11:10 to 2026-03-29 23:18:34</td>
+              <td>Pair scan plus decoded <code>RebalanceStableToLeverEvent</code></td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Keeper signer (1,000 sigs)</td>
+              <td>2026-03-26 20:11:57 to 2026-03-29 23:25:11</td>
+              <td>Large-movement and exact-pair scans</td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Labeled vault owner (1,000 sigs)</td>
+              <td>2026-03-19 20:19:33 to 2026-03-29 23:30:22</td>
+              <td>Large-movement scan</td>
+              <td>No exact screenshot-row match</td>
+            </tr>
+            <tr>
+              <td>Stability Pool keeper-buy extraction</td>
+              <td>2026-03-26 22:32:15 to 2026-03-29 23:18:34</td>
+              <td>Keeper <code>hyUSD</code> down, keeper <code>xSOL</code> up, vault <code>xSOL</code> down</td>
+              <td>144 matching txs grouped into 34 clusters</td>
+            </tr>
+            <tr>
+              <td>GeckoTerminal xSOL / USDC 5m OHLC</td>
+              <td>2026-03-16 15:55:00 to 2026-03-30 02:10:00</td>
+              <td>Public market benchmark for +1h / +6h / +24h forward returns</td>
+              <td>Joined to cluster timestamps</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card span-12">
+        <h2>Year-To-Date Scope Check</h2>
+        <p>
+          I pushed the public account pagination backward to test whether the Stability Pool and token-mint histories
+          really started in late March. The answer is <strong>no</strong>: late March is only the earliest history I
+          could recover from this RPC path for these specific addresses.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Evidence Type</th>
+              <th>Earliest Date</th>
+              <th>Why it matters</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>RPC-visible Hylo Exchange history</td>
+              <td>2026-03-26 23:45:43 UTC</td>
+              <td>Oldest visible Exchange signature in the current direct RPC scan.</td>
+            </tr>
+            <tr>
+              <td>RPC-visible Stability Pool history</td>
+              <td>2026-03-27 01:05:55 UTC</td>
+              <td>Oldest visible Stability Pool signature in the current direct RPC scan.</td>
+            </tr>
+            <tr>
+              <td>GeckoTerminal xSOL pool creation</td>
+              <td>2025-08-16 09:36:46 UTC</td>
+              <td>xSOL clearly existed publicly long before March 2026.</td>
+            </tr>
+            <tr>
+              <td>GeckoTerminal hyUSD pool creation</td>
+              <td>2025-07-29 19:01:59 UTC</td>
+              <td>hyUSD also predates the current March scan window by months.</td>
+            </tr>
+            <tr>
+              <td>GeckoTerminal xSOL / hyUSD pool creation</td>
+              <td>2025-11-03 16:55:20 UTC</td>
+              <td>A direct public xSOL / hyUSD market existed before 2026.</td>
+            </tr>
+            <tr>
+              <td>Official Hylo docs</td>
+              <td>Season 0 references 4 private-beta snapshots</td>
+              <td>Confirms a pre-2026 operating history from Hylo’s own documentation.</td>
+            </tr>
+            <tr>
+              <td>Hylo GitHub org</td>
+              <td>2024-02-21 to 2025-07-15 for core public repos</td>
+              <td>Public code footprint predates the March account slice as well.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout warn">
+          <strong>Implication for the YTD study:</strong> I can validate the recent recurring buy pattern from public
+          March data, but I cannot honestly claim a complete January-to-date activation history from this RPC-only route.
+          A true YTD study now needs either an archival/indexed chain source or a Hylo-specific API/feed.
+        </div>
+        <p class="small" style="margin-top:12px;">
+          Cross-check: the official Solana RPC returned <strong>5</strong> slightly older signatures for
+          <code>xSOL</code> and <code>hyUSD</code> than PublicNode did, but still returned <strong>0</strong> older
+          signatures for the current <code>Hylo Exchange</code> and <code>Stability Pool</code> addresses. So the late
+          March boundary looks especially real for the current program accounts, even though the broader token markets
+          are older.
+        </p>
+      </section>
+
+      <section class="card span-6">
+        <h2>Recovered Public Mechanism</h2>
+        <p>
+          The clearest public pattern is not a decoded <code>RebalanceStableToLeverEvent</code> row. It is a repeated
+          Stability Pool-linked transaction shape where the keeper wallet spends <code>hyUSD</code> and receives
+          <code>xSOL</code>, while the labeled vault owner loses <code>xSOL</code> in the same transaction.
+        </p>
+        <ul>
+          <li>Typical logs include <code>Route</code> or <code>SharedAccountsRoute</code>, <code>SwapV2</code>, <code>Swap</code>, <code>UserWithdraw</code>, and <code>Burn</code>.</li>
+          <li>The strongest public example before the tweet window is <a href="https://solscan.io/tx/3KwESuDQyg4oGuxEou8fLZBxgNieXW33GjWsMVGgZzHKgxbH43UaPGBv99CDvra59wnXK9huZBB8UMB6faEF8bJD"><code>3KwESu...F8bJD</code></a> at <strong>2026-03-29 10:29 AM PDT</strong>.</li>
+          <li>That pre-tweet cluster ran from <strong>2026-03-29 10:28:31 AM</strong> to <strong>10:29:36 AM PDT</strong> across 18 matching transactions.</li>
+          <li>Largest public clusters in the cached window reached about <strong>133.5 hyUSD</strong> and <strong>2,363.2 xSOL</strong>, still far smaller than the screenshot rows.</li>
+        </ul>
+        <div class="callout ok">
+          This is the strongest public evidence so far for how the Stability Pool ends up long <code>xSOL</code> in live conditions.
+        </div>
+      </section>
+
+      <section class="card span-6">
+        <h2>Larger Exchange-Side Clusters</h2>
+        <p>
+          The closest public analogs to the screenshot rows are grouped
+          <code>SwapStableToLeverEventV1</code> clusters on the Hylo Exchange stream. These are still smaller than the
+          screenshot's biggest rows, but they are much closer than the keeper-only Stability Pool trace.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>PT Start</th>
+              <th>hyUSD</th>
+              <th>xSOL</th>
+              <th>+1h</th>
+              <th>+6h</th>
+              <th>+24h</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2026-03-27 01:35:55</td><td>17,968.307</td><td>243,241.580</td><td>-0.43%</td><td>-10.32%</td><td>-7.13%</td></tr>
+            <tr><td>2026-03-27 03:37:32</td><td>4,712.859</td><td>67,972.153</td><td>+1.39%</td><td>-4.32%</td><td>-2.88%</td></tr>
+            <tr><td>2026-03-27 06:49:50</td><td>2,315.450</td><td>34,684.885</td><td>-1.87%</td><td>-1.51%</td><td>+1.44%</td></tr>
+            <tr><td>2026-03-27 11:24:43</td><td>1,338.675</td><td>21,306.233</td><td>+1.01%</td><td>+5.16%</td><td>+3.62%</td></tr>
+            <tr><td>2026-03-27 15:42:37</td><td>4,534.991</td><td>69,827.652</td><td>0.00%</td><td>+1.00%</td><td>-0.02%</td></tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          These explicit Exchange-side clusters are currently the best public evidence that Hylo sometimes executes
+          much larger <code>hyUSD -&gt; xSOL</code> conversions than the pool-side keeper trace alone would suggest.
+        </div>
+      </section>
+
+      <section class="card span-6">
+        <h2>Overall Sample Read</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Subset</th>
+              <th>Execution vs Market</th>
+              <th>+1h Return</th>
+              <th>+6h Return</th>
+              <th>+24h Return</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>All 34 clusters</td>
+              <td>-1.58% avg</td>
+              <td>-0.45% avg</td>
+              <td>-1.76% avg</td>
+              <td>-5.59% avg</td>
+            </tr>
+            <tr>
+              <td>9 clusters with 20+ hyUSD</td>
+              <td>-2.58% avg</td>
+              <td>+0.31% avg</td>
+              <td>-2.35% avg</td>
+              <td>-7.99% avg</td>
+            </tr>
+            <tr>
+              <td>9 clusters on 2026-03-29</td>
+              <td>-1.51% avg</td>
+              <td>+0.62% avg</td>
+              <td>-1.75% avg on 4 eligible clusters</td>
+              <td>Not available yet</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout">
+          In this public sample, the keeper usually bought <code>xSOL</code> at a slight discount to the external market,
+          but the forward-price pattern is mixed. The short-term 1-hour window can bounce; the 6-hour and 24-hour
+          windows do not look consistently profitable.
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>March 29 Cluster Table</h2>
+        <p>
+          These are the nine public keeper-buy clusters I recovered on <strong>March 29, 2026</strong>, expressed in
+          Pacific time and joined to GeckoTerminal <code>xSOL / USDC</code> 5-minute bars.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>PT Start</th>
+              <th>Txs</th>
+              <th>hyUSD Spent</th>
+              <th>Implied Buy Px</th>
+              <th>Public Market Px</th>
+              <th>Execution Vs Market</th>
+              <th>+1h</th>
+              <th>+6h</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2026-03-29 10:28:31</td><td>18</td><td>133.501</td><td>0.056492</td><td>0.060256</td><td>-6.25%</td><td>+1.93%</td><td>-2.05%</td></tr>
+            <tr><td>2026-03-29 11:08:10</td><td>6</td><td>30.050</td><td>0.060448</td><td>0.060814</td><td>-0.60%</td><td>+1.49%</td><td>-2.96%</td></tr>
+            <tr><td>2026-03-29 12:17:18</td><td>5</td><td>15.152</td><td>0.060990</td><td>0.061718</td><td>-1.18%</td><td>+1.00%</td><td>-0.49%</td></tr>
+            <tr><td>2026-03-29 12:45:17</td><td>2</td><td>12.199</td><td>0.061392</td><td>0.062346</td><td>-1.53%</td><td>-1.00%</td><td>-1.49%</td></tr>
+            <tr><td>2026-03-29 13:20:51</td><td>4</td><td>18.467</td><td>0.061973</td><td>0.062345</td><td>-0.60%</td><td>-1.00%</td><td>n/a</td></tr>
+            <tr><td>2026-03-29 14:04:50</td><td>3</td><td>15.394</td><td>0.061995</td><td>0.061722</td><td>+0.44%</td><td>-0.03%</td><td>n/a</td></tr>
+            <tr><td>2026-03-29 15:19:26</td><td>14</td><td>124.118</td><td>0.059429</td><td>0.061402</td><td>-3.21%</td><td>-4.33%</td><td>n/a</td></tr>
+            <tr><td>2026-03-29 15:58:17</td><td>10</td><td>101.280</td><td>0.057216</td><td>0.056918</td><td>+0.52%</td><td>+4.19%</td><td>n/a</td></tr>
+            <tr><td>2026-03-29 16:16:47</td><td>4</td><td>51.317</td><td>0.058033</td><td>0.058745</td><td>-1.21%</td><td>+3.35%</td><td>n/a</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card span-12">
+        <h2>Why The Screenshot Still Looks Plausible</h2>
+        <ul>
+          <li>The screenshot-implied xSOL price is roughly the same as public xSOL market pricing.</li>
+          <li>The relevant Hylo contracts and event types for a <code>stable -> lever</code> conversion are real and publicly documented.</li>
+          <li>I now have repeated public evidence that the Stability Pool-linked keeper is regularly acquiring <code>xSOL</code> on-chain.</li>
+          <li>The tweet wording still matches Hylo’s documented <strong>Stability Mode 2 / Stability Pool drawdown</strong> behavior conceptually.</li>
+        </ul>
+        <div class="callout">
+          My current read is: <strong>the post is referring to a real recurring Stability Pool xSOL-buy mechanism</strong>,
+          but the image itself was likely produced from a Hylo-specific feed or aggregation layer rather than a directly
+          recoverable explorer view.
+        </div>
+      </section>
+
+      <section class="card span-12">
+        <h2>Source Links</h2>
+        <ul>
+          <li><a href="https://docs.hylo.so/protocol-overview/risk-management#stability-mode-2-stability-pool-drawdown">Hylo docs: Stability Mode 2 / Stability Pool drawdown</a></li>
+          <li><a href="https://docs.hylo.so/security/onchain-addresses">Hylo docs: on-chain addresses</a></li>
+          <li><a href="https://docs.hylo.so/xp-system/Season-0">Hylo docs: Season 0 and private-beta snapshots</a></li>
+          <li><a href="https://github.com/hylo-so/sdk">Hylo GitHub: sdk</a></li>
+          <li><a href="https://github.com/hylo-so/model">Hylo GitHub: model</a></li>
+          <li><a href="https://solscan.io/account/HysTabVUfmQBFcmzu1ctRd1Y1fxd66RBpboy1bmtDSQQ">Solscan: Hylo Stability Pool</a></li>
+          <li><a href="https://solscan.io/account/HYEXCHtHkBagdStcJCp3xbbb9B7sdMdWXFNj6mdsG4hn">Solscan: Hylo Exchange</a></li>
+          <li><a href="https://docs.rs/hylo-sdk/latest/hylo_sdk/hylo_exchange/events/struct.SwapStableToLeverEventV1.html">Hylo SDK docs: SwapStableToLeverEventV1</a></li>
+          <li><a href="https://docs.rs/hylo-sdk/latest/hylo_sdk/hylo_stability_pool/events/struct.RebalanceStableToLeverEvent.html">Hylo SDK docs: RebalanceStableToLeverEvent</a></li>
+          <li><a href="https://api.dexscreener.com/latest/dex/tokens/4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs">DexScreener API: xSOL pools</a></li>
+          <li><a href="https://api.geckoterminal.com/api/v2/networks/solana/tokens/4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs">GeckoTerminal API: xSOL token metadata</a></li>
+          <li><a href="https://api.geckoterminal.com/api/v2/networks/solana/tokens/4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs/pools?page=1">GeckoTerminal API: xSOL pools and pool creation dates</a></li>
+          <li><a href="https://api.geckoterminal.com/api/v2/networks/solana/tokens/5YMkXAYccHSGnHn9nob9xEvv6Pvka9DZWH7nTbotTu9E/pools?page=1">GeckoTerminal API: hyUSD pools and pool creation dates</a></li>
+          <li><a href="https://api.geckoterminal.com/api/v2/networks/solana/pools/6t5fJwGxmTy2gWiq6CiLw2roZc93UanvANypMYQYHKGh/ohlcv/minute?aggregate=5&amp;limit=1000">GeckoTerminal API: xSOL / USDC 5m OHLC</a></li>
+          <li><a href="https://api.mainnet-beta.solana.com">Official Solana RPC: before-oldest cross-check against current Hylo account-history slice</a></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</body>
+</html>

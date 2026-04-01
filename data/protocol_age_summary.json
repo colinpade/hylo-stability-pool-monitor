@@ -1,0 +1,59 @@
+{
+  "rpc_visible_history": {
+    "exchange": {
+      "oldest_utc": "2026-03-26T23:45:43+00:00",
+      "signatures_scanned": 7568,
+      "pages_scanned": 8
+    },
+    "hyUSD": {
+      "oldest_utc": "2026-03-26T23:45:43+00:00",
+      "signatures_scanned": 19260,
+      "pages_scanned": 20
+    },
+    "keeper": {
+      "oldest_utc": "2026-03-27T00:03:42+00:00",
+      "signatures_scanned": 989,
+      "pages_scanned": 1
+    },
+    "stability_pool": {
+      "oldest_utc": "2026-03-27T01:05:55+00:00",
+      "signatures_scanned": 319,
+      "pages_scanned": 1
+    },
+    "vault_owner": {
+      "oldest_utc": "2026-03-27T01:05:55+00:00",
+      "signatures_scanned": 319,
+      "pages_scanned": 1
+    },
+    "xSOL": {
+      "oldest_utc": "2026-03-26T23:45:43+00:00",
+      "signatures_scanned": 21245,
+      "pages_scanned": 22
+    }
+  },
+  "xsol_earliest_pool_created_at": "2025-08-16T09:36:46Z",
+  "hyusd_earliest_pool_created_at": "2025-07-29T19:01:59Z",
+  "xsol_hyusd_pool_created_at": "2025-11-03T16:55:20Z",
+  "hylo_repo_dates": {
+    "sdk": {
+      "created_at": "2025-07-15T21:51:55Z",
+      "pushed_at": "2026-03-29T17:24:21Z",
+      "html_url": "https://github.com/hylo-so/sdk"
+    },
+    "model": {
+      "created_at": "2024-02-26T13:25:19Z",
+      "pushed_at": "2025-04-14T15:42:35Z",
+      "html_url": "https://github.com/hylo-so/model"
+    },
+    "WhitePaper-Gitbook": {
+      "created_at": "2024-04-22T19:00:16Z",
+      "pushed_at": "2024-10-29T15:05:02Z",
+      "html_url": "https://github.com/hylo-so/WhitePaper-Gitbook"
+    },
+    "fix": {
+      "created_at": "2024-02-21T05:11:51Z",
+      "pushed_at": "2026-03-22T22:04:03Z",
+      "html_url": "https://github.com/hylo-so/fix"
+    }
+  }
+}
