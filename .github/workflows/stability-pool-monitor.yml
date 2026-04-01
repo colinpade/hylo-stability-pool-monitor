@@ -17,6 +17,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      NTFY_AUTH_HEADER: ${{ secrets.NTFY_AUTH_HEADER }}
     outputs:
       new_deployments: ${{ steps.diff.outputs.new_deployments }}
       pages_url: ${{ steps.meta.outputs.pages_url }}
@@ -124,10 +127,8 @@ jobs:
           fi
 
       - name: Send ntfy alert
-        if: steps.diff.outputs.new_deployments == 'true' && secrets.NTFY_TOPIC != ''
+        if: steps.diff.outputs.new_deployments == 'true' && env.NTFY_TOPIC != ''
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-          NTFY_AUTH_HEADER: ${{ secrets.NTFY_AUTH_HEADER }}
           PAGES_URL: ${{ steps.meta.outputs.pages_url }}
         shell: bash
         run: |
