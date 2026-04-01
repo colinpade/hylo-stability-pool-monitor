@@ -381,6 +381,15 @@ def render_html(lot_state, snapshots):
         {details_html or '<div class="foot">No structured price-source details were stored for the latest mark.</div>'}
       </section>
 
+      <section class="panel">
+        <h2>Signal Research</h2>
+        <div class="foot">
+          Trigger-level episode outcomes and regime segmentation live in
+          <a href="stability_pool_signal_report.html">stability_pool_signal_report.html</a>.
+          Use that page to judge whether confirmed Stability Pool activations are acting like a tradable signal instead of just a profitable open inventory mark.
+        </div>
+      </section>
+
       <section class="foot">
         <p>
           This tracker treats confirmed <code>buy_xsol</code> events as deployment lots and carries them forward across repeated marks.

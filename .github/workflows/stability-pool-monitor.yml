@@ -115,16 +115,28 @@ jobs:
           cp hylo_stability_pool_trace_report.html site/hylo_stability_pool_trace_report.html
           cp hylo_viability_report.html site/hylo_viability_report.html
           cp current_buy_xsol_events.html site/current_buy_xsol_events.html
+          cp stability_pool_signal_report.html site/stability_pool_signal_report.html
           cp data/stability_pool_deployments.json site/data/stability_pool_deployments.json
           cp data/stability_pool_deployment_marks.jsonl site/data/stability_pool_deployment_marks.jsonl
           cp data/current_buy_xsol_events.json site/data/current_buy_xsol_events.json
+          cp data/stability_pool_signal_report.json site/data/stability_pool_signal_report.json
+          cp data/xsol_usdc_ohlcv_5m.json site/data/xsol_usdc_ohlcv_5m.json
 
       - name: Commit updated tracker artifacts
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/live_hylo_stats.json data/stability_pool_deployments.json data/stability_pool_deployment_marks.jsonl stability_pool_deployments.html
+          git add \
+            data/live_hylo_stats.json \
+            data/stability_pool_deployments.json \
+            data/stability_pool_deployment_marks.jsonl \
+            data/current_buy_xsol_events.json \
+            data/stability_pool_signal_report.json \
+            data/xsol_usdc_ohlcv_5m.json \
+            stability_pool_deployments.html \
+            current_buy_xsol_events.html \
+            stability_pool_signal_report.html
           if ! git diff --cached --quiet; then
             git commit -m "Update stability pool tracker [skip ci]"
             git push

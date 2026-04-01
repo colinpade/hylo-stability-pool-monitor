@@ -11,6 +11,8 @@ The workflow:
 - runs every 10 minutes
 - attempts to fetch `https://hylo.so/api/hylo-stats`
 - rebuilds the deployment-lot tracker
+- refreshes the cached `xSOL / USDC` 5-minute market series
+- rebuilds the grouped trigger signal report
 - publishes the latest dashboard to GitHub Pages
 - commits updated tracker artifacts back to `main`
 - sends an `ntfy.sh` alert if the confirmed deployment count increases
@@ -45,6 +47,7 @@ The workflow copies:
 - `hylo_stability_pool_trace_report.html`
 - `hylo_viability_report.html`
 - `current_buy_xsol_events.html`
+- `stability_pool_signal_report.html`
 
 ## Manual run
 

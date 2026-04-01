@@ -21,7 +21,7 @@
       "matches_screenshot_row": true,
       "1h_return_pct": 1.0641102918507839,
       "6h_return_pct": -2.8897802113637128,
-      "24h_return_pct": null
+      "24h_return_pct": 8.881418035661293
     },
     {
       "utc": "2026-03-29T17:22:33+00:00",
@@ -35,7 +35,7 @@
       "matches_screenshot_row": true,
       "1h_return_pct": 1.0641102918507839,
       "6h_return_pct": -2.8897802113637128,
-      "24h_return_pct": null
+      "24h_return_pct": 8.881418035661293
     },
     {
       "utc": "2026-03-29T17:25:42+00:00",
@@ -49,7 +49,7 @@
       "matches_screenshot_row": true,
       "1h_return_pct": 1.9328325268459512,
       "6h_return_pct": -2.0518037216527896,
-      "24h_return_pct": null
+      "24h_return_pct": 9.817335925327896
     },
     {
       "utc": "2026-03-29T17:30:41+00:00",
@@ -63,7 +63,7 @@
       "matches_screenshot_row": true,
       "1h_return_pct": 2.015172312914282,
       "6h_return_pct": -1.5054763890198442,
-      "24h_return_pct": null
+      "24h_return_pct": 9.906044692881345
     },
     {
       "utc": "2026-03-29T22:42:33+00:00",
@@ -76,8 +76,8 @@
       "entry_close": 0.058307907940608604,
       "matches_screenshot_row": false,
       "1h_return_pct": 1.7024476225303786,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "6h_return_pct": 11.830526926041497,
+      "24h_return_pct": 10.710459337709754
     },
     {
       "utc": "2026-03-29T22:50:42+00:00",
@@ -90,8 +90,8 @@
       "entry_close": 0.05495524513967041,
       "matches_screenshot_row": false,
       "1h_return_pct": 7.9070239471710435,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "6h_return_pct": 19.243149062866372,
+      "24h_return_pct": 17.464588770723278
     }
   ],
   "notes": [
