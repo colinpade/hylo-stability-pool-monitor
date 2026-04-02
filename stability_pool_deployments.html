@@ -105,7 +105,7 @@
         expected rebalance hints. Mark snapshots let you monitor these lots over time instead of only seeing a single screenshot.
       </div>
       <div class="live-note" id="live-refresh-status">
-        Waiting for live DexScreener pricing. Current values will refresh in-browser every 60 seconds.
+        Waiting for live DexScreener pricing. Live market cards and lot rows refresh in-browser every 60 seconds.
       </div>
 
       <section class="cards">
@@ -124,10 +124,17 @@
     </div>
     
 
-    <div class="card" id="card-xsol-price">
-      <div class="card-label">Current xSOL Price</div>
-      <div class="card-value flat" id="summary-xsol-price">0.065468416</div>
-      <div class="card-sub flat" id="summary-xsol-price-sub">hylo_stats.exchangeStats.levercoinNav</div>
+    <div class="card" id="card-protocol-xsol-price">
+      <div class="card-label">Protocol xSOL NAV</div>
+      <div class="card-value flat" id="summary-protocol-xsol-price">0.065468416</div>
+      <div class="card-sub flat" id="summary-protocol-xsol-price-sub">hylo_stats.exchangeStats.levercoinNav</div>
+    </div>
+    
+
+    <div class="card" id="card-live-xsol-price">
+      <div class="card-label">Live xSOL Price</div>
+      <div class="card-value flat" id="summary-live-xsol-price">0.065468416</div>
+      <div class="card-sub flat" id="summary-live-xsol-price-sub">waiting for browser market refresh</div>
     </div>
     
 
@@ -145,30 +152,47 @@
     </div>
     
 
-    <div class="card" id="card-current-value">
-      <div class="card-label">Current Value</div>
-      <div class="card-value flat" id="summary-current-value">$474,691.08</div>
-      <div class="card-sub flat" id="summary-current-value-sub">mark-to-market</div>
+    <div class="card" id="card-protocol-nav-value">
+      <div class="card-label">Protocol NAV Value</div>
+      <div class="card-value flat" id="summary-protocol-nav-value">$474,691.08</div>
+      <div class="card-sub flat" id="summary-protocol-nav-value-sub">latest saved Hylo protocol mark</div>
     </div>
     
 
-    <div class="card" id="card-net-pnl">
-      <div class="card-label">Net PnL</div>
-      <div class="card-value up" id="summary-net-pnl">$59,555.77</div>
-      <div class="card-sub up" id="summary-net-pnl-sub">+14.35%</div>
+    <div class="card" id="card-protocol-nav-pnl">
+      <div class="card-label">Protocol NAV PnL</div>
+      <div class="card-value up" id="summary-protocol-nav-pnl">$59,555.77</div>
+      <div class="card-sub up" id="summary-protocol-nav-pnl-sub">+14.35%</div>
+    </div>
+    
+
+    <div class="card" id="card-live-market-value">
+      <div class="card-label">Live Market Value</div>
+      <div class="card-value flat" id="summary-live-market-value">$474,691.08</div>
+      <div class="card-sub flat" id="summary-live-market-value-sub">browser market mark</div>
+    </div>
+    
+
+    <div class="card" id="card-live-market-pnl">
+      <div class="card-label">Live Market PnL</div>
+      <div class="card-value up" id="summary-live-market-pnl">$59,555.77</div>
+      <div class="card-sub up" id="summary-live-market-pnl-sub">+14.35%</div>
     </div>
     
 
     <div class="card" id="card-sol-price">
       <div class="card-label">Latest SOL Price</div>
       <div class="card-value flat" id="summary-sol-price">Loading...</div>
-      <div class="card-sub flat" id="summary-sol-price-sub">live refresh every 60s</div>
+      <div class="card-sub flat" id="summary-sol-price-sub">browser market refresh every 60s</div>
     </div>
     
       </section>
 
       <section class="panel">
         <h2>Open And Historical Deployment Lots</h2>
+        <div class="foot">
+          Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
+        </div>
         <table>
           <thead>
             <tr>
@@ -176,9 +200,9 @@
               <th>Amount</th>
               <th>Entry Price</th>
               <th>Entry Value</th>
-              <th>Current Price</th>
-              <th>Current Value</th>
-              <th>PnL</th>
+              <th>Live Price</th>
+              <th>Live Value</th>
+              <th>Live PnL</th>
               <th>Days Held</th>
               <th>Tx</th>
             </tr>
@@ -321,17 +345,20 @@
       </section>
 
       <section class="panel">
-        <h2>Mark History</h2>
+        <h2>Protocol NAV Mark History</h2>
+        <div class="foot">
+          Clean history since scrub. These rows are saved Hylo protocol NAV marks, not live executable market marks.
+        </div>
         <table>
           <thead>
             <tr>
               <th>Captured</th>
-              <th>xSOL Price</th>
+              <th>Protocol xSOL NAV</th>
               <th>Price Source</th>
               <th>Open Lots</th>
-              <th>Current Value</th>
-              <th>Net PnL</th>
-              <th>Net PnL %</th>
+              <th>Protocol NAV Value</th>
+              <th>Protocol NAV PnL</th>
+              <th>Protocol NAV PnL %</th>
             </tr>
           </thead>
           <tbody>
@@ -351,7 +378,11 @@
       </section>
 
       <section class="panel">
-        <h2>Latest Price Context</h2>
+        <h2>Price Mark Context</h2>
+        <div class="foot">
+          <strong>Protocol NAV</strong> comes from Hylo stats and is used for the saved mark history.
+          <strong>Live Market</strong> comes from browser-side DexScreener fetches and is used for the live cards and lot rows.
+        </div>
         
         <div class="details-grid">
           <div><strong>Exchange NAV</strong><br><code>0.065468416</code></div>
@@ -536,19 +567,19 @@
           setText("summary-open-deployment-count", String(openDeploymentCount));
           setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
           setText("summary-entry-value", formatCurrency(totalEntryValue));
-          setText("summary-current-value", formatCurrency(totalCurrentValue));
-          setText("summary-net-pnl", formatCurrency(totalNetPnl));
-          setText("summary-net-pnl-sub", formatPct(totalNetPnlPct));
-          setText("summary-current-value-sub", "mark-to-market");
-          setText("summary-xsol-price", formatNum(xsolPrice, 9));
-          setTone(document.getElementById("summary-net-pnl"), totalNetPnl);
-          setTone(document.getElementById("summary-net-pnl-sub"), totalNetPnl);
+          setText("summary-live-market-value", formatCurrency(totalCurrentValue));
+          setText("summary-live-market-pnl", formatCurrency(totalNetPnl));
+          setText("summary-live-market-pnl-sub", formatPct(totalNetPnlPct));
+          setText("summary-live-market-value-sub", "browser market mark");
+          setText("summary-live-xsol-price", formatNum(xsolPrice, 9));
+          setTone(document.getElementById("summary-live-market-pnl"), totalNetPnl);
+          setTone(document.getElementById("summary-live-market-pnl-sub"), totalNetPnl);
         }
 
         function renderLiveState() {
           if (livePriceState.xsol) {
             setText(
-              "summary-xsol-price-sub",
+              "summary-live-xsol-price-sub",
               `${livePriceState.xsolSource} • refresh in ${countdown}s`
             );
           }
@@ -564,11 +595,11 @@
           }
           if (livePriceState.lastUpdated) {
             const localTime = livePriceState.lastUpdated.toLocaleTimeString();
-            setText("live-refresh-status", `Live prices updated at ${localTime}. Next refresh in ${countdown}s.`);
+            setText("live-refresh-status", `Live market prices updated at ${localTime}. Next refresh in ${countdown}s.`);
           } else if (livePriceState.lastError) {
-            setText("live-refresh-status", `Live price refresh failed: ${livePriceState.lastError}. Retrying in ${countdown}s.`);
+            setText("live-refresh-status", `Live market refresh failed: ${livePriceState.lastError}. Retrying in ${countdown}s.`);
           } else {
-            setText("live-refresh-status", `Waiting for live DexScreener pricing. Current values will refresh in-browser every ${REFRESH_SECONDS} seconds.`);
+            setText("live-refresh-status", `Waiting for live DexScreener pricing. Live market cards and lot rows refresh in-browser every ${REFRESH_SECONDS} seconds.`);
           }
         }
 

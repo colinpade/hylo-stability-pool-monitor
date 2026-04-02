@@ -93,12 +93,20 @@ def build_cards(lot_state, latest_snapshot):
                     subtext_id="summary-open-deployment-sub",
                 ),
                 card(
-                    "Current xSOL Price",
+                    "Protocol xSOL NAV",
                     fmt_num(latest_snapshot["xsol_price"], 9),
                     latest_snapshot["price_source"],
-                    card_id="card-xsol-price",
-                    value_id="summary-xsol-price",
-                    subtext_id="summary-xsol-price-sub",
+                    card_id="card-protocol-xsol-price",
+                    value_id="summary-protocol-xsol-price",
+                    subtext_id="summary-protocol-xsol-price-sub",
+                ),
+                card(
+                    "Live xSOL Price",
+                    fmt_num(latest_snapshot["xsol_price"], 9),
+                    "waiting for browser market refresh",
+                    card_id="card-live-xsol-price",
+                    value_id="summary-live-xsol-price",
+                    subtext_id="summary-live-xsol-price-sub",
                 ),
                 card(
                     "Remaining xSOL",
@@ -117,26 +125,43 @@ def build_cards(lot_state, latest_snapshot):
                     subtext_id="summary-entry-value-sub",
                 ),
                 card(
-                    "Current Value",
+                    "Protocol NAV Value",
                     f"${fmt_num(summary['total_current_value'])}",
-                    "mark-to-market",
-                    card_id="card-current-value",
-                    value_id="summary-current-value",
-                    subtext_id="summary-current-value-sub",
+                    "latest saved Hylo protocol mark",
+                    card_id="card-protocol-nav-value",
+                    value_id="summary-protocol-nav-value",
+                    subtext_id="summary-protocol-nav-value-sub",
                 ),
                 card(
-                    "Net PnL",
+                    "Protocol NAV PnL",
                     f"${fmt_num(summary['total_net_pnl'])}",
                     fmt_pct(summary["total_net_pnl_pct"]),
                     pnl_class(summary["total_net_pnl"]),
-                    card_id="card-net-pnl",
-                    value_id="summary-net-pnl",
-                    subtext_id="summary-net-pnl-sub",
+                    card_id="card-protocol-nav-pnl",
+                    value_id="summary-protocol-nav-pnl",
+                    subtext_id="summary-protocol-nav-pnl-sub",
+                ),
+                card(
+                    "Live Market Value",
+                    f"${fmt_num(summary['total_current_value'])}",
+                    "browser market mark",
+                    card_id="card-live-market-value",
+                    value_id="summary-live-market-value",
+                    subtext_id="summary-live-market-value-sub",
+                ),
+                card(
+                    "Live Market PnL",
+                    f"${fmt_num(summary['total_net_pnl'])}",
+                    fmt_pct(summary["total_net_pnl_pct"]),
+                    pnl_class(summary["total_net_pnl"]),
+                    card_id="card-live-market-pnl",
+                    value_id="summary-live-market-pnl",
+                    subtext_id="summary-live-market-pnl-sub",
                 ),
                 card(
                     "Latest SOL Price",
                     "Loading...",
-                    "live refresh every 60s",
+                    "browser market refresh every 60s",
                     card_id="card-sol-price",
                     value_id="summary-sol-price",
                     subtext_id="summary-sol-price-sub",
@@ -327,7 +352,7 @@ def render_html(lot_state, snapshots):
         expected rebalance hints. Mark snapshots let you monitor these lots over time instead of only seeing a single screenshot.
       </div>
       <div class="live-note" id="live-refresh-status">
-        Waiting for live DexScreener pricing. Current values will refresh in-browser every 60 seconds.
+        Waiting for live DexScreener pricing. Live market cards and lot rows refresh in-browser every 60 seconds.
       </div>
 
       <section class="cards">
@@ -336,6 +361,9 @@ def render_html(lot_state, snapshots):
 
       <section class="panel">
         <h2>Open And Historical Deployment Lots</h2>
+        <div class="foot">
+          Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
+        </div>
         <table>
           <thead>
             <tr>
@@ -343,9 +371,9 @@ def render_html(lot_state, snapshots):
               <th>Amount</th>
               <th>Entry Price</th>
               <th>Entry Value</th>
-              <th>Current Price</th>
-              <th>Current Value</th>
-              <th>PnL</th>
+              <th>Live Price</th>
+              <th>Live Value</th>
+              <th>Live PnL</th>
               <th>Days Held</th>
               <th>Tx</th>
             </tr>
@@ -357,17 +385,20 @@ def render_html(lot_state, snapshots):
       </section>
 
       <section class="panel">
-        <h2>Mark History</h2>
+        <h2>Protocol NAV Mark History</h2>
+        <div class="foot">
+          Clean history since scrub. These rows are saved Hylo protocol NAV marks, not live executable market marks.
+        </div>
         <table>
           <thead>
             <tr>
               <th>Captured</th>
-              <th>xSOL Price</th>
+              <th>Protocol xSOL NAV</th>
               <th>Price Source</th>
               <th>Open Lots</th>
-              <th>Current Value</th>
-              <th>Net PnL</th>
-              <th>Net PnL %</th>
+              <th>Protocol NAV Value</th>
+              <th>Protocol NAV PnL</th>
+              <th>Protocol NAV PnL %</th>
             </tr>
           </thead>
           <tbody>
@@ -377,7 +408,11 @@ def render_html(lot_state, snapshots):
       </section>
 
       <section class="panel">
-        <h2>Latest Price Context</h2>
+        <h2>Price Mark Context</h2>
+        <div class="foot">
+          <strong>Protocol NAV</strong> comes from Hylo stats and is used for the saved mark history.
+          <strong>Live Market</strong> comes from browser-side DexScreener fetches and is used for the live cards and lot rows.
+        </div>
         {details_html or '<div class="foot">No structured price-source details were stored for the latest mark.</div>'}
       </section>
 
@@ -556,19 +591,19 @@ def render_html(lot_state, snapshots):
           setText("summary-open-deployment-count", String(openDeploymentCount));
           setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
           setText("summary-entry-value", formatCurrency(totalEntryValue));
-          setText("summary-current-value", formatCurrency(totalCurrentValue));
-          setText("summary-net-pnl", formatCurrency(totalNetPnl));
-          setText("summary-net-pnl-sub", formatPct(totalNetPnlPct));
-          setText("summary-current-value-sub", "mark-to-market");
-          setText("summary-xsol-price", formatNum(xsolPrice, 9));
-          setTone(document.getElementById("summary-net-pnl"), totalNetPnl);
-          setTone(document.getElementById("summary-net-pnl-sub"), totalNetPnl);
+          setText("summary-live-market-value", formatCurrency(totalCurrentValue));
+          setText("summary-live-market-pnl", formatCurrency(totalNetPnl));
+          setText("summary-live-market-pnl-sub", formatPct(totalNetPnlPct));
+          setText("summary-live-market-value-sub", "browser market mark");
+          setText("summary-live-xsol-price", formatNum(xsolPrice, 9));
+          setTone(document.getElementById("summary-live-market-pnl"), totalNetPnl);
+          setTone(document.getElementById("summary-live-market-pnl-sub"), totalNetPnl);
         }}
 
         function renderLiveState() {{
           if (livePriceState.xsol) {{
             setText(
-              "summary-xsol-price-sub",
+              "summary-live-xsol-price-sub",
               `${{livePriceState.xsolSource}} • refresh in ${{countdown}}s`
             );
           }}
@@ -584,11 +619,11 @@ def render_html(lot_state, snapshots):
           }}
           if (livePriceState.lastUpdated) {{
             const localTime = livePriceState.lastUpdated.toLocaleTimeString();
-            setText("live-refresh-status", `Live prices updated at ${{localTime}}. Next refresh in ${{countdown}}s.`);
+            setText("live-refresh-status", `Live market prices updated at ${{localTime}}. Next refresh in ${{countdown}}s.`);
           }} else if (livePriceState.lastError) {{
-            setText("live-refresh-status", `Live price refresh failed: ${{livePriceState.lastError}}. Retrying in ${{countdown}}s.`);
+            setText("live-refresh-status", `Live market refresh failed: ${{livePriceState.lastError}}. Retrying in ${{countdown}}s.`);
           }} else {{
-            setText("live-refresh-status", `Waiting for live DexScreener pricing. Current values will refresh in-browser every ${{REFRESH_SECONDS}} seconds.`);
+            setText("live-refresh-status", `Waiting for live DexScreener pricing. Live market cards and lot rows refresh in-browser every ${{REFRESH_SECONDS}} seconds.`);
           }}
         }}
 
