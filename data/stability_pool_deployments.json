@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-04-02T13:54:57.982162+00:00",
+  "generated_at_utc": "2026-04-02T14:45:22.809813+00:00",
   "strict_mode": true,
-  "source_event_count": 773,
-  "source_buy_event_count": 13,
+  "source_event_count": 326,
+  "source_buy_event_count": 6,
   "source_sell_event_count": 0,
   "deployment_count": 19,
   "lots": [
@@ -114,7 +114,7 @@
       "slot": 409743075,
       "block_time": 1774824153,
       "utc": "2026-03-29T22:42:33+00:00",
-      "local": "2026-03-29T22:42:33+00:00",
+      "local": "2026-03-29T15:42:33-07:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -139,7 +139,7 @@
       "slot": 409744327,
       "block_time": 1774824642,
       "utc": "2026-03-29T22:50:42+00:00",
-      "local": "2026-03-29T22:50:42+00:00",
+      "local": "2026-03-29T15:50:42-07:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
