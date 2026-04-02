@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-04-02T10:41:22.564553+00:00",
+  "generated_at_utc": "2026-04-02T11:30:31.367270+00:00",
   "strict_mode": true,
-  "source_event_count": 747,
-  "source_buy_event_count": 5,
+  "source_event_count": 694,
+  "source_buy_event_count": 6,
   "source_sell_event_count": 0,
   "deployment_count": 11,
   "lots": [
@@ -114,7 +114,7 @@
       "slot": 409743075,
       "block_time": 1774824153,
       "utc": "2026-03-29T22:42:33+00:00",
-      "local": "2026-03-29T15:42:33-07:00",
+      "local": "2026-03-29T22:42:33+00:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
