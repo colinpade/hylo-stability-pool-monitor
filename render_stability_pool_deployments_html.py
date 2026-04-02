@@ -62,6 +62,20 @@ def format_pacific_timestamp(ts):
     return f"{dt.strftime('%b')} {dt.day}, {dt.strftime('%I:%M %p').lstrip('0')} {dt.tzname()}"
 
 
+def day_key_for_ts(ts):
+    dt = format_pacific_dt(ts)
+    if not dt:
+        return "unknown"
+    return dt.strftime("%Y-%m-%d")
+
+
+def day_label_for_ts(ts):
+    dt = format_pacific_dt(ts)
+    if not dt:
+        return "Unknown Day"
+    return f"{dt.strftime('%b')} {dt.day} {dt.tzname()}"
+
+
 def pnl_class(value):
     if value is None:
         return "flat"
@@ -227,6 +241,94 @@ def build_lot_rows(lots):
     return "\n".join(rows)
 
 
+def enrich_lots_for_display(lots):
+    enriched = []
+    for lot in lots:
+        row = dict(lot)
+        ts = row.get("utc") or row.get("local")
+        row["day_key"] = day_key_for_ts(ts)
+        row["day_label"] = day_label_for_ts(ts)
+        enriched.append(row)
+    return enriched
+
+
+def build_lot_day_groups(lots):
+    groups = []
+    by_day = {}
+    for lot in sorted(lots, key=lambda row: row["block_time"] or 0, reverse=True):
+        day_key = lot["day_key"]
+        bucket = by_day.setdefault(
+            day_key,
+            {
+                "day_key": day_key,
+                "day_label": lot["day_label"],
+                "lots": [],
+                "count": 0,
+                "xsol_bought": 0.0,
+                "entry_value": 0.0,
+                "current_value": 0.0,
+                "net_pnl": 0.0,
+            },
+        )
+        if bucket["count"] == 0:
+            groups.append(bucket)
+        bucket["lots"].append(lot)
+        bucket["count"] += 1
+        bucket["xsol_bought"] += float(lot.get("xsol_bought") or 0.0)
+        bucket["entry_value"] += float(lot.get("entry_value") or 0.0)
+        bucket["current_value"] += float(lot.get("current_value") or 0.0)
+        bucket["net_pnl"] += float(lot.get("net_pnl") or 0.0)
+
+    sections = []
+    for index, group in enumerate(groups):
+        day_key = group["day_key"]
+        pnl_pct = (
+            (group["net_pnl"] / group["entry_value"]) * 100.0
+            if group["entry_value"] > 0
+            else None
+        )
+        sections.append(
+            f"""
+            <details class="day-group" data-day-key="{html.escape(day_key)}" {"open" if index == 0 else ""}>
+              <summary>
+                <div class="day-summary-heading">{html.escape(group['day_label'])}</div>
+                <div class="day-summary-metrics">
+                  <span><strong id="day-{html.escape(day_key)}-count">{group['count']}</strong> lots</span>
+                  <span><strong id="day-{html.escape(day_key)}-xsol">{fmt_num(group['xsol_bought'], 2)}</strong> xSOL</span>
+                  <span><strong id="day-{html.escape(day_key)}-entry">${fmt_num(group['entry_value'])}</strong> entry</span>
+                  <span><strong id="day-{html.escape(day_key)}-current">${fmt_num(group['current_value'])}</strong> live</span>
+                  <span class="{pnl_class(group['net_pnl'])}">
+                    <strong id="day-{html.escape(day_key)}-pnl">${fmt_num(group['net_pnl'])}</strong>
+                    <span id="day-{html.escape(day_key)}-pnl-pct">{fmt_pct(pnl_pct)}</span>
+                  </span>
+                </div>
+              </summary>
+              <div class="day-group-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Entry Price</th>
+                      <th>Entry Value</th>
+                      <th>Live Price</th>
+                      <th>Live Value</th>
+                      <th>Live PnL</th>
+                      <th>Days Held</th>
+                      <th>Tx</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {build_lot_rows(group['lots'])}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            """
+        )
+    return "\n".join(sections)
+
+
 def build_mark_rows(snapshots):
     rows = []
     for row in reversed(snapshots[-40:]):
@@ -250,12 +352,13 @@ def build_mark_rows(snapshots):
 def render_html(lot_state, snapshots):
     latest_snapshot = snapshots[-1] if snapshots else None
     lots = latest_snapshot["lots"] if latest_snapshot else lot_state.get("lots", [])
+    display_lots = enrich_lots_for_display(lots)
     price_details = latest_snapshot.get("price_source_details") if latest_snapshot else None
     live_payload = {
         "generated_at_utc": lot_state.get("generated_at_utc"),
         "initial_xsol_price": latest_snapshot.get("xsol_price") if latest_snapshot else None,
         "initial_price_source": latest_snapshot.get("price_source") if latest_snapshot else None,
-        "lots": lots,
+        "lots": display_lots,
     }
     details_html = ""
     if price_details:
@@ -348,6 +451,44 @@ def render_html(lot_state, snapshots):
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 12px;
       }}
+      .day-group {{
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        margin-top: 12px;
+        background: rgba(255,255,255,0.02);
+        overflow: hidden;
+      }}
+      .day-group summary {{
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+        padding: 16px 18px;
+      }}
+      .day-group summary::-webkit-details-marker {{ display: none; }}
+      .day-summary-heading {{
+        font-size: 1rem;
+        font-weight: 600;
+        min-width: 110px;
+      }}
+      .day-summary-metrics {{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 14px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        font-variant-numeric: tabular-nums;
+      }}
+      .day-summary-metrics strong {{
+        color: var(--text);
+        font-weight: 600;
+      }}
+      .day-group-table {{
+        padding: 0 12px 12px;
+      }}
       .foot {{
         color: var(--muted);
         line-height: 1.5;
@@ -385,24 +526,7 @@ def render_html(lot_state, snapshots):
         <div class="foot">
           Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Entry Price</th>
-              <th>Entry Value</th>
-              <th>Live Price</th>
-              <th>Live Value</th>
-              <th>Live PnL</th>
-              <th>Days Held</th>
-              <th>Tx</th>
-            </tr>
-          </thead>
-          <tbody>
-            {build_lot_rows(lots)}
-          </tbody>
-        </table>
+        {build_lot_day_groups(display_lots)}
       </section>
 
       <section class="panel">
@@ -594,6 +718,7 @@ def render_html(lot_state, snapshots):
           let totalNetPnl = 0;
           let totalRemainingXsol = 0;
           let openDeploymentCount = 0;
+          const dayTotals = new Map();
 
           for (const lot of lotRows) {{
             const remainingXsol = Number(lot.remaining_xsol || 0);
@@ -603,6 +728,7 @@ def render_html(lot_state, snapshots):
             const unrealizedPnl = currentValue - remainingEntryValue;
             const netPnl = realizedPnl + unrealizedPnl;
             const netPnlPct = Number(lot.entry_value || 0) > 0 ? (netPnl / Number(lot.entry_value)) * 100 : null;
+            const dayKey = lot.day_key || "unknown";
 
             totalEntryValue += Number(lot.entry_value || 0);
             totalCurrentValue += currentValue;
@@ -611,6 +737,21 @@ def render_html(lot_state, snapshots):
             if (remainingXsol > 0) {{
               openDeploymentCount += 1;
             }}
+            if (!dayTotals.has(dayKey)) {{
+              dayTotals.set(dayKey, {{
+                count: 0,
+                xsol: 0,
+                entry: 0,
+                current: 0,
+                pnl: 0,
+              }});
+            }}
+            const bucket = dayTotals.get(dayKey);
+            bucket.count += 1;
+            bucket.xsol += Number(lot.xsol_bought || 0);
+            bucket.entry += Number(lot.entry_value || 0);
+            bucket.current += currentValue;
+            bucket.pnl += netPnl;
 
             setText(`${{lot.lot_id}}-current-price`, formatCurrency(xsolPrice, 6));
             setText(`${{lot.lot_id}}-current-value`, formatCurrency(currentValue));
@@ -632,6 +773,20 @@ def render_html(lot_state, snapshots):
           setText("summary-live-xsol-price", formatNum(xsolPrice, 9));
           setTone(document.getElementById("summary-live-market-pnl"), totalNetPnl);
           setTone(document.getElementById("summary-live-market-pnl-sub"), totalNetPnl);
+
+          for (const [dayKey, totals] of dayTotals.entries()) {{
+            const dayPnlPct = totals.entry > 0 ? (totals.pnl / totals.entry) * 100 : null;
+            setText(`day-${{dayKey}}-count`, String(totals.count));
+            setText(`day-${{dayKey}}-xsol`, formatNum(totals.xsol, 2));
+            setText(`day-${{dayKey}}-entry`, formatCurrency(totals.entry));
+            setText(`day-${{dayKey}}-current`, formatCurrency(totals.current));
+            setText(`day-${{dayKey}}-pnl`, formatCurrency(totals.pnl));
+            setText(`day-${{dayKey}}-pnl-pct`, formatPct(dayPnlPct));
+            const pnlEl = document.getElementById(`day-${{dayKey}}-pnl`);
+            const pctEl = document.getElementById(`day-${{dayKey}}-pnl-pct`);
+            setTone(pnlEl, totals.pnl);
+            setTone(pctEl, totals.pnl);
+          }}
         }}
 
         function renderLiveState() {{
