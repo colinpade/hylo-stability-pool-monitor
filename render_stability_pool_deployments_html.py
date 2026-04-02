@@ -4,6 +4,10 @@ import html
 import json
 from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
+
+
+PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
 
 
 def load_json(path):
@@ -36,11 +40,26 @@ def fmt_pct(value, digits=2):
     return f"{sign}{value:.{digits}f}%"
 
 
-def format_local_date(local_iso):
-    if not local_iso:
+def format_pacific_dt(ts):
+    if not ts:
+        return None
+    return datetime.fromisoformat(ts).astimezone(PACIFIC_TZ)
+
+
+def format_pacific_date_parts(ts):
+    dt = format_pacific_dt(ts)
+    if not dt:
         return "n/a", ""
-    dt = datetime.fromisoformat(local_iso)
-    return dt.strftime("%b %d"), dt.strftime("%H:%M:%S")
+    day_label = f"{dt.strftime('%b')} {dt.day}"
+    time_label = f"{dt.strftime('%I:%M %p').lstrip('0')} {dt.tzname()}"
+    return day_label, time_label
+
+
+def format_pacific_timestamp(ts):
+    dt = format_pacific_dt(ts)
+    if not dt:
+        return "n/a"
+    return f"{dt.strftime('%b')} {dt.day}, {dt.strftime('%I:%M %p').lstrip('0')} {dt.tzname()}"
 
 
 def pnl_class(value):
@@ -87,7 +106,9 @@ def build_cards(lot_state, latest_snapshot):
                 card(
                     "Open Deployments",
                     str(summary["open_deployment_count"]),
-                    latest_snapshot["captured_at_local"],
+                    format_pacific_timestamp(
+                        latest_snapshot.get("captured_at_utc") or latest_snapshot.get("captured_at_local")
+                    ),
                     card_id="card-open-deployments",
                     value_id="summary-open-deployment-count",
                     subtext_id="summary-open-deployment-sub",
@@ -174,7 +195,7 @@ def build_cards(lot_state, latest_snapshot):
 def build_lot_rows(lots):
     rows = []
     for lot in sorted(lots, key=lambda row: row["block_time"] or 0, reverse=True):
-        day_label, time_label = format_local_date(lot.get("local"))
+        day_label, time_label = format_pacific_date_parts(lot.get("utc") or lot.get("local"))
         current_price = lot.get("current_price")
         current_value = lot.get("current_value")
         net_pnl = lot.get("net_pnl")
@@ -213,7 +234,7 @@ def build_mark_rows(snapshots):
         rows.append(
             f"""
             <tr>
-              <td>{html.escape(row['captured_at_local'])}</td>
+              <td>{html.escape(format_pacific_timestamp(row.get('captured_at_utc') or row.get('captured_at_local')))}</td>
               <td class="num">{fmt_num(row['xsol_price'], 9)}</td>
               <td>{html.escape(row['price_source'])}</td>
               <td class="num">{summary['open_deployment_count']}</td>
@@ -442,6 +463,15 @@ def render_html(lot_state, snapshots):
         const REFRESH_SECONDS = 60;
         const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
         const SOL_TOKEN = "So11111111111111111111111111111111111111112";
+        const PACIFIC_FORMATTER = new Intl.DateTimeFormat("en-US", {{
+          timeZone: "America/Los_Angeles",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+          timeZoneName: "short",
+        }});
         const payload = JSON.parse(document.getElementById("live-lot-state").textContent);
         const lotRows = payload.lots || [];
         let countdown = REFRESH_SECONDS;
@@ -514,6 +544,10 @@ def render_html(lot_state, snapshots):
           const ms = Date.now() - Date.parse(utc);
           const days = Math.max(0, Math.floor(ms / 86400000));
           return `${{days}}d`;
+        }}
+
+        function formatPacificTimestamp(date) {{
+          return PACIFIC_FORMATTER.format(date);
         }}
 
         function bestPair(pairs, filterFn = null) {{
@@ -618,8 +652,8 @@ def render_html(lot_state, snapshots):
             setText("summary-sol-price-sub", `refresh in ${{countdown}}s`);
           }}
           if (livePriceState.lastUpdated) {{
-            const localTime = livePriceState.lastUpdated.toLocaleTimeString();
-            setText("live-refresh-status", `Live market prices updated at ${{localTime}}. Next refresh in ${{countdown}}s.`);
+            const pacificTime = formatPacificTimestamp(livePriceState.lastUpdated);
+            setText("live-refresh-status", `Live market prices updated ${{pacificTime}}. Next refresh in ${{countdown}}s.`);
           }} else if (livePriceState.lastError) {{
             setText("live-refresh-status", `Live market refresh failed: ${{livePriceState.lastError}}. Retrying in ${{countdown}}s.`);
           }} else {{

@@ -119,8 +119,13 @@
 
     <div class="card" id="card-open-deployments">
       <div class="card-label">Open Deployments</div>
+<<<<<<< HEAD
       <div class="card-value flat" id="summary-open-deployment-count">19</div>
       <div class="card-sub flat" id="summary-open-deployment-sub">2026-04-02T13:54:57.983414+00:00</div>
+=======
+      <div class="card-value flat" id="summary-open-deployment-count">6</div>
+      <div class="card-sub flat" id="summary-open-deployment-sub">Apr 1, 8:12 PM PDT</div>
+>>>>>>> 0e1b198 (Render dashboard timestamps in Pacific time)
     </div>
     
 
@@ -498,7 +503,11 @@
             <tr data-lot-id="lot-6">
               <td>
                 <div class="date-main">Mar 29</div>
+<<<<<<< HEAD
                 <div class="date-sub">22:50:42</div>
+=======
+                <div class="date-sub">3:50 PM PDT</div>
+>>>>>>> 0e1b198 (Render dashboard timestamps in Pacific time)
               </td>
               <td class="num">
                 <div>3,753,534.37</div>
@@ -520,7 +529,11 @@
             <tr data-lot-id="lot-5">
               <td>
                 <div class="date-main">Mar 29</div>
+<<<<<<< HEAD
                 <div class="date-sub">22:42:33</div>
+=======
+                <div class="date-sub">3:42 PM PDT</div>
+>>>>>>> 0e1b198 (Render dashboard timestamps in Pacific time)
               </td>
               <td class="num">
                 <div>2,076,030.30</div>
@@ -542,7 +555,7 @@
             <tr data-lot-id="lot-4">
               <td>
                 <div class="date-main">Mar 29</div>
-                <div class="date-sub">10:30:41</div>
+                <div class="date-sub">10:30 AM PDT</div>
               </td>
               <td class="num">
                 <div>498,493.01</div>
@@ -564,7 +577,7 @@
             <tr data-lot-id="lot-3">
               <td>
                 <div class="date-main">Mar 29</div>
-                <div class="date-sub">10:25:42</div>
+                <div class="date-sub">10:25 AM PDT</div>
               </td>
               <td class="num">
                 <div>190,916.51</div>
@@ -586,7 +599,7 @@
             <tr data-lot-id="lot-2">
               <td>
                 <div class="date-main">Mar 29</div>
-                <div class="date-sub">10:22:33</div>
+                <div class="date-sub">10:22 AM PDT</div>
               </td>
               <td class="num">
                 <div>386,742.80</div>
@@ -608,7 +621,7 @@
             <tr data-lot-id="lot-1">
               <td>
                 <div class="date-main">Mar 29</div>
-                <div class="date-sub">10:20:41</div>
+                <div class="date-sub">10:20 AM PDT</div>
               </td>
               <td class="num">
                 <div>344,971.33</div>
@@ -650,7 +663,11 @@
           <tbody>
             
             <tr>
+<<<<<<< HEAD
               <td>2026-04-02T13:54:57.983414+00:00</td>
+=======
+              <td>Apr 1, 8:12 PM PDT</td>
+>>>>>>> 0e1b198 (Render dashboard timestamps in Pacific time)
               <td class="num">0.065468416</td>
               <td>hylo_stats.exchangeStats.levercoinNav</td>
               <td class="num">19</td>
@@ -715,6 +732,15 @@
         const REFRESH_SECONDS = 60;
         const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
         const SOL_TOKEN = "So11111111111111111111111111111111111111112";
+        const PACIFIC_FORMATTER = new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Los_Angeles",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+          timeZoneName: "short",
+        });
         const payload = JSON.parse(document.getElementById("live-lot-state").textContent);
         const lotRows = payload.lots || [];
         let countdown = REFRESH_SECONDS;
@@ -787,6 +813,10 @@
           const ms = Date.now() - Date.parse(utc);
           const days = Math.max(0, Math.floor(ms / 86400000));
           return `${days}d`;
+        }
+
+        function formatPacificTimestamp(date) {
+          return PACIFIC_FORMATTER.format(date);
         }
 
         function bestPair(pairs, filterFn = null) {
@@ -891,8 +921,8 @@
             setText("summary-sol-price-sub", `refresh in ${countdown}s`);
           }
           if (livePriceState.lastUpdated) {
-            const localTime = livePriceState.lastUpdated.toLocaleTimeString();
-            setText("live-refresh-status", `Live market prices updated at ${localTime}. Next refresh in ${countdown}s.`);
+            const pacificTime = formatPacificTimestamp(livePriceState.lastUpdated);
+            setText("live-refresh-status", `Live market prices updated ${pacificTime}. Next refresh in ${countdown}s.`);
           } else if (livePriceState.lastError) {
             setText("live-refresh-status", `Live market refresh failed: ${livePriceState.lastError}. Retrying in ${countdown}s.`);
           } else {
