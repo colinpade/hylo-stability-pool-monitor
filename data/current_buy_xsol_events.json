@@ -1,8 +1,8 @@
 {
   "current_deployment_window": {
-    "oldest_utc": "2026-03-30T20:58:18+00:00",
+    "oldest_utc": "2026-03-30T21:20:07+00:00",
     "newest_utc": "2026-04-02T19:12:04+00:00",
-    "oldest_local": "2026-03-30T20:58:18+00:00",
+    "oldest_local": "2026-03-30T21:20:07+00:00",
     "newest_local": "2026-04-02T19:12:04+00:00"
   },
   "buy_xsol_event_count": 13,
@@ -132,7 +132,7 @@
       "entry_close": 0.04955507013493609,
       "matches_screenshot_row": false,
       "1h_return_pct": 1.6128710782214117,
-      "6h_return_pct": null,
+      "6h_return_pct": 6.702306192802832,
       "24h_return_pct": null
     },
     {
@@ -146,7 +146,7 @@
       "entry_close": 0.04955507013493609,
       "matches_screenshot_row": false,
       "1h_return_pct": 1.6128710782214117,
-      "6h_return_pct": null,
+      "6h_return_pct": 6.702306192802832,
       "24h_return_pct": null
     },
     {
@@ -160,7 +160,7 @@
       "entry_close": 0.04918458078994289,
       "matches_screenshot_row": false,
       "1h_return_pct": 2.3782834380304596,
-      "6h_return_pct": null,
+      "6h_return_pct": 7.5060553941931785,
       "24h_return_pct": null
     },
     {
