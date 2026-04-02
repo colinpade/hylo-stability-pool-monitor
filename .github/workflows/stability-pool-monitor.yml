@@ -26,6 +26,7 @@ jobs:
       NTFY_AUTH_HEADER: ${{ secrets.NTFY_AUTH_HEADER }}
     outputs:
       new_deployments: ${{ steps.diff.outputs.new_deployments }}
+      latest_signature: ${{ steps.latest.outputs.signature }}
       pages_url: ${{ steps.meta.outputs.pages_url }}
     steps:
       - name: Check out repository
@@ -60,6 +61,16 @@ jobs:
             echo "count=0" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Record previous alerted deployment signature
+        id: alerted_previous
+        shell: bash
+        run: |
+          if [[ -f data/last_alerted_deployment_signature.txt ]]; then
+            echo "signature=$(tr -d '\n' < data/last_alerted_deployment_signature.txt)" >> "$GITHUB_OUTPUT"
+          else
+            echo "signature=" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Fetch latest Hylo stats
         shell: bash
         run: |
@@ -92,13 +103,21 @@ jobs:
         run: |
           echo "count=$(jq '.deployment_count // 0' data/stability_pool_deployments.json)" >> "$GITHUB_OUTPUT"
 
+      - name: Record latest deployment signature
+        id: latest
+        shell: bash
+        run: |
+          echo "signature=$(jq -r '.lots[-1].signature // empty' data/stability_pool_deployments.json)" >> "$GITHUB_OUTPUT"
+
       - name: Detect new deployments
         id: diff
         shell: bash
         run: |
           prev="${{ steps.previous.outputs.count }}"
           curr="${{ steps.current.outputs.count }}"
-          if (( curr > prev )); then
+          prev_sig="${{ steps.alerted_previous.outputs.signature }}"
+          latest_sig="${{ steps.latest.outputs.signature }}"
+          if [[ -n "$latest_sig" && "$latest_sig" != "$prev_sig" ]]; then
             echo "new_deployments=true" >> "$GITHUB_OUTPUT"
           else
             echo "new_deployments=false" >> "$GITHUB_OUTPUT"
@@ -121,26 +140,6 @@ jobs:
           cp data/current_buy_xsol_events.json site/data/current_buy_xsol_events.json
           cp data/stability_pool_signal_report.json site/data/stability_pool_signal_report.json
           cp data/xsol_usdc_ohlcv_5m.json site/data/xsol_usdc_ohlcv_5m.json
-
-      - name: Commit updated tracker artifacts
-        shell: bash
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add \
-            data/live_hylo_stats.json \
-            data/stability_pool_deployments.json \
-            data/stability_pool_deployment_marks.jsonl \
-            data/current_buy_xsol_events.json \
-            data/stability_pool_signal_report.json \
-            data/xsol_usdc_ohlcv_5m.json \
-            stability_pool_deployments.html \
-            current_buy_xsol_events.html \
-            stability_pool_signal_report.html
-          if ! git diff --cached --quiet; then
-            git commit -m "Update stability pool tracker [skip ci]"
-            git push
-          fi
 
       - name: Send ntfy alert
         if: steps.diff.outputs.new_deployments == 'true' && env.NTFY_TOPIC != ''
@@ -166,6 +165,33 @@ jobs:
               -H "Title: ${title}" \
               -d "$body" \
               "https://ntfy.sh/${NTFY_TOPIC}"
+          fi
+
+      - name: Record latest alerted deployment signature
+        if: steps.diff.outputs.new_deployments == 'true'
+        shell: bash
+        run: |
+          printf '%s\n' '${{ steps.latest.outputs.signature }}' > data/last_alerted_deployment_signature.txt
+
+      - name: Commit updated tracker artifacts
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            data/live_hylo_stats.json \
+            data/last_alerted_deployment_signature.txt \
+            data/stability_pool_deployments.json \
+            data/stability_pool_deployment_marks.jsonl \
+            data/current_buy_xsol_events.json \
+            data/stability_pool_signal_report.json \
+            data/xsol_usdc_ohlcv_5m.json \
+            stability_pool_deployments.html \
+            current_buy_xsol_events.html \
+            stability_pool_signal_report.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Update stability pool tracker [skip ci]"
+            git push
           fi
 
       - name: Upload Pages artifact

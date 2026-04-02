@@ -357,6 +357,36 @@ def condense_snapshots(rows):
     return condensed
 
 
+def sanitize_snapshots(rows, lot_state):
+    known_lots = []
+    for lot in lot_state.get("lots") or []:
+        ts = lot.get("utc")
+        signature = lot.get("signature")
+        if not ts or not signature:
+            continue
+        known_lots.append((parse_iso(ts), signature))
+    known_lots.sort(key=lambda item: item[0])
+
+    sanitized = []
+    for row in rows:
+        captured = row.get("captured_at_utc")
+        if not captured:
+            continue
+        captured_at = parse_iso(captured)
+        expected = {
+            signature for ts, signature in known_lots if ts <= captured_at
+        }
+        observed = {
+            lot.get("signature")
+            for lot in (row.get("lots") or [])
+            if lot.get("signature")
+        }
+        if expected and observed != expected:
+            continue
+        sanitized.append(row)
+    return sanitized
+
+
 def resolve_price(args):
     if args.xsol_price is not None:
         return {
@@ -403,13 +433,16 @@ def run_update(args):
         captured_at=args.captured_at,
     )
     existing_rows = load_jsonl(args.marks_out)
+    sanitized_existing_rows = sanitize_snapshots(existing_rows, lot_state)
     before_count = len(existing_rows)
-    condensed_before = condense_snapshots(existing_rows)
+    sanitized_count = len(sanitized_existing_rows)
+    condensed_before = condense_snapshots(sanitized_existing_rows)
     before_condensed_count = len(condensed_before)
     candidate_rows = condensed_before + [snapshot]
     condensed_after = condense_snapshots(candidate_rows)
     appended = len(condensed_after) > before_condensed_count
-    removed_duplicates = before_count - before_condensed_count
+    removed_invalid = before_count - sanitized_count
+    removed_duplicates = sanitized_count - before_condensed_count
     if appended or removed_duplicates > 0 or before_count != len(condensed_after):
         write_jsonl(args.marks_out, condensed_after)
     print(
@@ -423,6 +456,7 @@ def run_update(args):
                 "total_net_pnl": snapshot["summary"]["total_net_pnl"],
                 "appended_mark": appended,
                 "existing_marks_before": before_count,
+                "removed_invalid_marks": removed_invalid,
                 "marks_after": len(condensed_after),
                 "removed_duplicate_marks": removed_duplicates,
             },
