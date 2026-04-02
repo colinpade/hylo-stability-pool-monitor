@@ -175,6 +175,43 @@ def build_lots(events, strict=True):
     }
 
 
+def sort_lots(lots):
+    return sorted(
+        lots,
+        key=lambda lot: (
+            lot.get("slot") or 0,
+            lot.get("block_time") or 0,
+            lot.get("signature") or "",
+        ),
+    )
+
+
+def merge_lot_states(existing_state, fresh_state):
+    existing_by_signature = {
+        lot.get("signature"): deepcopy(lot)
+        for lot in (existing_state or {}).get("lots") or []
+        if lot.get("signature")
+    }
+    merged = []
+    seen = set()
+    for lot in sort_lots((fresh_state or {}).get("lots") or []):
+        signature = lot.get("signature")
+        if signature:
+            seen.add(signature)
+        merged.append(deepcopy(lot))
+    for signature, lot in existing_by_signature.items():
+        if signature in seen:
+            continue
+        merged.append(lot)
+    merged = sort_lots(merged)
+    for idx, lot in enumerate(merged, start=1):
+        lot["lot_id"] = f"lot-{idx}"
+    out = deepcopy(fresh_state)
+    out["lots"] = merged
+    out["deployment_count"] = len(merged)
+    return out
+
+
 def extract_price_from_hylo_stats(path):
     payload = load_json(path)
     exchange = payload.get("exchangeStats") or {}
@@ -337,13 +374,19 @@ def resolve_price(args):
 
 def run_update(args):
     events = load_jsonl(args.events)
-    lot_state = build_lots(events, strict=not args.allow_unconfirmed)
+    fresh_state = build_lots(events, strict=not args.allow_unconfirmed)
+    existing_state = {}
+    lots_path = Path(args.lots_out)
+    if lots_path.exists():
+        existing_state = load_json(lots_path)
+    lot_state = merge_lot_states(existing_state, fresh_state)
     write_json(args.lots_out, lot_state)
     print(
         json.dumps(
             {
                 "lots_out": args.lots_out,
                 "deployment_count": lot_state["deployment_count"],
+                "fresh_deployment_count": fresh_state["deployment_count"],
                 "strict_mode": lot_state["strict_mode"],
             },
             indent=2,

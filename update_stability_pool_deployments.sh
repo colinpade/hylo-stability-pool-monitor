@@ -11,7 +11,7 @@ current_buys_html_out="${CURRENT_BUYS_HTML_OUT:-current_buy_xsol_events.html}"
 signal_json_out="${SIGNAL_JSON_OUT:-data/stability_pool_signal_report.json}"
 signal_html_out="${SIGNAL_HTML_OUT:-stability_pool_signal_report.html}"
 ohlcv_out="${OHLCV_OUT:-data/xsol_usdc_ohlcv_5m.json}"
-max_pages="${MAX_PAGES:-8}"
+max_pages="${MAX_PAGES:-20}"
 page_size="${PAGE_SIZE:-1000}"
 
 if ! python3 stability_pool_onchain_tracker.py backfill --out "$events_out" --max-pages "$max_pages" --page-size "$page_size"; then
