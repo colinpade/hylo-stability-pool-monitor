@@ -18,6 +18,8 @@ HORIZONS = [
     ("72h", 259200),
     ("7d", 604800),
 ]
+DEFAULT_TRANCHE_USD = 1000.0
+DEFAULT_DELAY_SECONDS = 600
 
 
 def load_json(path):
@@ -180,6 +182,33 @@ def summarize_segment(rows):
     return out
 
 
+def summarize_tranche_segment(rows):
+    out = {
+        "count": len(rows),
+        "capital_deployed_usd": sum(row["tranche_usd"] for row in rows),
+        "xsol_acquired": sum(row["xsol_acquired"] for row in rows),
+        "marked_value_usd": sum(row["marked_value_usd"] for row in rows if row.get("marked_value_usd") is not None),
+        "marked_pnl_usd": sum(row["marked_pnl_usd"] for row in rows if row.get("marked_pnl_usd") is not None),
+    }
+    capital = out["capital_deployed_usd"]
+    out["marked_pnl_pct"] = ((out["marked_pnl_usd"] / capital) * 100.0) if capital else None
+    for label, _seconds in HORIZONS:
+        returns = [row.get(f"{label}_return_pct") for row in rows if row.get(f"{label}_return_pct") is not None]
+        pnls = [row.get(f"{label}_pnl_usd") for row in rows if row.get(f"{label}_pnl_usd") is not None]
+        values = [row.get(f"{label}_value_usd") for row in rows if row.get(f"{label}_value_usd") is not None]
+        out[f"{label}_mean_return_pct"] = mean(returns)
+        out[f"{label}_median_return_pct"] = median(returns) if returns else None
+        out[f"{label}_win_rate_pct"] = ((sum(1 for value in returns if value > 0) / len(returns)) * 100.0) if returns else None
+        out[f"{label}_aggregate_pnl_usd"] = sum(pnls) if pnls else None
+        out[f"{label}_aggregate_value_usd"] = sum(values) if values else None
+    for label in ("24h", "72h"):
+        runups = [row.get(f"{label}_max_runup_pct") for row in rows if row.get(f"{label}_max_runup_pct") is not None]
+        drawdowns = [row.get(f"{label}_max_drawdown_pct") for row in rows if row.get(f"{label}_max_drawdown_pct") is not None]
+        out[f"{label}_median_max_runup_pct"] = median(runups) if runups else None
+        out[f"{label}_median_max_drawdown_pct"] = median(drawdowns) if drawdowns else None
+    return out
+
+
 def build_regime_segments(episodes):
     regimes = {
         "session_type": {},
@@ -204,7 +233,120 @@ def build_regime_segments(episodes):
     return regimes
 
 
-def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles"):
+def build_tranche_replay(episodes, bars, delay_seconds, tranche_usd, tz_name):
+    tz = ZoneInfo(tz_name)
+    timestamps = [bar["ts"] for bar in bars]
+    last_bar = bars[-1] if bars else None
+    if not last_bar:
+        return {
+            "delay_seconds": delay_seconds,
+            "delay_label": f"{delay_seconds // 60}m",
+            "tranche_usd": tranche_usd,
+            "entry_count": 0,
+            "entries": [],
+            "overall": summarize_tranche_segment([]),
+            "regimes": build_tranche_regime_segments([]),
+            "mark_price": None,
+            "mark_time_utc": None,
+            "mark_time_local": None,
+        }
+
+    entries = []
+    last_bar_ts = timestamps[-1]
+    mark_price = float(last_bar["close"])
+    mark_ts = int(last_bar["ts"])
+    for episode in episodes:
+        start_ts = int(episode["start_block_time"])
+        entry_target_ts = start_ts + delay_seconds
+        entry_bar, entry_idx = last_at_or_before(timestamps, bars, entry_target_ts)
+        if entry_bar is None or entry_idx < 0:
+            continue
+        entry_price = float(entry_bar["close"])
+        xsol_acquired = tranche_usd / entry_price if entry_price else None
+        marked_value = (xsol_acquired * mark_price) if xsol_acquired is not None else None
+        marked_pnl = (marked_value - tranche_usd) if marked_value is not None else None
+        row = {
+            "episode_id": episode["episode_id"],
+            "start_utc": episode["start_utc"],
+            "start_local": episode["start_local"],
+            "local_day": episode["local_day"],
+            "session_type": episode["session_type"],
+            "episode_index_for_day": episode["episode_index_for_day"],
+            "first_signature": episode["first_signature"],
+            "trigger_size_bucket": episode["trigger_size_bucket"],
+            "pre_drop_bucket": episode["pre_drop_bucket"],
+            "xsol_share_after_bucket": episode["xsol_share_after_bucket"],
+            "tranche_usd": tranche_usd,
+            "entry_target_utc": datetime.fromtimestamp(entry_target_ts, timezone.utc).isoformat(),
+            "entry_target_local": datetime.fromtimestamp(entry_target_ts, timezone.utc).astimezone(tz).isoformat(),
+            "entry_bar_utc": datetime.fromtimestamp(int(entry_bar["ts"]), timezone.utc).isoformat(),
+            "entry_bar_local": datetime.fromtimestamp(int(entry_bar["ts"]), timezone.utc).astimezone(tz).isoformat(),
+            "entry_gap_seconds": entry_target_ts - int(entry_bar["ts"]),
+            "entry_price": entry_price,
+            "xsol_acquired": xsol_acquired,
+            "marked_price": mark_price,
+            "mark_time_utc": datetime.fromtimestamp(mark_ts, timezone.utc).isoformat(),
+            "mark_time_local": datetime.fromtimestamp(mark_ts, timezone.utc).astimezone(tz).isoformat(),
+            "marked_value_usd": marked_value,
+            "marked_pnl_usd": marked_pnl,
+            "marked_pnl_pct": pct_change(tranche_usd, marked_value),
+        }
+        for label, seconds in HORIZONS:
+            target_ts = entry_target_ts + seconds
+            future_bar, future_idx = last_at_or_before(timestamps, bars, target_ts) if target_ts <= last_bar_ts else (None, -1)
+            future_value = (xsol_acquired * float(future_bar["close"])) if (future_bar is not None and xsol_acquired is not None) else None
+            future_pnl = (future_value - tranche_usd) if future_value is not None else None
+            row[f"{label}_value_usd"] = future_value
+            row[f"{label}_pnl_usd"] = future_pnl
+            row[f"{label}_return_pct"] = pct_change(tranche_usd, future_value)
+            if future_bar is not None and future_idx >= entry_idx:
+                bars_slice = bars[entry_idx : future_idx + 1]
+                max_runup, max_drawdown = runup_drawdown(entry_price, bars_slice)
+            else:
+                max_runup, max_drawdown = (None, None)
+            row[f"{label}_max_runup_pct"] = max_runup
+            row[f"{label}_max_drawdown_pct"] = max_drawdown
+        entries.append(row)
+
+    return {
+        "delay_seconds": delay_seconds,
+        "delay_label": f"{delay_seconds // 60}m",
+        "tranche_usd": tranche_usd,
+        "entry_count": len(entries),
+        "entries": entries,
+        "overall": summarize_tranche_segment(entries),
+        "regimes": build_tranche_regime_segments(entries),
+        "mark_price": mark_price,
+        "mark_time_utc": datetime.fromtimestamp(mark_ts, timezone.utc).isoformat(),
+        "mark_time_local": datetime.fromtimestamp(mark_ts, timezone.utc).astimezone(tz).isoformat(),
+    }
+
+
+def build_tranche_regime_segments(entries):
+    regimes = {
+        "session_type": {},
+        "trigger_size_bucket": {},
+        "pre_drop_bucket": {},
+        "xsol_share_after_bucket": {},
+    }
+    mappings = {
+        "session_type": lambda row: row["session_type"],
+        "trigger_size_bucket": lambda row: row["trigger_size_bucket"],
+        "pre_drop_bucket": lambda row: row["pre_drop_bucket"],
+        "xsol_share_after_bucket": lambda row: row["xsol_share_after_bucket"],
+    }
+    for key, getter in mappings.items():
+        groups = {}
+        for row in entries:
+            groups.setdefault(getter(row), []).append(row)
+        regimes[key] = {
+            label: summarize_tranche_segment(items)
+            for label, items in sorted(groups.items(), key=lambda item: item[0])
+        }
+    return regimes
+
+
+def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles", delay_seconds=DEFAULT_DELAY_SECONDS, tranche_usd=DEFAULT_TRANCHE_USD):
     tz = ZoneInfo(tz_name)
     buys = confirmed_buy_rows(backfill_rows)
     clusters = cluster_rows(buys, gap_seconds)
@@ -249,6 +391,8 @@ def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles")
 
         episode = {
             "episode_id": f"episode-{index}",
+            "start_block_time": start_ts,
+            "end_block_time": end_ts,
             "start_utc": start_dt.isoformat(),
             "end_utc": end_dt.isoformat(),
             "start_local": start_dt.astimezone(tz).isoformat(),
@@ -302,6 +446,7 @@ def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles")
         episodes.append(episode)
 
     summary = summarize_segment(episodes)
+    tranche_replay = build_tranche_replay(episodes, bars, delay_seconds=delay_seconds, tranche_usd=tranche_usd, tz_name=tz_name)
     return {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "timezone": tz_name,
@@ -311,9 +456,11 @@ def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles")
         "episodes": episodes,
         "overall": summary,
         "regimes": build_regime_segments(episodes),
+        "tranche_replay": tranche_replay,
         "notes": [
             "Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.",
             "Forward returns are measured from the first confirmed buy in an episode against cached xSOL/USDC 5-minute market bars.",
+            f"Hypothetical strategy replay buys ${tranche_usd:,.0f} of xSOL {delay_seconds // 60} minutes after each episode begins, then measures forward returns from that delayed entry.",
             "7d metrics remain unavailable until the cached OHLC file extends far enough beyond an episode.",
             "Historical collateral ratio snapshots were not cached, so regime context uses public market drop, deployment size, pool composition shift, and whether the episode was the first activation of the day.",
         ],
@@ -335,6 +482,31 @@ def summary_cards(report):
 def render_cards(report):
     rows = []
     for label, value, sub in summary_cards(report):
+        rows.append(
+            f"""
+            <div class="card">
+              <div class="label">{html.escape(label)}</div>
+              <div class="value">{html.escape(value)}</div>
+              <div class="subline">{html.escape(sub)}</div>
+            </div>
+            """
+        )
+    return "".join(rows)
+
+
+def render_tranche_cards(report):
+    replay = report["tranche_replay"]
+    overall = replay["overall"]
+    cards = [
+        ("Simulated Buys", str(replay["entry_count"]), f"${fmt_num(replay['tranche_usd'], 0)} each at +{replay['delay_seconds'] // 60}m"),
+        ("Capital Deployed", f"${fmt_num(overall.get('capital_deployed_usd'))}", "fixed-size xSOL entries"),
+        ("Marked Value", f"${fmt_num(overall.get('marked_value_usd'))}", f"latest cached close at {replay['mark_time_local'][:19] if replay.get('mark_time_local') else 'n/a'}"),
+        ("Marked PnL", f"${fmt_num(overall.get('marked_pnl_usd'))}", fmt_pct(overall.get("marked_pnl_pct"))),
+        ("24h Mean", fmt_pct(overall.get("24h_mean_return_pct")), "from delayed entry"),
+        ("24h Win Rate", fmt_pct(overall.get("24h_win_rate_pct")), "available windows only"),
+    ]
+    rows = []
+    for label, value, sub in cards:
         rows.append(
             f"""
             <div class="card">
@@ -370,6 +542,36 @@ def render_episode_rows(report):
               <td class="num">{fmt_pct(row.get('24h_return_pct'))}</td>
               <td class="num">{fmt_pct(row.get('24h_max_drawdown_pct'))}</td>
               <td class="num">{fmt_pct(row.get('24h_max_runup_pct'))}</td>
+              <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
+            </tr>
+            """
+        )
+    return "".join(rows)
+
+
+def render_tranche_rows(report):
+    rows = []
+    for row in report["tranche_replay"]["entries"]:
+        rows.append(
+            f"""
+            <tr>
+              <td>
+                <div>{html.escape(row['start_local'][:19])}</div>
+                <div class="subline">{html.escape(row['session_type'])}</div>
+              </td>
+              <td>
+                <div>{html.escape(row['entry_target_local'][:19])}</div>
+                <div class="subline">bar gap {row['entry_gap_seconds']}s</div>
+              </td>
+              <td class="num">${fmt_num(row['tranche_usd'], 0)}</td>
+              <td class="num">{fmt_num(row['xsol_acquired'], 2)}</td>
+              <td class="num">${fmt_num(row['entry_price'], 6)}</td>
+              <td class="num">${fmt_num(row.get('marked_value_usd'))}</td>
+              <td class="num">{fmt_pct(row.get('marked_pnl_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('1h_return_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('4h_return_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('24h_return_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('7d_return_pct'))}</td>
               <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
             </tr>
             """
@@ -515,6 +717,36 @@ def render_html(report):
       </section>
 
       <section class="panel">
+        <h2>Hypothetical $1,000 xSOL Buys 10 Minutes After Signal</h2>
+        <div class="sub">
+          Strategy replay: one fixed-size xSOL purchase per confirmed activation episode, entered 10 minutes after the first buy in the episode.
+          This avoids counting a burst of same-event on-chain buys as multiple separate trading signals.
+        </div>
+        <section class="grid">
+          {render_tranche_cards(report)}
+        </section>
+        <table>
+          <thead>
+            <tr>
+              <th>Signal Start</th>
+              <th>Hyp Entry</th>
+              <th>Tranche</th>
+              <th>xSOL Bought</th>
+              <th>Entry Price</th>
+              <th>Marked Value</th>
+              <th>Marked PnL</th>
+              <th>1h</th>
+              <th>4h</th>
+              <th>24h</th>
+              <th>7d</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody>{render_tranche_rows(report)}</tbody>
+        </table>
+      </section>
+
+      <section class="panel">
         <h2>Activation Episodes</h2>
         <table>
           <thead>
@@ -576,6 +808,18 @@ def main():
         help="Local timezone for display fields.",
     )
     parser.add_argument(
+        "--delay-seconds",
+        default=DEFAULT_DELAY_SECONDS,
+        type=int,
+        help="Delay after the episode start for hypothetical replay entries.",
+    )
+    parser.add_argument(
+        "--tranche-usd",
+        default=DEFAULT_TRANCHE_USD,
+        type=float,
+        help="Fixed USD notional for hypothetical replay entries.",
+    )
+    parser.add_argument(
         "--json-out",
         default="data/stability_pool_signal_report.json",
         help="JSON output path.",
@@ -592,6 +836,8 @@ def main():
         load_ohlcv(args.ohlcv),
         gap_seconds=args.gap_seconds,
         tz_name=args.timezone,
+        delay_seconds=args.delay_seconds,
+        tranche_usd=args.tranche_usd,
     )
     Path(args.json_out).write_text(json.dumps(report, indent=2), encoding="utf-8")
     Path(args.html_out).write_text(render_html(report), encoding="utf-8")

@@ -329,6 +329,158 @@ def build_lot_day_groups(lots):
     return "\n".join(sections)
 
 
+def build_strategy_cards(signal_report):
+    replay = (signal_report or {}).get("tranche_replay") or {}
+    overall = replay.get("overall") or {}
+    if not replay:
+        return ""
+    cards = [
+        card(
+            "Replay Signals",
+            str(replay.get("entry_count", 0)),
+            f"${fmt_num(replay.get('tranche_usd', 0), 0)} xSOL buys at +{int((replay.get('delay_seconds') or 0) / 60)}m",
+        ),
+        card(
+            "Replay Capital",
+            f"${fmt_num(overall.get('capital_deployed_usd'))}",
+            "fixed notional deployed",
+        ),
+        card(
+            "Replay Marked Value",
+            f"${fmt_num(overall.get('marked_value_usd'))}",
+            "latest cached xSOL close",
+        ),
+        card(
+            "Replay Marked PnL",
+            f"${fmt_num(overall.get('marked_pnl_usd'))}",
+            fmt_pct(overall.get("marked_pnl_pct")),
+            pnl_class(overall.get("marked_pnl_usd")),
+        ),
+        card(
+            "Replay 24h Mean",
+            fmt_pct(overall.get("24h_mean_return_pct")),
+            "from delayed entry",
+        ),
+        card(
+            "Replay 24h Win Rate",
+            fmt_pct(overall.get("24h_win_rate_pct")),
+            "available windows only",
+        ),
+    ]
+    return "\n".join(cards)
+
+
+def build_strategy_rows(entries):
+    rows = []
+    for row in sorted(entries, key=lambda item: item.get("entry_target_utc") or "", reverse=True):
+        signal_day, signal_time = format_pacific_date_parts(row.get("start_utc") or row.get("start_local"))
+        entry_day, entry_time = format_pacific_date_parts(row.get("entry_target_utc") or row.get("entry_target_local"))
+        marked_pnl = row.get("marked_pnl_usd")
+        tone = pnl_class(marked_pnl)
+        rows.append(
+            f"""
+            <tr>
+              <td>
+                <div class="date-main">{html.escape(signal_day)}</div>
+                <div class="date-sub">{html.escape(signal_time)}</div>
+              </td>
+              <td>
+                <div class="date-main">{html.escape(entry_day)}</div>
+                <div class="date-sub">{html.escape(entry_time)}</div>
+              </td>
+              <td class="num">${fmt_num(row.get('tranche_usd'), 0)}</td>
+              <td class="num">{fmt_num(row.get('xsol_acquired'), 2)}</td>
+              <td class="num">${fmt_num(row.get('entry_price'), 6)}</td>
+              <td class="num">${fmt_num(row.get('marked_value_usd'))}</td>
+              <td class="num">
+                <div class="{tone}">${fmt_num(marked_pnl)}</div>
+                <div class="subline {tone}">{fmt_pct(row.get('marked_pnl_pct'))}</div>
+              </td>
+              <td class="num">{fmt_pct(row.get('24h_return_pct'))}</td>
+              <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
+            </tr>
+            """
+        )
+    return "\n".join(rows)
+
+
+def build_strategy_day_groups(signal_report):
+    replay = (signal_report or {}).get("tranche_replay") or {}
+    entries = replay.get("entries") or []
+    if not entries:
+        return '<div class="foot">No confirmed signal-replay entries have been generated yet.</div>'
+
+    groups = []
+    by_day = {}
+    for row in sorted(entries, key=lambda item: item.get("entry_target_utc") or "", reverse=True):
+        day_key = day_key_for_ts(row.get("entry_target_utc") or row.get("entry_target_local"))
+        bucket = by_day.setdefault(
+            day_key,
+            {
+                "day_key": day_key,
+                "day_label": day_label_for_ts(row.get("entry_target_utc") or row.get("entry_target_local")),
+                "entries": [],
+                "count": 0,
+                "capital": 0.0,
+                "xsol": 0.0,
+                "marked_value": 0.0,
+                "marked_pnl": 0.0,
+            },
+        )
+        if bucket["count"] == 0:
+            groups.append(bucket)
+        bucket["entries"].append(row)
+        bucket["count"] += 1
+        bucket["capital"] += float(row.get("tranche_usd") or 0.0)
+        bucket["xsol"] += float(row.get("xsol_acquired") or 0.0)
+        bucket["marked_value"] += float(row.get("marked_value_usd") or 0.0)
+        bucket["marked_pnl"] += float(row.get("marked_pnl_usd") or 0.0)
+
+    sections = []
+    for index, group in enumerate(groups):
+        pnl_pct = ((group["marked_pnl"] / group["capital"]) * 100.0) if group["capital"] else None
+        sections.append(
+            f"""
+            <details class="day-group" data-strategy-day-key="{html.escape(group['day_key'])}" {"open" if index == 0 else ""}>
+              <summary>
+                <div class="day-summary-heading">{html.escape(group['day_label'])}</div>
+                <div class="day-summary-metrics">
+                  <span><strong>{group['count']}</strong> buys</span>
+                  <span><strong>${fmt_num(group['capital'])}</strong> deployed</span>
+                  <span><strong>{fmt_num(group['xsol'], 2)}</strong> xSOL</span>
+                  <span><strong>${fmt_num(group['marked_value'])}</strong> marked</span>
+                  <span class="{pnl_class(group['marked_pnl'])}">
+                    <strong>${fmt_num(group['marked_pnl'])}</strong>
+                    <span>{fmt_pct(pnl_pct)}</span>
+                  </span>
+                </div>
+              </summary>
+              <div class="day-group-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Signal Start</th>
+                      <th>Hyp Entry</th>
+                      <th>Tranche</th>
+                      <th>xSOL Bought</th>
+                      <th>Entry Price</th>
+                      <th>Marked Value</th>
+                      <th>Marked PnL</th>
+                      <th>24h</th>
+                      <th>Tx</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {build_strategy_rows(group['entries'])}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            """
+        )
+    return "\n".join(sections)
+
+
 def build_mark_rows(snapshots):
     rows = []
     for row in reversed(snapshots[-40:]):
@@ -349,7 +501,7 @@ def build_mark_rows(snapshots):
     return "\n".join(rows)
 
 
-def render_html(lot_state, snapshots):
+def render_html(lot_state, snapshots, signal_report=None):
     latest_snapshot = snapshots[-1] if snapshots else None
     lots = latest_snapshot["lots"] if latest_snapshot else lot_state.get("lots", [])
     display_lots = enrich_lots_for_display(lots)
@@ -527,6 +679,18 @@ def render_html(lot_state, snapshots):
           Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
         </div>
         {build_lot_day_groups(display_lots)}
+      </section>
+
+      <section class="panel">
+        <h2>Hypothetical $1,000 xSOL Buys 10 Minutes After Signal</h2>
+        <div class="foot">
+          One fixed-size xSOL buy per confirmed activation episode, entered 10 minutes after the first buy in that episode.
+          These are <strong>signal replays</strong>, not Stability Pool lots. Marked values below use the latest cached xSOL close from the signal study.
+        </div>
+        <section class="cards">
+          {build_strategy_cards(signal_report)}
+        </section>
+        {build_strategy_day_groups(signal_report)}
       </section>
 
       <section class="panel">
@@ -880,10 +1044,17 @@ def main():
         default="stability_pool_deployments.html",
         help="Output HTML path.",
     )
+    parser.add_argument(
+        "--signal-report",
+        default="data/stability_pool_signal_report.json",
+        help="Signal report JSON path.",
+    )
     args = parser.parse_args()
     lot_state = load_json(args.lots)
     marks = load_jsonl(args.marks)
-    Path(args.out).write_text(render_html(lot_state, marks), encoding="utf-8")
+    signal_path = Path(args.signal_report)
+    signal_report = load_json(signal_path) if signal_path.exists() else None
+    Path(args.out).write_text(render_html(lot_state, marks, signal_report=signal_report), encoding="utf-8")
     print(args.out)
 
 
