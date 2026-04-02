@@ -1,8 +1,8 @@
 {
   "current_deployment_window": {
-    "oldest_utc": "2026-03-30T23:15:43+00:00",
+    "oldest_utc": "2026-03-31T01:32:48+00:00",
     "newest_utc": "2026-04-02T20:33:41+00:00",
-    "oldest_local": "2026-03-30T23:15:43+00:00",
+    "oldest_local": "2026-03-31T01:32:48+00:00",
     "newest_local": "2026-04-02T20:33:41+00:00"
   },
   "buy_xsol_event_count": 13,
