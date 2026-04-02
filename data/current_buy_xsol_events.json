@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
-    "oldest_utc": "2026-03-30T21:20:07+00:00",
-    "newest_utc": "2026-04-02T19:12:04+00:00",
-    "oldest_local": "2026-03-30T21:20:07+00:00",
-    "newest_local": "2026-04-02T19:12:04+00:00"
+    "oldest_utc": "2026-03-30T21:54:04+00:00",
+    "newest_utc": "2026-04-02T20:12:14+00:00",
+    "oldest_local": "2026-03-30T21:54:04+00:00",
+    "newest_local": "2026-04-02T20:12:14+00:00"
   },
   "buy_xsol_event_count": 13,
   "buy_xsol_total_hyusd_spent": 449132.274345,
@@ -174,7 +174,7 @@
       "entry_close": 0.04833083591821063,
       "matches_screenshot_row": false,
       "1h_return_pct": 5.657404248143938,
-      "6h_return_pct": null,
+      "6h_return_pct": 8.871890276687267,
       "24h_return_pct": null
     },
     {
@@ -188,7 +188,7 @@
       "entry_close": 0.047893800356491656,
       "matches_screenshot_row": false,
       "1h_return_pct": 8.904112291731536,
-      "6h_return_pct": null,
+      "6h_return_pct": 9.86535680822822,
       "24h_return_pct": null
     }
   ],
