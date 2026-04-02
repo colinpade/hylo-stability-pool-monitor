@@ -28,6 +28,7 @@ jobs:
       new_deployments: ${{ steps.diff.outputs.new_deployments }}
       latest_signature: ${{ steps.latest.outputs.signature }}
       pages_url: ${{ steps.meta.outputs.pages_url }}
+      remote_unchanged: ${{ steps.freshness.outputs.remote_unchanged }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,11 +36,13 @@ jobs:
           fetch-depth: 0
 
       - name: Sync workspace to latest main
+        id: synced
         shell: bash
         run: |
           branch="${GITHUB_REF_NAME}"
           git fetch origin "${branch}"
           git checkout -B "${branch}" "origin/${branch}"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -150,8 +153,23 @@ jobs:
           cp data/stability_pool_signal_report.json site/data/stability_pool_signal_report.json
           cp data/xsol_usdc_ohlcv_5m.json site/data/xsol_usdc_ohlcv_5m.json
 
+      - name: Check remote freshness before publish
+        id: freshness
+        shell: bash
+        run: |
+          branch="${GITHUB_REF_NAME}"
+          synced_sha="${{ steps.synced.outputs.sha }}"
+          git fetch origin "${branch}"
+          remote_sha="$(git rev-parse "origin/${branch}")"
+          if [[ "$remote_sha" == "$synced_sha" ]]; then
+            echo "remote_unchanged=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "remote_unchanged=false" >> "$GITHUB_OUTPUT"
+            echo "Remote advanced during run: ${synced_sha} -> ${remote_sha}"
+          fi
+
       - name: Send ntfy alert
-        if: steps.diff.outputs.new_deployments == 'true' && env.NTFY_TOPIC != ''
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && env.NTFY_TOPIC != ''
         env:
           PAGES_URL: ${{ steps.meta.outputs.pages_url }}
         shell: bash
@@ -177,12 +195,13 @@ jobs:
           fi
 
       - name: Record latest alerted deployment signature
-        if: steps.diff.outputs.new_deployments == 'true'
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true'
         shell: bash
         run: |
           printf '%s\n' '${{ steps.latest.outputs.signature }}' > data/last_alerted_deployment_signature.txt
 
       - name: Commit updated tracker artifacts
+        if: steps.freshness.outputs.remote_unchanged == 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
@@ -204,12 +223,13 @@ jobs:
           fi
 
       - name: Upload Pages artifact
+        if: steps.freshness.outputs.remote_unchanged == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
   deploy:
-    if: needs.build.result == 'success'
+    if: needs.build.result == 'success' && needs.build.outputs.remote_unchanged == 'true'
     needs: build
     runs-on: ubuntu-latest
     environment:
