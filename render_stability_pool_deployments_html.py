@@ -33,11 +33,24 @@ def fmt_num(value, digits=2):
     return f"{value:,.{digits}f}"
 
 
+def fmt_signed_num(value, digits=2):
+    if value is None:
+        return "n/a"
+    sign = "+" if value > 0 else ""
+    return f"{sign}{value:,.{digits}f}"
+
+
 def fmt_pct(value, digits=2):
     if value is None:
         return "n/a"
     sign = "+" if value > 0 else ""
     return f"{sign}{value:.{digits}f}%"
+
+
+def pct_change(a, b):
+    if a in (None, 0) or b is None:
+        return None
+    return ((b / a) - 1.0) * 100.0
 
 
 def format_pacific_dt(ts):
@@ -501,6 +514,49 @@ def build_mark_rows(snapshots):
     return "\n".join(rows)
 
 
+def build_snapshot_delta_rows(snapshots):
+    rows = []
+    if len(snapshots) < 2:
+        return rows
+    for previous, current in zip(snapshots, snapshots[1:]):
+        prev_summary = previous["summary"]
+        curr_summary = current["summary"]
+        prev_lots = {lot["lot_id"]: lot for lot in previous.get("lots", [])}
+        curr_lots = {lot["lot_id"]: lot for lot in current.get("lots", [])}
+        new_lot_ids = [lot_id for lot_id in curr_lots.keys() if lot_id not in prev_lots]
+        new_lots = [curr_lots[lot_id] for lot_id in new_lot_ids]
+
+        new_lot_count = len(new_lots)
+        new_hyusd_deployed = sum(float(lot.get("entry_value") or 0.0) for lot in new_lots)
+        new_xsol_acquired = sum(float(lot.get("xsol_bought") or 0.0) for lot in new_lots)
+        open_lot_delta = int(curr_summary.get("open_deployment_count") or 0) - int(prev_summary.get("open_deployment_count") or 0)
+        nav_delta_pct = pct_change(previous.get("xsol_price"), current.get("xsol_price"))
+        value_delta = float(curr_summary.get("total_current_value") or 0.0) - float(prev_summary.get("total_current_value") or 0.0)
+        pnl_delta = float(curr_summary.get("total_net_pnl") or 0.0) - float(prev_summary.get("total_net_pnl") or 0.0)
+        rows.append(
+            f"""
+            <tr>
+              <td>
+                <div>{html.escape(format_pacific_timestamp(current.get('captured_at_utc') or current.get('captured_at_local')))}</div>
+                <div class="subline">vs {html.escape(format_pacific_timestamp(previous.get('captured_at_utc') or previous.get('captured_at_local')))}</div>
+              </td>
+              <td class="num">
+                <div>{int(curr_summary.get('open_deployment_count') or 0)}</div>
+                <div class="subline {pnl_class(open_lot_delta)}">{fmt_signed_num(open_lot_delta, 0)}</div>
+              </td>
+              <td class="num">{fmt_signed_num(new_lot_count, 0)}</td>
+              <td class="num">${fmt_signed_num(new_hyusd_deployed)}</td>
+              <td class="num">{fmt_signed_num(new_xsol_acquired, 2)}</td>
+              <td class="num">{fmt_pct(nav_delta_pct, 3)}</td>
+              <td class="num {pnl_class(value_delta)}">${fmt_signed_num(value_delta)}</td>
+              <td class="num {pnl_class(pnl_delta)}">${fmt_signed_num(pnl_delta)}</td>
+            </tr>
+            """
+        )
+    rows.reverse()
+    return rows
+
+
 def render_html(lot_state, snapshots, signal_report=None):
     latest_snapshot = snapshots[-1] if snapshots else None
     lots = latest_snapshot["lots"] if latest_snapshot else lot_state.get("lots", [])
@@ -694,26 +750,36 @@ def render_html(lot_state, snapshots, signal_report=None):
       </section>
 
       <section class="panel">
-        <h2>Protocol NAV Mark History</h2>
+        <h2>Snapshot Deltas</h2>
         <div class="foot">
-          Clean history since scrub. These rows are saved Hylo protocol NAV marks, not live executable market marks.
+          Higher-signal change log between saved protocol snapshots. Instead of repeating raw NAV marks, this shows what changed since the prior saved snapshot:
+          new lots, new hyUSD deployed, new xSOL acquired, and the change in protocol-marked value and PnL.
         </div>
+        {
+            (
+                f"""
         <table>
           <thead>
             <tr>
               <th>Captured</th>
-              <th>Protocol xSOL NAV</th>
-              <th>Price Source</th>
               <th>Open Lots</th>
-              <th>Protocol NAV Value</th>
-              <th>Protocol NAV PnL</th>
-              <th>Protocol NAV PnL %</th>
+              <th>New Lots</th>
+              <th>hyUSD Deployed</th>
+              <th>xSOL Acquired</th>
+              <th>Protocol NAV Δ</th>
+              <th>Protocol Value Δ</th>
+              <th>Protocol PnL Δ</th>
             </tr>
           </thead>
           <tbody>
-            {build_mark_rows(snapshots)}
+            {''.join(build_snapshot_delta_rows(snapshots))}
           </tbody>
         </table>
+                """
+                if len(snapshots) >= 2
+                else '<div class="foot">Need at least two saved snapshots before snapshot deltas are available.</div>'
+            )
+        }
       </section>
 
       <section class="panel">

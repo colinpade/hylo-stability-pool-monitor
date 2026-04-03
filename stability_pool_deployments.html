@@ -1060,47 +1060,47 @@
       </section>
 
       <section class="panel">
-        <h2>Protocol NAV Mark History</h2>
+        <h2>Snapshot Deltas</h2>
         <div class="foot">
-          Clean history since scrub. These rows are saved Hylo protocol NAV marks, not live executable market marks.
+          Higher-signal change log between saved protocol snapshots. Instead of repeating raw NAV marks, this shows what changed since the prior saved snapshot:
+          new lots, new hyUSD deployed, new xSOL acquired, and the change in protocol-marked value and PnL.
         </div>
+        
         <table>
           <thead>
             <tr>
               <th>Captured</th>
-              <th>Protocol xSOL NAV</th>
-              <th>Price Source</th>
               <th>Open Lots</th>
-              <th>Protocol NAV Value</th>
-              <th>Protocol NAV PnL</th>
-              <th>Protocol NAV PnL %</th>
+              <th>New Lots</th>
+              <th>hyUSD Deployed</th>
+              <th>xSOL Acquired</th>
+              <th>Protocol NAV Δ</th>
+              <th>Protocol Value Δ</th>
+              <th>Protocol PnL Δ</th>
             </tr>
           </thead>
           <tbody>
             
             <tr>
-              <td>Apr 2, 6:54 AM PDT</td>
-              <td class="num">0.065468416</td>
-              <td>hylo_stats.exchangeStats.levercoinNav</td>
-              <td class="num">19</td>
-              <td class="num">$1,057,035.53</td>
-              <td class="num up">$192,767.95</td>
-              <td class="num up">+22.30%</td>
-            </tr>
-            
-
-            <tr>
-              <td>Apr 2, 3:41 AM PDT</td>
-              <td class="num">0.065468416</td>
-              <td>hylo_stats.exchangeStats.levercoinNav</td>
-              <td class="num">11</td>
-              <td class="num">$668,379.35</td>
-              <td class="num up">$95,684.48</td>
-              <td class="num up">+16.71%</td>
+              <td>
+                <div>Apr 2, 6:54 AM PDT</div>
+                <div class="subline">vs Apr 2, 3:41 AM PDT</div>
+              </td>
+              <td class="num">
+                <div>19</div>
+                <div class="subline up">+8</div>
+              </td>
+              <td class="num">+8</td>
+              <td class="num">$+291,572.71</td>
+              <td class="num">+5,936,544.81</td>
+              <td class="num">0.000%</td>
+              <td class="num up">$+388,656.19</td>
+              <td class="num up">$+97,083.47</td>
             </tr>
             
           </tbody>
         </table>
+                
       </section>
 
       <section class="panel">
