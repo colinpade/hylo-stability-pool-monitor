@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
-    "oldest_utc": "2026-03-31T01:32:48+00:00",
-    "newest_utc": "2026-04-03T00:27:26+00:00",
-    "oldest_local": "2026-03-31T01:32:48+00:00",
-    "newest_local": "2026-04-03T00:27:26+00:00"
+    "oldest_utc": "2026-03-31T04:20:33+00:00",
+    "newest_utc": "2026-04-03T03:47:08+00:00",
+    "oldest_local": "2026-03-31T04:20:33+00:00",
+    "newest_local": "2026-04-03T03:47:08+00:00"
   },
   "buy_xsol_event_count": 13,
   "buy_xsol_total_hyusd_spent": 449132.274345,
@@ -21,7 +21,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -3.981224388878546,
       "6h_return_pct": 0.011442424056706813,
-      "24h_return_pct": null
+      "24h_return_pct": -2.4435003964064284
     },
     {
       "utc": "2026-04-02T01:50:41+00:00",
@@ -35,7 +35,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -4.07019126168503,
       "6h_return_pct": 1.397698323872687,
-      "24h_return_pct": null
+      "24h_return_pct": -3.982049234568963
     },
     {
       "utc": "2026-04-02T02:05:41+00:00",
@@ -49,7 +49,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -0.958752040781552,
       "6h_return_pct": 3.579627496389448,
-      "24h_return_pct": null
+      "24h_return_pct": -2.4378770020079266
     },
     {
       "utc": "2026-04-02T02:15:41+00:00",
@@ -63,7 +63,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -0.19191885947170695,
       "6h_return_pct": 0.4953679101528774,
-      "24h_return_pct": null
+      "24h_return_pct": -2.462753100839432
     },
     {
       "utc": "2026-04-02T02:25:42+00:00",
@@ -77,7 +77,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": 3.2976885001812173,
       "6h_return_pct": 5.3441543704682015,
-      "24h_return_pct": null
+      "24h_return_pct": 0.7448705443021009
     },
     {
       "utc": "2026-04-02T12:10:41+00:00",
