@@ -73,12 +73,12 @@ jobs:
             echo "count=0" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Record previous alerted deployment signature
-        id: alerted_previous
+      - name: Record previous processed deployment signature
+        id: processed_previous
         shell: bash
         run: |
-          if [[ -f data/last_alerted_deployment_signature.txt ]]; then
-            echo "signature=$(tr -d '\n' < data/last_alerted_deployment_signature.txt)" >> "$GITHUB_OUTPUT"
+          if [[ -f data/last_processed_deployment_signature.txt ]]; then
+            echo "signature=$(tr -d '\n' < data/last_processed_deployment_signature.txt)" >> "$GITHUB_OUTPUT"
           else
             echo "signature=" >> "$GITHUB_OUTPUT"
           fi
@@ -127,13 +127,36 @@ jobs:
         run: |
           prev="${{ steps.previous.outputs.count }}"
           curr="${{ steps.current.outputs.count }}"
-          prev_sig="${{ steps.alerted_previous.outputs.signature }}"
+          prev_sig="${{ steps.processed_previous.outputs.signature }}"
           latest_sig="${{ steps.latest.outputs.signature }}"
           if [[ -n "$latest_sig" && "$latest_sig" != "$prev_sig" ]]; then
             echo "new_deployments=true" >> "$GITHUB_OUTPUT"
           else
             echo "new_deployments=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Resolve setup for latest deployment
+        id: setup
+        shell: bash
+        run: |
+          latest_sig="${{ steps.latest.outputs.signature }}"
+          if [[ -z "$latest_sig" ]]; then
+            echo "grade=Unscored" >> "$GITHUB_OUTPUT"
+            echo "score=" >> "$GITHUB_OUTPUT"
+            echo "expected_24h=" >> "$GITHUB_OUTPUT"
+            echo "confidence=No Evidence" >> "$GITHUB_OUTPUT"
+            echo "status=Unscored" >> "$GITHUB_OUTPUT"
+            echo "reason=No setup matched the latest deployment." >> "$GITHUB_OUTPUT"
+            echo "alert_eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "grade=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .setup_grade) // "Unscored"' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "score=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .setup_score // empty)' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "expected_24h=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .setup_expected_24h_return_pct // empty)' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "confidence=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .setup_confidence_bucket) // "No Evidence"' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "status=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .alert_status) // "Unscored"' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "reason=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .alert_reason) // "No setup matched the latest deployment."' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
+          echo "alert_eligible=$(jq -r --arg sig "$latest_sig" '([.episodes[] | select(((.signatures // []) | index($sig)) != null)] | first | .alert_eligible) // false' data/stability_pool_signal_report.json)" >> "$GITHUB_OUTPUT"
 
       - name: Build Pages artifact
         shell: bash
@@ -169,7 +192,7 @@ jobs:
           fi
 
       - name: Send ntfy alert
-        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && env.NTFY_TOPIC != ''
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && steps.setup.outputs.alert_eligible == 'true' && env.NTFY_TOPIC != ''
         env:
           PAGES_URL: ${{ steps.meta.outputs.pages_url }}
         shell: bash
@@ -179,8 +202,20 @@ jobs:
           spent="$(echo "$latest_json" | jq -r '.entry_value | tostring')"
           local_time="$(echo "$latest_json" | jq -r '.local')"
           tx="$(echo "$latest_json" | jq -r '.signature')"
-          title="Hylo Stability Pool bought xSOL"
-          body="New confirmed deployment at ${local_time}\nxSOL: ${amount}\nhyUSD spent: ${spent}\nDashboard: ${PAGES_URL}\nTx: https://solscan.io/tx/${tx}"
+          setup_grade="${{ steps.setup.outputs.grade }}"
+          setup_score="${{ steps.setup.outputs.score }}"
+          setup_expected_24h="${{ steps.setup.outputs.expected_24h }}"
+          setup_confidence="${{ steps.setup.outputs.confidence }}"
+          setup_reason="${{ steps.setup.outputs.reason }}"
+          title="Hylo Stability Pool setup cleared alert bar"
+          body="New confirmed deployment at ${local_time}\nxSOL: ${amount}\nhyUSD spent: ${spent}\nSetup: ${setup_grade}"
+          if [[ -n "$setup_score" ]]; then
+            body="${body} • score ${setup_score}"
+          fi
+          if [[ -n "$setup_expected_24h" ]]; then
+            body="${body} • exp 24h ${setup_expected_24h}%"
+          fi
+          body="${body}\nConfidence: ${setup_confidence}\nWhy: ${setup_reason}\nDashboard: ${PAGES_URL}\nTx: https://solscan.io/tx/${tx}"
           if [[ -n "$NTFY_AUTH_HEADER" ]]; then
             curl --silent --show-error \
               -H "$NTFY_AUTH_HEADER" \
@@ -194,8 +229,14 @@ jobs:
               "https://ntfy.sh/${NTFY_TOPIC}"
           fi
 
-      - name: Record latest alerted deployment signature
+      - name: Record latest processed deployment signature
         if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true'
+        shell: bash
+        run: |
+          printf '%s\n' '${{ steps.latest.outputs.signature }}' > data/last_processed_deployment_signature.txt
+
+      - name: Record latest alerted deployment signature
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && steps.setup.outputs.alert_eligible == 'true'
         shell: bash
         run: |
           printf '%s\n' '${{ steps.latest.outputs.signature }}' > data/last_alerted_deployment_signature.txt
@@ -208,6 +249,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
             data/live_hylo_stats.json \
+            data/last_processed_deployment_signature.txt \
             data/last_alerted_deployment_signature.txt \
             data/stability_pool_deployments.json \
             data/stability_pool_deployment_marks.jsonl \

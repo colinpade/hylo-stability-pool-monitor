@@ -95,6 +95,18 @@
             </div>
             
             <div class="card">
+              <div class="label">Eligible Alerts</div>
+              <div class="value">0</div>
+              <div class="subline">score &gt;= 52 and confidence &gt;= 45</div>
+            </div>
+            
+            <div class="card">
+              <div class="label">Top Live Setup</div>
+              <div class="value">No scored live setup</div>
+              <div class="subline">waiting for more evidence</div>
+            </div>
+            
+            <div class="card">
               <div class="label">1h Win Rate</div>
               <div class="value">+37.50%</div>
               <div class="subline">episodes with positive 1h return</div>
@@ -355,11 +367,35 @@
       </section>
 
       <section class="panel">
+        <h2>Ranked Live Setups</h2>
+        <div class="sub">
+          Unresolved episodes are ranked using only earlier episodes that already have 24h outcomes. Profit-focused alerts currently require setup score >= 52 and confidence >= 45, so the table below doubles as the alert filter.
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Signal Start</th>
+              <th>Grade</th>
+              <th>Score</th>
+              <th>Expected 24h</th>
+              <th>Expected Win Rate</th>
+              <th>Alert Status</th>
+              <th>Training Episodes</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="panel">
         <h2>Activation Episodes</h2>
         <table>
           <thead>
             <tr>
               <th>Episode Start</th>
+              <th>Grade</th>
+              <th>Expected 24h</th>
               <th>Buys</th>
               <th>hyUSD Spent</th>
               <th>xSOL Bought</th>
@@ -382,6 +418,14 @@
                 <div>2026-04-01T18:32:33</div>
                 <div class="subline">first activation of day</div>
               </td>
+              <td class="num">
+                <div>Unscored</div>
+                <div class="subline">n/a</div>
+              </td>
+              <td class="num">
+                <div>n/a</div>
+                <div class="subline">No Evidence</div>
+              </td>
               <td class="num">1</td>
               <td class="num">49,322</td>
               <td class="num">910,995</td>
@@ -402,6 +446,14 @@
               <td>
                 <div>2026-04-01T18:50:41</div>
                 <div class="subline">follow-on activation</div>
+              </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">27.86</div>
+              </td>
+              <td class="num">
+                <div>-2.44%</div>
+                <div class="subline">Low</div>
               </td>
               <td class="num">1</td>
               <td class="num">9,387</td>
@@ -424,6 +476,14 @@
                 <div>2026-04-01T19:05:41</div>
                 <div class="subline">follow-on activation</div>
               </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">29.79</div>
+              </td>
+              <td class="num">
+                <div>-3.25%</div>
+                <div class="subline">Medium</div>
+              </td>
               <td class="num">2</td>
               <td class="num">60,704</td>
               <td class="num">1,145,118</td>
@@ -444,6 +504,14 @@
               <td>
                 <div>2026-04-01T19:25:42</div>
                 <div class="subline">follow-on activation</div>
+              </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">33.85</div>
+              </td>
+              <td class="num">
+                <div>-2.97%</div>
+                <div class="subline">High</div>
               </td>
               <td class="num">1</td>
               <td class="num">38,147</td>
@@ -466,6 +534,14 @@
                 <div>2026-04-02T05:10:41</div>
                 <div class="subline">first activation of day</div>
               </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">27.21</div>
+              </td>
+              <td class="num">
+                <div>-2.05%</div>
+                <div class="subline">High</div>
+              </td>
               <td class="num">2</td>
               <td class="num">48,689</td>
               <td class="num">955,038</td>
@@ -486,6 +562,14 @@
               <td>
                 <div>2026-04-02T05:55:41</div>
                 <div class="subline">follow-on activation</div>
+              </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">36.90</div>
+              </td>
+              <td class="num">
+                <div>-0.35%</div>
+                <div class="subline">High</div>
               </td>
               <td class="num">1</td>
               <td class="num">22,867</td>
@@ -508,6 +592,14 @@
                 <div>2026-04-02T06:10:41</div>
                 <div class="subline">follow-on activation</div>
               </td>
+              <td class="num">
+                <div>D</div>
+                <div class="subline">44.77</div>
+              </td>
+              <td class="num">
+                <div>+0.85%</div>
+                <div class="subline">High</div>
+              </td>
               <td class="num">3</td>
               <td class="num">111,103</td>
               <td class="num">2,251,275</td>
@@ -528,6 +620,14 @@
               <td>
                 <div>2026-04-02T06:32:33</div>
                 <div class="subline">follow-on activation</div>
+              </td>
+              <td class="num">
+                <div>C</div>
+                <div class="subline">52.94</div>
+              </td>
+              <td class="num">
+                <div>+2.26%</div>
+                <div class="subline">High</div>
               </td>
               <td class="num">2</td>
               <td class="num">108,914</td>
@@ -714,7 +814,7 @@
 
       <section class="panel">
         <h2>Method Notes</h2>
-        <ul><li>Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.</li><li>Forward returns are measured from the first confirmed buy in an episode against cached xSOL/USDC 5-minute market bars.</li><li>Hypothetical strategy replay buys $1,000 of xSOL 10 minutes after each episode begins, then measures forward returns from that delayed entry.</li><li>7d metrics remain unavailable until the cached OHLC file extends far enough beyond an episode.</li><li>Historical collateral ratio snapshots were not cached, so regime context uses public market drop, deployment size, pool composition shift, and whether the episode was the first activation of the day.</li></ul>
+        <ul><li>Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.</li><li>Forward returns are measured from the first confirmed buy in an episode against cached xSOL/USDC 5-minute market bars.</li><li>Hypothetical strategy replay buys $1,000 of xSOL 10 minutes after each episode begins, then measures forward returns from that delayed entry.</li><li>Setup grades use only prior resolved episodes with 24h outcomes, so newer episodes are ranked without using their own future returns.</li><li>Profit-focused alert eligibility currently requires setup score &gt;= 52 and confidence score &gt;= 45.</li><li>7d metrics remain unavailable until the cached OHLC file extends far enough beyond an episode.</li><li>Historical collateral ratio snapshots were not cached, so regime context uses public market drop, deployment size, pool composition shift, and whether the episode was the first activation of the day.</li></ul>
       </section>
     </div>
   </body>

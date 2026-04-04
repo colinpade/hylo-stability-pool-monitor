@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-04T03:41:18.770043+00:00",
+  "generated_at_utc": "2026-04-04T04:27:16.053240+00:00",
   "timezone": "America/Los_Angeles",
   "gap_seconds": 600,
   "episode_count": 8,
@@ -65,7 +65,24 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -26.013148936215714,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": null,
+      "setup_expected_24h_win_rate_pct": null,
+      "setup_expected_24h_drawdown_pct": null,
+      "setup_training_episode_count": 0,
+      "setup_match_count": 0,
+      "setup_match_dimensions": [],
+      "setup_feature_matches": [],
+      "setup_confidence_score": 0.0,
+      "setup_confidence_bucket": "No Evidence",
+      "setup_score": null,
+      "setup_grade": "Unscored",
+      "setup_headline": "No prior resolved episodes yet",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Unscored",
+      "alert_reason": "No prior resolved 24h episodes yet."
     },
     {
       "episode_id": "episode-2",
@@ -127,7 +144,62 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -25.94453232106223,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": -2.4435003964064284,
+      "setup_expected_24h_win_rate_pct": 0.0,
+      "setup_expected_24h_drawdown_pct": -12.713156909038625,
+      "setup_training_episode_count": 1,
+      "setup_match_count": 3,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "trigger_size_bucket",
+        "xsol_share_after_bucket"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 1,
+          "raw_24h_mean_return_pct": -2.4435003964064284,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.4435003964064284,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "<1% of pool",
+          "count": 1,
+          "raw_24h_mean_return_pct": -2.4435003964064284,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.4435003964064284,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 1,
+          "raw_24h_mean_return_pct": -2.4435003964064284,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.4435003964064284,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        }
+      ],
+      "setup_confidence_score": 30.0,
+      "setup_confidence_bucket": "Low",
+      "setup_score": 27.857210916340794,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 1 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 27.9 < 52; confidence 30 < 45"
     },
     {
       "episode_id": "episode-3",
@@ -190,7 +262,74 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -27.116651103896537,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": -3.251238536441759,
+      "setup_expected_24h_win_rate_pct": 0.0,
+      "setup_expected_24h_drawdown_pct": -12.755616934634684,
+      "setup_training_episode_count": 2,
+      "setup_match_count": 4,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "trigger_size_bucket",
+        "xsol_share_after_bucket",
+        "session_type"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 2,
+          "raw_24h_mean_return_pct": -3.2127748154876956,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.753595028653919,
+          "shrunk_24h_mean_return_pct": -3.2127748154876956,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.753595028653919
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "<1% of pool",
+          "count": 2,
+          "raw_24h_mean_return_pct": -3.2127748154876956,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.753595028653919,
+          "shrunk_24h_mean_return_pct": -3.2127748154876956,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.753595028653919
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 2,
+          "raw_24h_mean_return_pct": -3.2127748154876956,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.753595028653919,
+          "shrunk_24h_mean_return_pct": -3.2127748154876956,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.753595028653919
+        },
+        {
+          "dimension": "session_type",
+          "label": "follow-on activation",
+          "count": 1,
+          "raw_24h_mean_return_pct": -3.982049234568963,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.794033148269213,
+          "shrunk_24h_mean_return_pct": -3.4050934202580128,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.763704558557743
+        }
+      ],
+      "setup_confidence_score": 66.0,
+      "setup_confidence_bucket": "Medium",
+      "setup_score": 29.790782605554867,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 2 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 29.8 < 52"
     },
     {
       "episode_id": "episode-4",
@@ -252,7 +391,74 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -29.41919314512059,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": -2.9749145502446264,
+      "setup_expected_24h_win_rate_pct": 0.0,
+      "setup_expected_24h_drawdown_pct": -12.663528734280328,
+      "setup_training_episode_count": 3,
+      "setup_match_count": 4,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "trigger_size_bucket",
+        "xsol_share_after_bucket",
+        "session_type"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 3,
+          "raw_24h_mean_return_pct": -2.9544755443277726,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.9544755443277726,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "<1% of pool",
+          "count": 3,
+          "raw_24h_mean_return_pct": -2.9544755443277726,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.9544755443277726,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 3,
+          "raw_24h_mean_return_pct": -2.9544755443277726,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.9544755443277726,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.713156909038625
+        },
+        {
+          "dimension": "session_type",
+          "label": "follow-on activation",
+          "count": 2,
+          "raw_24h_mean_return_pct": -3.209963118288445,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.092804724559914,
+          "shrunk_24h_mean_return_pct": -3.0566705739120414,
+          "shrunk_24h_win_rate_pct": 0.0,
+          "shrunk_24h_median_drawdown_pct": -12.46501603524714
+        }
+      ],
+      "setup_confidence_score": 100.0,
+      "setup_confidence_bucket": "High",
+      "setup_score": 33.85393641837435,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 3 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 33.9 < 52"
     },
     {
       "episode_id": "episode-5",
@@ -315,7 +521,74 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -29.960356916439203,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": -2.0503320908821103,
+      "setup_expected_24h_win_rate_pct": 23.75,
+      "setup_expected_24h_drawdown_pct": -12.085406120149319,
+      "setup_training_episode_count": 4,
+      "setup_match_count": 4,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "trigger_size_bucket",
+        "xsol_share_after_bucket",
+        "session_type"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 4,
+          "raw_24h_mean_return_pct": -2.0296390221703042,
+          "raw_24h_win_rate_pct": 25.0,
+          "raw_24h_median_drawdown_pct": -12.05236660494462,
+          "shrunk_24h_mean_return_pct": -2.0296390221703042,
+          "shrunk_24h_win_rate_pct": 25.0,
+          "shrunk_24h_median_drawdown_pct": -12.05236660494462
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "<1% of pool",
+          "count": 4,
+          "raw_24h_mean_return_pct": -2.0296390221703042,
+          "raw_24h_win_rate_pct": 25.0,
+          "raw_24h_median_drawdown_pct": -12.05236660494462,
+          "shrunk_24h_mean_return_pct": -2.0296390221703042,
+          "shrunk_24h_win_rate_pct": 25.0,
+          "shrunk_24h_median_drawdown_pct": -12.05236660494462
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 4,
+          "raw_24h_mean_return_pct": -2.0296390221703042,
+          "raw_24h_win_rate_pct": 25.0,
+          "raw_24h_median_drawdown_pct": -12.05236660494462,
+          "shrunk_24h_mean_return_pct": -2.0296390221703042,
+          "shrunk_24h_win_rate_pct": 25.0,
+          "shrunk_24h_median_drawdown_pct": -12.05236660494462
+        },
+        {
+          "dimension": "session_type",
+          "label": "first activation of day",
+          "count": 1,
+          "raw_24h_mean_return_pct": -2.4435003964064284,
+          "raw_24h_win_rate_pct": 0.0,
+          "raw_24h_median_drawdown_pct": -12.713156909038625,
+          "shrunk_24h_mean_return_pct": -2.133104365729335,
+          "shrunk_24h_win_rate_pct": 18.75,
+          "shrunk_24h_median_drawdown_pct": -12.21756418096812
+        }
+      ],
+      "setup_confidence_score": 100.0,
+      "setup_confidence_bucket": "High",
+      "setup_score": 27.209348474056597,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 4 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 27.2 < 52"
     },
     {
       "episode_id": "episode-6",
@@ -377,7 +650,74 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -31.29550026720953,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": -0.34854651640064926,
+      "setup_expected_24h_win_rate_pct": 39.33333333333333,
+      "setup_expected_24h_drawdown_pct": -11.391576300850614,
+      "setup_training_episode_count": 5,
+      "setup_match_count": 4,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "trigger_size_bucket",
+        "xsol_share_after_bucket",
+        "session_type"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 5,
+          "raw_24h_mean_return_pct": -0.17708665924980327,
+          "raw_24h_win_rate_pct": 40.0,
+          "raw_24h_median_drawdown_pct": -11.391576300850614,
+          "shrunk_24h_mean_return_pct": -0.17708665924980327,
+          "shrunk_24h_win_rate_pct": 40.0,
+          "shrunk_24h_median_drawdown_pct": -11.391576300850614
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "<1% of pool",
+          "count": 5,
+          "raw_24h_mean_return_pct": -0.17708665924980327,
+          "raw_24h_win_rate_pct": 40.0,
+          "raw_24h_median_drawdown_pct": -11.391576300850614,
+          "shrunk_24h_mean_return_pct": -0.17708665924980327,
+          "shrunk_24h_win_rate_pct": 40.0,
+          "shrunk_24h_median_drawdown_pct": -11.391576300850614
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 5,
+          "raw_24h_mean_return_pct": -0.17708665924980327,
+          "raw_24h_win_rate_pct": 40.0,
+          "raw_24h_median_drawdown_pct": -11.391576300850614,
+          "shrunk_24h_mean_return_pct": -0.17708665924980327,
+          "shrunk_24h_win_rate_pct": 40.0,
+          "shrunk_24h_median_drawdown_pct": -11.391576300850614
+        },
+        {
+          "dimension": "session_type",
+          "label": "follow-on activation",
+          "count": 3,
+          "raw_24h_mean_return_pct": -1.891685230758263,
+          "raw_24h_win_rate_pct": 33.33333333333333,
+          "raw_24h_median_drawdown_pct": -11.391576300850614,
+          "shrunk_24h_mean_return_pct": -1.0343859450040331,
+          "shrunk_24h_win_rate_pct": 36.666666666666664,
+          "shrunk_24h_median_drawdown_pct": -11.391576300850614
+        }
+      ],
+      "setup_confidence_score": 100.0,
+      "setup_confidence_bucket": "High",
+      "setup_score": 36.89968207284463,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 5 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 36.9 < 52"
     },
     {
       "episode_id": "episode-7",
@@ -441,7 +781,62 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -32.371582783211736,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": 0.8528895119084037,
+      "setup_expected_24h_win_rate_pct": 50.0,
+      "setup_expected_24h_drawdown_pct": -9.946249803001283,
+      "setup_training_episode_count": 6,
+      "setup_match_count": 3,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "xsol_share_after_bucket",
+        "session_type"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 6,
+          "raw_24h_mean_return_pct": 0.9556842909820359,
+          "raw_24h_win_rate_pct": 50.0,
+          "raw_24h_median_drawdown_pct": -9.946249803001283,
+          "shrunk_24h_mean_return_pct": 0.9556842909820359,
+          "shrunk_24h_win_rate_pct": 50.0,
+          "shrunk_24h_median_drawdown_pct": -9.946249803001283
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 6,
+          "raw_24h_mean_return_pct": 0.9556842909820359,
+          "raw_24h_win_rate_pct": 50.0,
+          "raw_24h_median_drawdown_pct": -9.946249803001283,
+          "shrunk_24h_mean_return_pct": 0.9556842909820359,
+          "shrunk_24h_win_rate_pct": 50.0,
+          "shrunk_24h_median_drawdown_pct": -9.946249803001283
+        },
+        {
+          "dimension": "session_type",
+          "label": "follow-on activation",
+          "count": 4,
+          "raw_24h_mean_return_pct": 0.23612083746661072,
+          "raw_24h_win_rate_pct": 50.0,
+          "raw_24h_median_drawdown_pct": -9.946249803001283,
+          "shrunk_24h_mean_return_pct": 0.5445051746875073,
+          "shrunk_24h_win_rate_pct": 50.0,
+          "shrunk_24h_median_drawdown_pct": -9.946249803001283
+        }
+      ],
+      "setup_confidence_score": 100.0,
+      "setup_confidence_bucket": "High",
+      "setup_score": 44.77027926021527,
+      "setup_grade": "D",
+      "setup_headline": "D setup from 6 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": false,
+      "alert_status": "Suppressed",
+      "alert_reason": "score 44.8 < 52"
     },
     {
       "episode_id": "episode-8",
@@ -504,7 +899,74 @@
       "7d_max_runup_pct": null,
       "7d_max_drawdown_pct": null,
       "drop_from_24h_high_pct": -34.042310362737624,
-      "pre_drop_bucket": "deep drop (15%+)"
+      "pre_drop_bucket": "deep drop (15%+)",
+      "setup_expected_24h_return_pct": 2.261587140862496,
+      "setup_expected_24h_win_rate_pct": 59.642857142857146,
+      "setup_expected_24h_drawdown_pct": -8.301198886744512,
+      "setup_training_episode_count": 7,
+      "setup_match_count": 4,
+      "setup_match_dimensions": [
+        "pre_drop_bucket",
+        "xsol_share_after_bucket",
+        "session_type",
+        "trigger_size_bucket"
+      ],
+      "setup_feature_matches": [
+        {
+          "dimension": "pre_drop_bucket",
+          "label": "deep drop (15%+)",
+          "count": 7,
+          "raw_24h_mean_return_pct": 1.9763207318946303,
+          "raw_24h_win_rate_pct": 57.14285714285714,
+          "raw_24h_median_drawdown_pct": -8.500923305151954,
+          "shrunk_24h_mean_return_pct": 1.9763207318946303,
+          "shrunk_24h_win_rate_pct": 57.142857142857146,
+          "shrunk_24h_median_drawdown_pct": -8.500923305151954
+        },
+        {
+          "dimension": "xsol_share_after_bucket",
+          "label": "xSOL share <10%",
+          "count": 7,
+          "raw_24h_mean_return_pct": 1.9763207318946303,
+          "raw_24h_win_rate_pct": 57.14285714285714,
+          "raw_24h_median_drawdown_pct": -8.500923305151954,
+          "shrunk_24h_mean_return_pct": 1.9763207318946303,
+          "shrunk_24h_win_rate_pct": 57.142857142857146,
+          "shrunk_24h_median_drawdown_pct": -8.500923305151954
+        },
+        {
+          "dimension": "session_type",
+          "label": "follow-on activation",
+          "count": 5,
+          "raw_24h_mean_return_pct": 1.8089245454473282,
+          "raw_24h_win_rate_pct": 60.0,
+          "raw_24h_median_drawdown_pct": -8.500923305151954,
+          "shrunk_24h_mean_return_pct": 1.8716981153650665,
+          "shrunk_24h_win_rate_pct": 58.92857142857143,
+          "shrunk_24h_median_drawdown_pct": -8.500923305151954
+        },
+        {
+          "dimension": "trigger_size_bucket",
+          "label": "1% to 3% of pool",
+          "count": 1,
+          "raw_24h_mean_return_pct": 8.100139377370198,
+          "raw_24h_win_rate_pct": 100.0,
+          "raw_24h_median_drawdown_pct": -4.506434937003123,
+          "shrunk_24h_mean_return_pct": 3.507275393263522,
+          "shrunk_24h_win_rate_pct": 67.85714285714286,
+          "shrunk_24h_median_drawdown_pct": -7.502301213114746
+        }
+      ],
+      "setup_confidence_score": 100.0,
+      "setup_confidence_bucket": "High",
+      "setup_score": 52.93673561763158,
+      "setup_grade": "C",
+      "setup_headline": "C setup from 7 prior resolved episodes",
+      "alert_min_setup_score": 52.0,
+      "alert_min_confidence_score": 45.0,
+      "alert_eligible": true,
+      "alert_status": "Eligible",
+      "alert_reason": "score 52.9 and confidence 100 cleared the alert bar"
     }
   ],
   "overall": {
@@ -704,6 +1166,17 @@
         "72h_median_max_runup_pct": null,
         "72h_median_max_drawdown_pct": null
       }
+    }
+  },
+  "live_setup_summary": {
+    "active_count": 0,
+    "alert_eligible_count": 0,
+    "top_active_setup": null,
+    "top_alert_setup": null,
+    "active_setups": [],
+    "alert_policy": {
+      "min_setup_score": 52.0,
+      "min_confidence_score": 45.0
     }
   },
   "tranche_replay": {
@@ -1473,6 +1946,8 @@
     "Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.",
     "Forward returns are measured from the first confirmed buy in an episode against cached xSOL/USDC 5-minute market bars.",
     "Hypothetical strategy replay buys $1,000 of xSOL 10 minutes after each episode begins, then measures forward returns from that delayed entry.",
+    "Setup grades use only prior resolved episodes with 24h outcomes, so newer episodes are ranked without using their own future returns.",
+    "Profit-focused alert eligibility currently requires setup score >= 52 and confidence score >= 45.",
     "7d metrics remain unavailable until the cached OHLC file extends far enough beyond an episode.",
     "Historical collateral ratio snapshots were not cached, so regime context uses public market drop, deployment size, pool composition shift, and whether the episode was the first activation of the day."
   ]

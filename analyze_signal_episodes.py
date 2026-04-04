@@ -20,6 +20,14 @@ HORIZONS = [
 ]
 DEFAULT_TRANCHE_USD = 1000.0
 DEFAULT_DELAY_SECONDS = 600
+ALERT_MIN_SETUP_SCORE = 52.0
+ALERT_MIN_CONFIDENCE_SCORE = 45.0
+SETUP_DIMENSIONS = (
+    "session_type",
+    "trigger_size_bucket",
+    "pre_drop_bucket",
+    "xsol_share_after_bucket",
+)
 
 
 def load_json(path):
@@ -76,6 +84,10 @@ def pct_change(a, b):
     if a in (None, 0) or b is None:
         return None
     return ((b / a) - 1.0) * 100.0
+
+
+def clamp(value, low, high):
+    return max(low, min(high, value))
 
 
 def has_required_hints(row):
@@ -180,6 +192,176 @@ def summarize_segment(rows):
         out[f"{label}_median_max_runup_pct"] = median(runups) if runups else None
         out[f"{label}_median_max_drawdown_pct"] = median(drawdowns) if drawdowns else None
     return out
+
+
+def shrink_toward_baseline(sample_value, sample_count, baseline_value, prior_weight=3.0):
+    if sample_value is None:
+        return baseline_value
+    if baseline_value is None:
+        return sample_value
+    return ((sample_value * sample_count) + (baseline_value * prior_weight)) / (sample_count + prior_weight)
+
+
+def label_for_score(score):
+    if score is None:
+        return "Unscored"
+    if score >= 72:
+        return "A"
+    if score >= 62:
+        return "B"
+    if score >= 52:
+        return "C"
+    return "D"
+
+
+def confidence_label(score):
+    if score is None:
+        return "No Evidence"
+    if score >= 75:
+        return "High"
+    if score >= 45:
+        return "Medium"
+    return "Low"
+
+
+def setup_alert_meta(setup_score, confidence_score):
+    if setup_score is None:
+        return {
+            "eligible": False,
+            "status": "Unscored",
+            "reason": "No prior resolved 24h episodes yet.",
+        }
+    reasons = []
+    if setup_score < ALERT_MIN_SETUP_SCORE:
+        reasons.append(f"score {setup_score:.1f} < {ALERT_MIN_SETUP_SCORE:.0f}")
+    if (confidence_score or 0.0) < ALERT_MIN_CONFIDENCE_SCORE:
+        reasons.append(f"confidence {confidence_score or 0.0:.0f} < {ALERT_MIN_CONFIDENCE_SCORE:.0f}")
+    if reasons:
+        return {
+            "eligible": False,
+            "status": "Suppressed",
+            "reason": "; ".join(reasons),
+        }
+    return {
+        "eligible": True,
+        "status": "Eligible",
+        "reason": f"score {setup_score:.1f} and confidence {confidence_score or 0.0:.0f} cleared the alert bar",
+    }
+
+
+def build_setup_feature_matches(current_row, training_rows):
+    matches = []
+    if not training_rows:
+        return matches
+    overall = summarize_segment(training_rows)
+    overall_mean = overall.get("24h_mean_return_pct")
+    overall_win = overall.get("24h_win_rate_pct")
+    overall_drawdown = overall.get("24h_median_max_drawdown_pct")
+
+    for dimension in SETUP_DIMENSIONS:
+        label = current_row.get(dimension)
+        subset = [row for row in training_rows if row.get(dimension) == label]
+        if not subset:
+            continue
+        summary = summarize_segment(subset)
+        matches.append(
+            {
+                "dimension": dimension,
+                "label": label,
+                "count": len(subset),
+                "raw_24h_mean_return_pct": summary.get("24h_mean_return_pct"),
+                "raw_24h_win_rate_pct": summary.get("24h_win_rate_pct"),
+                "raw_24h_median_drawdown_pct": summary.get("24h_median_max_drawdown_pct"),
+                "shrunk_24h_mean_return_pct": shrink_toward_baseline(
+                    summary.get("24h_mean_return_pct"), len(subset), overall_mean
+                ),
+                "shrunk_24h_win_rate_pct": shrink_toward_baseline(
+                    summary.get("24h_win_rate_pct"), len(subset), overall_win
+                ),
+                "shrunk_24h_median_drawdown_pct": shrink_toward_baseline(
+                    summary.get("24h_median_max_drawdown_pct"), len(subset), overall_drawdown
+                ),
+            }
+        )
+    matches.sort(key=lambda item: (-item["count"], item["dimension"]))
+    return matches
+
+
+def build_setup_rankings(episodes):
+    ranked = []
+    for index, row in enumerate(episodes):
+        training_rows = [prior for prior in episodes[:index] if prior.get("24h_return_pct") is not None]
+        overall = summarize_segment(training_rows) if training_rows else {}
+        overall_mean = overall.get("24h_mean_return_pct")
+        overall_win = overall.get("24h_win_rate_pct")
+        overall_drawdown = overall.get("24h_median_max_drawdown_pct")
+        matches = build_setup_feature_matches(row, training_rows)
+
+        if training_rows and overall_mean is not None:
+            expected_candidates = [overall_mean]
+            win_candidates = [overall_win] if overall_win is not None else []
+            drawdown_candidates = [overall_drawdown] if overall_drawdown is not None else []
+            evidence_units = 0
+            matched_dimensions = []
+            for item in matches:
+                if item.get("shrunk_24h_mean_return_pct") is not None:
+                    expected_candidates.append(item["shrunk_24h_mean_return_pct"])
+                if item.get("shrunk_24h_win_rate_pct") is not None:
+                    win_candidates.append(item["shrunk_24h_win_rate_pct"])
+                if item.get("shrunk_24h_median_drawdown_pct") is not None:
+                    drawdown_candidates.append(item["shrunk_24h_median_drawdown_pct"])
+                evidence_units += min(item["count"], 3)
+                matched_dimensions.append(item["dimension"])
+
+            expected_24h = mean(expected_candidates)
+            expected_win_rate = mean(win_candidates) if win_candidates else None
+            expected_drawdown = mean(drawdown_candidates) if drawdown_candidates else None
+            confidence_score = clamp((len(training_rows) * 12.0) + (evidence_units * 6.0), 0.0, 100.0)
+            setup_score = 50.0
+            setup_score += (expected_24h or 0.0) * 2.0
+            setup_score += (((expected_win_rate or 50.0) - 50.0) * 0.35)
+            setup_score += ((expected_drawdown or 0.0) * 1.2)
+            setup_score += ((confidence_score - 50.0) * 0.1)
+            setup_score = clamp(setup_score, 0.0, 100.0)
+            score_label = label_for_score(setup_score)
+            confidence_bucket = confidence_label(confidence_score)
+            headline = (
+                f"{score_label} setup from {len(training_rows)} prior resolved episodes"
+                if training_rows
+                else "Unscored setup"
+            )
+        else:
+            expected_24h = None
+            expected_win_rate = None
+            expected_drawdown = None
+            confidence_score = 0.0
+            setup_score = None
+            score_label = "Unscored"
+            confidence_bucket = "No Evidence"
+            matched_dimensions = []
+            headline = "No prior resolved episodes yet"
+
+        ranked_row = dict(row)
+        ranked_row["setup_expected_24h_return_pct"] = expected_24h
+        ranked_row["setup_expected_24h_win_rate_pct"] = expected_win_rate
+        ranked_row["setup_expected_24h_drawdown_pct"] = expected_drawdown
+        ranked_row["setup_training_episode_count"] = len(training_rows)
+        ranked_row["setup_match_count"] = len(matches)
+        ranked_row["setup_match_dimensions"] = matched_dimensions if training_rows else []
+        ranked_row["setup_feature_matches"] = matches
+        ranked_row["setup_confidence_score"] = confidence_score
+        ranked_row["setup_confidence_bucket"] = confidence_bucket
+        ranked_row["setup_score"] = setup_score
+        ranked_row["setup_grade"] = score_label
+        ranked_row["setup_headline"] = headline
+        alert_meta = setup_alert_meta(setup_score, confidence_score)
+        ranked_row["alert_min_setup_score"] = ALERT_MIN_SETUP_SCORE
+        ranked_row["alert_min_confidence_score"] = ALERT_MIN_CONFIDENCE_SCORE
+        ranked_row["alert_eligible"] = alert_meta["eligible"]
+        ranked_row["alert_status"] = alert_meta["status"]
+        ranked_row["alert_reason"] = alert_meta["reason"]
+        ranked.append(ranked_row)
+    return ranked
 
 
 def summarize_tranche_segment(rows):
@@ -346,6 +528,31 @@ def build_tranche_regime_segments(entries):
     return regimes
 
 
+def build_live_setup_summary(episodes):
+    live = [row for row in episodes if row.get("24h_return_pct") is None]
+    live.sort(
+        key=lambda row: (
+            row.get("setup_score") is not None,
+            row.get("setup_score") or -1.0,
+            row.get("start_block_time") or 0,
+        ),
+        reverse=True,
+    )
+    top = live[0] if live else None
+    eligible = [row for row in live if row.get("alert_eligible")]
+    return {
+        "active_count": len(live),
+        "alert_eligible_count": len(eligible),
+        "top_active_setup": top,
+        "top_alert_setup": eligible[0] if eligible else None,
+        "active_setups": live,
+        "alert_policy": {
+            "min_setup_score": ALERT_MIN_SETUP_SCORE,
+            "min_confidence_score": ALERT_MIN_CONFIDENCE_SCORE,
+        },
+    }
+
+
 def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles", delay_seconds=DEFAULT_DELAY_SECONDS, tranche_usd=DEFAULT_TRANCHE_USD):
     tz = ZoneInfo(tz_name)
     buys = confirmed_buy_rows(backfill_rows)
@@ -445,22 +652,26 @@ def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles",
         episode["pre_drop_bucket"] = drop_bucket(episode["drop_from_24h_high_pct"])
         episodes.append(episode)
 
-    summary = summarize_segment(episodes)
-    tranche_replay = build_tranche_replay(episodes, bars, delay_seconds=delay_seconds, tranche_usd=tranche_usd, tz_name=tz_name)
+    ranked_episodes = build_setup_rankings(episodes)
+    summary = summarize_segment(ranked_episodes)
+    tranche_replay = build_tranche_replay(ranked_episodes, bars, delay_seconds=delay_seconds, tranche_usd=tranche_usd, tz_name=tz_name)
     return {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "timezone": tz_name,
         "gap_seconds": gap_seconds,
-        "episode_count": len(episodes),
+        "episode_count": len(ranked_episodes),
         "confirmed_buy_count": len(buys),
-        "episodes": episodes,
+        "episodes": ranked_episodes,
         "overall": summary,
-        "regimes": build_regime_segments(episodes),
+        "regimes": build_regime_segments(ranked_episodes),
+        "live_setup_summary": build_live_setup_summary(ranked_episodes),
         "tranche_replay": tranche_replay,
         "notes": [
             "Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.",
             "Forward returns are measured from the first confirmed buy in an episode against cached xSOL/USDC 5-minute market bars.",
             f"Hypothetical strategy replay buys ${tranche_usd:,.0f} of xSOL {delay_seconds // 60} minutes after each episode begins, then measures forward returns from that delayed entry.",
+            "Setup grades use only prior resolved episodes with 24h outcomes, so newer episodes are ranked without using their own future returns.",
+            f"Profit-focused alert eligibility currently requires setup score >= {ALERT_MIN_SETUP_SCORE:.0f} and confidence score >= {ALERT_MIN_CONFIDENCE_SCORE:.0f}.",
             "7d metrics remain unavailable until the cached OHLC file extends far enough beyond an episode.",
             "Historical collateral ratio snapshots were not cached, so regime context uses public market drop, deployment size, pool composition shift, and whether the episode was the first activation of the day.",
         ],
@@ -469,9 +680,32 @@ def analyze(backfill_rows, bars, gap_seconds=600, tz_name="America/Los_Angeles",
 
 def summary_cards(report):
     overall = report["overall"]
+    live_summary = report.get("live_setup_summary") or {}
+    live_top = live_summary.get("top_active_setup")
     return [
         ("Confirmed Buys", str(report["confirmed_buy_count"]), "strictly confirmed buy_xsol rows"),
         ("Trigger Episodes", str(report["episode_count"]), f"gap <= {report['gap_seconds']}s"),
+        (
+            "Eligible Alerts",
+            str(live_summary.get("alert_eligible_count", 0)),
+            (
+                f"score >= {live_summary.get('alert_policy', {}).get('min_setup_score', ALERT_MIN_SETUP_SCORE):.0f}"
+                f" and confidence >= {live_summary.get('alert_policy', {}).get('min_confidence_score', ALERT_MIN_CONFIDENCE_SCORE):.0f}"
+            ),
+        ),
+        (
+            "Top Live Setup",
+            (
+                f"{live_top.get('setup_grade', 'Unscored')} • {fmt_num(live_top.get('setup_score'))}"
+                if live_top and live_top.get("setup_score") is not None
+                else "No scored live setup"
+            ),
+            (
+                f"{fmt_pct(live_top.get('setup_expected_24h_return_pct'))} expected 24h • {live_top.get('alert_status', 'n/a')}"
+                if live_top and live_top.get("setup_expected_24h_return_pct") is not None
+                else "waiting for more evidence"
+            ),
+        ),
         ("1h Win Rate", fmt_pct(overall.get("1h_win_rate_pct")), "episodes with positive 1h return"),
         ("4h Median", fmt_pct(overall.get("4h_median_return_pct")), "median episode return"),
         ("24h Win Rate", fmt_pct(overall.get("24h_win_rate_pct")), "available windows only"),
@@ -529,6 +763,14 @@ def render_episode_rows(report):
                 <div>{html.escape(row['start_local'][:19])}</div>
                 <div class="subline">{html.escape(row['session_type'])}</div>
               </td>
+              <td class="num">
+                <div>{html.escape(row.get('setup_grade', 'Unscored'))}</div>
+                <div class="subline">{fmt_num(row.get('setup_score')) if row.get('setup_score') is not None else 'n/a'}</div>
+              </td>
+              <td class="num">
+                <div>{fmt_pct(row.get('setup_expected_24h_return_pct'))}</div>
+                <div class="subline">{html.escape(row.get('setup_confidence_bucket', 'n/a'))}</div>
+              </td>
               <td class="num">{row['event_count']}</td>
               <td class="num">{fmt_num(row['hyusd_spent'], 0)}</td>
               <td class="num">{fmt_num(row['xsol_bought'], 0)}</td>
@@ -542,6 +784,34 @@ def render_episode_rows(report):
               <td class="num">{fmt_pct(row.get('24h_return_pct'))}</td>
               <td class="num">{fmt_pct(row.get('24h_max_drawdown_pct'))}</td>
               <td class="num">{fmt_pct(row.get('24h_max_runup_pct'))}</td>
+              <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
+            </tr>
+            """
+        )
+    return "".join(rows)
+
+
+def render_live_setup_rows(report):
+    live = (report.get("live_setup_summary") or {}).get("active_setups") or []
+    rows = []
+    for row in live:
+        tone = "up" if row.get("alert_eligible") else ("flat" if row.get("setup_score") is not None else "down")
+        rows.append(
+            f"""
+            <tr>
+              <td>
+                <div>{html.escape(row['start_local'][:19])}</div>
+                <div class="subline">{html.escape(row['session_type'])}</div>
+              </td>
+              <td class="num"><span class="{tone}">{html.escape(row.get('setup_grade', 'Unscored'))}</span></td>
+              <td class="num">{fmt_num(row.get('setup_score')) if row.get('setup_score') is not None else 'n/a'}</td>
+              <td class="num">{fmt_pct(row.get('setup_expected_24h_return_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('setup_expected_24h_win_rate_pct'))}</td>
+              <td>
+                <div class="{tone}">{html.escape(row.get('alert_status', 'n/a'))}</div>
+                <div class="subline">{html.escape(row.get('alert_reason', ''))}</div>
+              </td>
+              <td class="num">{row.get('setup_training_episode_count', 0)}</td>
               <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
             </tr>
             """
@@ -747,11 +1017,35 @@ def render_html(report):
       </section>
 
       <section class="panel">
+        <h2>Ranked Live Setups</h2>
+        <div class="sub">
+          Unresolved episodes are ranked using only earlier episodes that already have 24h outcomes. Profit-focused alerts currently require setup score >= {ALERT_MIN_SETUP_SCORE:.0f} and confidence >= {ALERT_MIN_CONFIDENCE_SCORE:.0f}, so the table below doubles as the alert filter.
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Signal Start</th>
+              <th>Grade</th>
+              <th>Score</th>
+              <th>Expected 24h</th>
+              <th>Expected Win Rate</th>
+              <th>Alert Status</th>
+              <th>Training Episodes</th>
+              <th>Tx</th>
+            </tr>
+          </thead>
+          <tbody>{render_live_setup_rows(report)}</tbody>
+        </table>
+      </section>
+
+      <section class="panel">
         <h2>Activation Episodes</h2>
         <table>
           <thead>
             <tr>
               <th>Episode Start</th>
+              <th>Grade</th>
+              <th>Expected 24h</th>
               <th>Buys</th>
               <th>hyUSD Spent</th>
               <th>xSOL Bought</th>

@@ -157,7 +157,17 @@ def rpc(method, params):
             ],
             text=True,
         )
-        data = json.loads(raw)
+        raw = raw.strip()
+        if not raw:
+            time.sleep(delay)
+            delay *= 1.6
+            continue
+        try:
+            data = json.loads(raw)
+        except json.JSONDecodeError:
+            time.sleep(delay)
+            delay *= 1.6
+            continue
         error = data.get("error")
         if not error:
             return data["result"]
@@ -165,7 +175,7 @@ def rpc(method, params):
             raise RuntimeError(error)
         time.sleep(delay)
         delay *= 1.6
-    raise RuntimeError("RPC rate limit retries exhausted")
+    raise RuntimeError(f"RPC retries exhausted for {method}")
 
 
 def get_sigs(address, limit=100, before=None):

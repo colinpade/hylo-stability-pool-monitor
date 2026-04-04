@@ -494,6 +494,108 @@ def build_strategy_day_groups(signal_report):
     return "\n".join(sections)
 
 
+def build_signal_setup_cards(signal_report):
+    live = (signal_report or {}).get("live_setup_summary") or {}
+    top = live.get("top_active_setup")
+    policy = live.get("alert_policy") or {}
+    min_score = policy.get("min_setup_score", 52.0)
+    min_confidence = policy.get("min_confidence_score", 45.0)
+    if not top:
+        return (
+            "\n".join(
+                [
+                    card("Active Setups", "0", "no unresolved ranked episodes"),
+                    card(
+                        "Eligible Alerts",
+                        "0",
+                        f"score >= {fmt_num(min_score, 0)} and confidence >= {fmt_num(min_confidence, 0)}",
+                    ),
+                ]
+            ),
+            [],
+        )
+    cards = [
+        card(
+            "Active Setups",
+            str(live.get("active_count", 0)),
+            "unresolved episodes still in play",
+        ),
+        card(
+            "Eligible Alerts",
+            str(live.get("alert_eligible_count", 0)),
+            f"score >= {fmt_num(min_score, 0)} and confidence >= {fmt_num(min_confidence, 0)}",
+            tone=("up" if live.get("alert_eligible_count", 0) > 0 else "flat"),
+        ),
+        card(
+            "Top Setup Grade",
+            str(top.get("setup_grade", "Unscored")),
+            top.get("setup_headline", "n/a"),
+            tone=("up" if top.get("setup_grade") in {"A", "B"} else "flat"),
+        ),
+        card(
+            "Top Setup Score",
+            fmt_num(top.get("setup_score")),
+            top.get("setup_confidence_bucket", "n/a"),
+        ),
+        card(
+            "Expected 24h",
+            fmt_pct(top.get("setup_expected_24h_return_pct")),
+            top.get("alert_status", "n/a"),
+            tone=("up" if top.get("alert_eligible") else pnl_class(top.get("setup_expected_24h_return_pct"))),
+        ),
+    ]
+    return "\n".join(cards), live.get("active_setups", [])
+
+
+def build_live_setup_rows(signal_report):
+    _cards_html, rows = build_signal_setup_cards(signal_report)
+    if not rows:
+        return '<div class="foot">No unresolved ranked setups right now.</div>'
+    body = []
+    for row in rows:
+        tone = "up" if row.get("alert_eligible") else ("flat" if row.get("setup_score") is not None else "down")
+        day_label, time_label = format_pacific_date_parts(row.get("start_utc") or row.get("start_local"))
+        body.append(
+            f"""
+            <tr>
+              <td>
+                <div class="date-main">{html.escape(day_label)}</div>
+                <div class="date-sub">{html.escape(time_label)}</div>
+              </td>
+              <td class="num"><span class="{tone}">{html.escape(str(row.get('setup_grade', 'Unscored')))}</span></td>
+              <td class="num">{fmt_num(row.get('setup_score')) if row.get('setup_score') is not None else 'n/a'}</td>
+              <td class="num">{fmt_pct(row.get('setup_expected_24h_return_pct'))}</td>
+              <td class="num">{fmt_pct(row.get('setup_expected_24h_win_rate_pct'))}</td>
+              <td>
+                <div class="{tone}">{html.escape(str(row.get('alert_status', 'n/a')))}</div>
+                <div class="subline">{html.escape(str(row.get('alert_reason', '')))}</div>
+              </td>
+              <td class="num">{html.escape(str(row.get('setup_training_episode_count', 0)))}</td>
+              <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
+            </tr>
+            """
+        )
+    return f"""
+    <table>
+      <thead>
+        <tr>
+          <th>Signal Start</th>
+          <th>Grade</th>
+          <th>Score</th>
+          <th>Expected 24h</th>
+          <th>Expected Win Rate</th>
+          <th>Alert Status</th>
+          <th>Training Episodes</th>
+          <th>Tx</th>
+        </tr>
+      </thead>
+      <tbody>
+        {''.join(body)}
+      </tbody>
+    </table>
+    """
+
+
 def build_mark_rows(snapshots):
     rows = []
     for row in reversed(snapshots[-40:]):
@@ -577,6 +679,7 @@ def render_html(lot_state, snapshots, signal_report=None):
           <div><strong>Mode</strong><br><code>{html.escape(json.dumps(price_details.get('stability_mode')))}</code></div>
         </div>
         """
+    signal_cards_html, _live_setups = build_signal_setup_cards(signal_report)
     return f"""<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -735,6 +838,17 @@ def render_html(lot_state, snapshots, signal_report=None):
           Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
         </div>
         {build_lot_day_groups(display_lots)}
+      </section>
+
+      <section class="panel">
+        <h2>Ranked Live Setups</h2>
+        <div class="foot">
+          Filter layer for profit-focused monitoring. Grades use only earlier resolved episodes, so the current unresolved activations get a forward-looking quality rank instead of being treated as equal alerts. Alerts are only eligible once the setup clears the current score and confidence bar.
+        </div>
+        <section class="cards">
+          {signal_cards_html}
+        </section>
+        {build_live_setup_rows(signal_report)}
       </section>
 
       <section class="panel">
