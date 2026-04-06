@@ -173,23 +173,6 @@ def build_cards(lot_state, latest_snapshot):
                     subtext_id="summary-entry-value-sub",
                 ),
                 card(
-                    "Protocol NAV Value",
-                    f"${fmt_num(summary['total_current_value'])}",
-                    "latest saved Hylo protocol mark",
-                    card_id="card-protocol-nav-value",
-                    value_id="summary-protocol-nav-value",
-                    subtext_id="summary-protocol-nav-value-sub",
-                ),
-                card(
-                    "Protocol NAV PnL",
-                    f"${fmt_num(summary['total_net_pnl'])}",
-                    fmt_pct(summary["total_net_pnl_pct"]),
-                    pnl_class(summary["total_net_pnl"]),
-                    card_id="card-protocol-nav-pnl",
-                    value_id="summary-protocol-nav-pnl",
-                    subtext_id="summary-protocol-nav-pnl-sub",
-                ),
-                card(
                     "Live Market Value",
                     f"${fmt_num(summary['total_current_value'])}",
                     "browser market mark",
@@ -833,14 +816,6 @@ def render_html(lot_state, snapshots, signal_report=None):
       </section>
 
       <section class="panel">
-        <h2>Open And Historical Deployment Lots</h2>
-        <div class="foot">
-          Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
-        </div>
-        {build_lot_day_groups(display_lots)}
-      </section>
-
-      <section class="panel">
         <h2>Ranked Live Setups</h2>
         <div class="foot">
           Filter layer for profit-focused monitoring. Grades use only earlier resolved episodes, so the current unresolved activations get a forward-looking quality rank instead of being treated as equal alerts. Alerts are only eligible once the setup clears the current score and confidence bar.
@@ -912,6 +887,14 @@ def render_html(lot_state, snapshots, signal_report=None):
           <a href="stability_pool_signal_report.html">stability_pool_signal_report.html</a>.
           Use that page to judge whether confirmed Stability Pool activations are acting like a tradable signal instead of just a profitable open inventory mark.
         </div>
+      </section>
+
+      <section class="panel">
+        <h2>Open And Historical Deployment Lots</h2>
+        <div class="foot">
+          Row-level <strong>Live Market</strong> columns are browser-side marks from DexScreener. Entry values remain fixed on-chain lot cost basis.
+        </div>
+        {build_lot_day_groups(display_lots)}
       </section>
 
       <section class="foot">
