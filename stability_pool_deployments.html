@@ -178,7 +178,7 @@
 
     <div class="card" id="card-remaining-xsol">
       <div class="card-label">Remaining xSOL</div>
-      <div class="card-value flat" id="summary-remaining-xsol">16,145,732.537867</div>
+      <div class="card-value flat" id="summary-remaining-xsol">16,145,732.5</div>
       <div class="card-sub flat" id="summary-remaining-xsol-sub">open lot exposure</div>
     </div>
     
@@ -1331,7 +1331,7 @@
 
           const totalNetPnlPct = totalEntryValue > 0 ? (totalNetPnl / totalEntryValue) * 100 : null;
           setText("summary-open-deployment-count", String(openDeploymentCount));
-          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
+          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 1));
           setText("summary-entry-value", formatCurrency(totalEntryValue));
           setText("summary-live-market-value", formatCurrency(totalCurrentValue));
           setText("summary-live-market-pnl", formatCurrency(totalNetPnl));

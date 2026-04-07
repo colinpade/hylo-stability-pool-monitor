@@ -158,7 +158,7 @@ def build_cards(lot_state, latest_snapshot):
                 ),
                 card(
                     "Remaining xSOL",
-                    fmt_num(summary["total_remaining_xsol"], 6),
+                    fmt_num(summary["total_remaining_xsol"], 1),
                     "open lot exposure",
                     card_id="card-remaining-xsol",
                     value_id="summary-remaining-xsol",
@@ -1091,7 +1091,7 @@ def render_html(lot_state, snapshots, signal_report=None):
 
           const totalNetPnlPct = totalEntryValue > 0 ? (totalNetPnl / totalEntryValue) * 100 : null;
           setText("summary-open-deployment-count", String(openDeploymentCount));
-          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 6));
+          setText("summary-remaining-xsol", formatNum(totalRemainingXsol, 1));
           setText("summary-entry-value", formatCurrency(totalEntryValue));
           setText("summary-live-market-value", formatCurrency(totalCurrentValue));
           setText("summary-live-market-pnl", formatCurrency(totalNetPnl));
