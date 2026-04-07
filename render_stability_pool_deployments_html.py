@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 
 
 PACIFIC_TZ = ZoneInfo("America/Los_Angeles")
+EPSILON = 1e-12
 
 
 def load_json(path):
@@ -325,42 +326,176 @@ def build_lot_day_groups(lots):
     return "\n".join(sections)
 
 
-def build_strategy_cards(signal_report):
+def build_shadow_replay(lots, signal_report):
     replay = (signal_report or {}).get("tranche_replay") or {}
-    overall = replay.get("overall") or {}
     if not replay:
+        return {}
+    episodes = (signal_report or {}).get("episodes") or []
+    episodes_by_id = {row.get("episode_id"): row for row in episodes if row.get("episode_id")}
+    lots_by_signature = {row.get("signature"): row for row in lots if row.get("signature")}
+    mark_price = replay.get("mark_price")
+    shadow_entries = []
+
+    for entry in replay.get("entries") or []:
+        row = dict(entry)
+        episode = episodes_by_id.get(entry.get("episode_id")) or {}
+        signatures = episode.get("signatures") or ([entry.get("first_signature")] if entry.get("first_signature") else [])
+        matched_lots = [lots_by_signature[sig] for sig in signatures if sig in lots_by_signature]
+        total_hylo_xsol = sum(float(lot.get("xsol_bought") or 0.0) for lot in matched_lots)
+        shadow_start_xsol = float(entry.get("xsol_acquired") or 0.0)
+        shadow_sold_xsol = 0.0
+        realized_value_usd = 0.0
+        closed_at_utc = None
+
+        if total_hylo_xsol > EPSILON:
+            for lot in matched_lots:
+                lot_xsol = float(lot.get("xsol_bought") or 0.0)
+                if lot_xsol <= EPSILON:
+                    continue
+                shadow_lot_xsol = shadow_start_xsol * (lot_xsol / total_hylo_xsol)
+                lot_shadow_sold = 0.0
+                for alloc in lot.get("sell_allocations") or []:
+                    sold_fraction = min(max(float(alloc.get("xsol_sold") or 0.0) / lot_xsol, 0.0), 1.0)
+                    shadow_alloc_xsol = shadow_lot_xsol * sold_fraction
+                    sale_price = alloc.get("sale_price")
+                    if sale_price is not None:
+                        realized_value_usd += shadow_alloc_xsol * float(sale_price)
+                    lot_shadow_sold += shadow_alloc_xsol
+                    sell_utc = alloc.get("sell_utc")
+                    if sell_utc and (closed_at_utc is None or sell_utc > closed_at_utc):
+                        closed_at_utc = sell_utc
+                shadow_sold_xsol += min(lot_shadow_sold, shadow_lot_xsol)
+
+        remaining_xsol = max(shadow_start_xsol - shadow_sold_xsol, 0.0)
+        open_value_usd = None
+        if mark_price is not None:
+            open_value_usd = remaining_xsol * float(mark_price)
+        elif remaining_xsol <= EPSILON:
+            open_value_usd = 0.0
+
+        shadow_value_usd = None
+        if open_value_usd is not None:
+            shadow_value_usd = realized_value_usd + open_value_usd
+        elif shadow_sold_xsol > EPSILON and remaining_xsol <= EPSILON:
+            shadow_value_usd = realized_value_usd
+        elif entry.get("marked_value_usd") is not None:
+            shadow_value_usd = float(entry.get("marked_value_usd"))
+
+        if matched_lots:
+            if remaining_xsol <= EPSILON:
+                status = "closed"
+            elif shadow_sold_xsol > EPSILON:
+                status = "partial"
+            else:
+                status = "open"
+        else:
+            status = "unlinked"
+
+        hylo_remaining_xsol = sum(float(lot.get("remaining_xsol") or 0.0) for lot in matched_lots)
+        row.update(
+            {
+                "status": status,
+                "matched_signatures": signatures,
+                "hylo_lot_count": len(matched_lots),
+                "hylo_open_lot_count": sum(
+                    1 for lot in matched_lots if float(lot.get("remaining_xsol") or 0.0) > EPSILON
+                ),
+                "hylo_remaining_xsol": hylo_remaining_xsol,
+                "remaining_xsol": remaining_xsol,
+                "remaining_pct": ((remaining_xsol / shadow_start_xsol) * 100.0) if shadow_start_xsol > EPSILON else None,
+                "realized_xsol": shadow_sold_xsol,
+                "realized_value_usd": realized_value_usd,
+                "open_value_usd": open_value_usd,
+                "shadow_value_usd": shadow_value_usd,
+                "shadow_pnl_usd": (
+                    shadow_value_usd - float(entry.get("tranche_usd") or 0.0)
+                    if shadow_value_usd is not None
+                    else None
+                ),
+                "shadow_pnl_pct": pct_change(entry.get("tranche_usd"), shadow_value_usd),
+                "closed_at_utc": closed_at_utc if status == "closed" else None,
+            }
+        )
+        shadow_entries.append(row)
+
+    capital_deployed = sum(float(row.get("tranche_usd") or 0.0) for row in shadow_entries)
+    total_shadow_value = sum(float(row.get("shadow_value_usd") or 0.0) for row in shadow_entries)
+    total_remaining_xsol = sum(float(row.get("remaining_xsol") or 0.0) for row in shadow_entries)
+    total_realized_value = sum(float(row.get("realized_value_usd") or 0.0) for row in shadow_entries)
+    total_open_value = sum(float(row.get("open_value_usd") or 0.0) for row in shadow_entries)
+    total_shadow_pnl = total_shadow_value - capital_deployed if shadow_entries else 0.0
+    research_overall = replay.get("overall") or {}
+    return {
+        "delay_seconds": replay.get("delay_seconds"),
+        "delay_label": replay.get("delay_label"),
+        "tranche_usd": replay.get("tranche_usd"),
+        "entry_count": len(shadow_entries),
+        "entries": shadow_entries,
+        "mark_price": mark_price,
+        "mark_time_utc": replay.get("mark_time_utc"),
+        "mark_time_local": replay.get("mark_time_local"),
+        "research_overall": research_overall,
+        "overall": {
+            "count": len(shadow_entries),
+            "active_count": sum(1 for row in shadow_entries if row.get("status") in {"open", "partial", "unlinked"}),
+            "open_count": sum(1 for row in shadow_entries if row.get("status") == "open"),
+            "partial_count": sum(1 for row in shadow_entries if row.get("status") == "partial"),
+            "closed_count": sum(1 for row in shadow_entries if row.get("status") == "closed"),
+            "unlinked_count": sum(1 for row in shadow_entries if row.get("status") == "unlinked"),
+            "capital_deployed_usd": capital_deployed,
+            "shadow_value_usd": total_shadow_value,
+            "shadow_pnl_usd": total_shadow_pnl,
+            "shadow_pnl_pct": pct_change(capital_deployed, total_shadow_value),
+            "remaining_xsol": total_remaining_xsol,
+            "realized_value_usd": total_realized_value,
+            "open_value_usd": total_open_value,
+            "24h_mean_return_pct": research_overall.get("24h_mean_return_pct"),
+            "24h_win_rate_pct": research_overall.get("24h_win_rate_pct"),
+        },
+    }
+
+
+def build_strategy_cards(shadow_replay):
+    overall = (shadow_replay or {}).get("overall") or {}
+    if not shadow_replay:
         return ""
     cards = [
         card(
-            "Replay Signals",
-            str(replay.get("entry_count", 0)),
-            f"${fmt_num(replay.get('tranche_usd', 0), 0)} xSOL buys at +{int((replay.get('delay_seconds') or 0) / 60)}m",
+            "Shadow Signals",
+            str(shadow_replay.get("entry_count", 0)),
+            f"${fmt_num(shadow_replay.get('tranche_usd', 0), 0)} xSOL buys at +{int((shadow_replay.get('delay_seconds') or 0) / 60)}m",
         ),
         card(
-            "Replay Capital",
+            "Active Shadow Entries",
+            str(overall.get("active_count", 0)),
+            "stay open until Hylo closes the episode lots",
+            tone=("up" if overall.get("active_count", 0) > 0 else "flat"),
+        ),
+        card(
+            "Shadow Capital",
             f"${fmt_num(overall.get('capital_deployed_usd'))}",
             "fixed notional deployed",
         ),
         card(
-            "Replay Marked Value",
-            f"${fmt_num(overall.get('marked_value_usd'))}",
-            "latest cached xSOL close",
+            "Shadow Equity",
+            f"${fmt_num(overall.get('shadow_value_usd'))}",
+            "realized exits + latest cached xSOL close",
         ),
         card(
-            "Replay Marked PnL",
-            f"${fmt_num(overall.get('marked_pnl_usd'))}",
-            fmt_pct(overall.get("marked_pnl_pct")),
-            pnl_class(overall.get("marked_pnl_usd")),
+            "Shadow PnL",
+            f"${fmt_num(overall.get('shadow_pnl_usd'))}",
+            fmt_pct(overall.get("shadow_pnl_pct")),
+            pnl_class(overall.get("shadow_pnl_usd")),
+        ),
+        card(
+            "Open Shadow xSOL",
+            fmt_num(overall.get("remaining_xsol"), 2),
+            "still open because Hylo inventory is still open",
         ),
         card(
             "Replay 24h Mean",
             fmt_pct(overall.get("24h_mean_return_pct")),
-            "from delayed entry",
-        ),
-        card(
-            "Replay 24h Win Rate",
-            fmt_pct(overall.get("24h_win_rate_pct")),
-            "available windows only",
+            "research stat from delayed entry",
         ),
     ]
     return "\n".join(cards)
@@ -371,8 +506,16 @@ def build_strategy_rows(entries):
     for row in sorted(entries, key=lambda item: item.get("entry_target_utc") or "", reverse=True):
         signal_day, signal_time = format_pacific_date_parts(row.get("start_utc") or row.get("start_local"))
         entry_day, entry_time = format_pacific_date_parts(row.get("entry_target_utc") or row.get("entry_target_local"))
-        marked_pnl = row.get("marked_pnl_usd")
-        tone = pnl_class(marked_pnl)
+        shadow_pnl = row.get("shadow_pnl_usd")
+        tone = pnl_class(shadow_pnl)
+        if row.get("status") == "closed" and row.get("closed_at_utc"):
+            status_subline = f"closed {format_pacific_timestamp(row.get('closed_at_utc'))}"
+        elif row.get("hylo_lot_count"):
+            status_subline = (
+                f"{row.get('hylo_open_lot_count', 0)}/{row.get('hylo_lot_count', 0)} Hylo lots open"
+            )
+        else:
+            status_subline = "no matching Hylo lots"
         rows.append(
             f"""
             <tr>
@@ -384,13 +527,22 @@ def build_strategy_rows(entries):
                 <div class="date-main">{html.escape(entry_day)}</div>
                 <div class="date-sub">{html.escape(entry_time)}</div>
               </td>
+              <td>
+                <div class="date-main">{html.escape(str(row.get('status', 'open')).title())}</div>
+                <div class="date-sub">{html.escape(status_subline)}</div>
+              </td>
               <td class="num">${fmt_num(row.get('tranche_usd'), 0)}</td>
-              <td class="num">{fmt_num(row.get('xsol_acquired'), 2)}</td>
-              <td class="num">${fmt_num(row.get('entry_price'), 6)}</td>
-              <td class="num">${fmt_num(row.get('marked_value_usd'))}</td>
               <td class="num">
-                <div class="{tone}">${fmt_num(marked_pnl)}</div>
-                <div class="subline {tone}">{fmt_pct(row.get('marked_pnl_pct'))}</div>
+                <div>{fmt_num(row.get('remaining_xsol'), 2)}</div>
+                <div class="subline">{fmt_pct(row.get('remaining_pct'))} of {fmt_num(row.get('xsol_acquired'), 2)} start</div>
+              </td>
+              <td class="num">
+                <div>${fmt_num(row.get('shadow_value_usd'))}</div>
+                <div class="subline">${fmt_num(row.get('realized_value_usd'))} realized</div>
+              </td>
+              <td class="num">
+                <div class="{tone}">${fmt_num(shadow_pnl)}</div>
+                <div class="subline {tone}">{fmt_pct(row.get('shadow_pnl_pct'))}</div>
               </td>
               <td class="num">{fmt_pct(row.get('24h_return_pct'))}</td>
               <td><a href="https://solscan.io/tx/{html.escape(row['first_signature'])}">{html.escape(row['first_signature'][:10])}...</a></td>
@@ -400,11 +552,10 @@ def build_strategy_rows(entries):
     return "\n".join(rows)
 
 
-def build_strategy_day_groups(signal_report):
-    replay = (signal_report or {}).get("tranche_replay") or {}
-    entries = replay.get("entries") or []
+def build_strategy_day_groups(shadow_replay):
+    entries = (shadow_replay or {}).get("entries") or []
     if not entries:
-        return '<div class="foot">No confirmed signal-replay entries have been generated yet.</div>'
+        return '<div class="foot">No confirmed shadow entries have been generated yet.</div>'
 
     groups = []
     by_day = {}
@@ -417,36 +568,40 @@ def build_strategy_day_groups(signal_report):
                 "day_label": day_label_for_ts(row.get("entry_target_utc") or row.get("entry_target_local")),
                 "entries": [],
                 "count": 0,
+                "active_count": 0,
                 "capital": 0.0,
-                "xsol": 0.0,
-                "marked_value": 0.0,
-                "marked_pnl": 0.0,
+                "remaining_xsol": 0.0,
+                "shadow_value": 0.0,
+                "shadow_pnl": 0.0,
             },
         )
         if bucket["count"] == 0:
             groups.append(bucket)
         bucket["entries"].append(row)
         bucket["count"] += 1
+        if row.get("status") in {"open", "partial", "unlinked"}:
+            bucket["active_count"] += 1
         bucket["capital"] += float(row.get("tranche_usd") or 0.0)
-        bucket["xsol"] += float(row.get("xsol_acquired") or 0.0)
-        bucket["marked_value"] += float(row.get("marked_value_usd") or 0.0)
-        bucket["marked_pnl"] += float(row.get("marked_pnl_usd") or 0.0)
+        bucket["remaining_xsol"] += float(row.get("remaining_xsol") or 0.0)
+        bucket["shadow_value"] += float(row.get("shadow_value_usd") or 0.0)
+        bucket["shadow_pnl"] += float(row.get("shadow_pnl_usd") or 0.0)
 
     sections = []
     for index, group in enumerate(groups):
-        pnl_pct = ((group["marked_pnl"] / group["capital"]) * 100.0) if group["capital"] else None
+        pnl_pct = ((group["shadow_pnl"] / group["capital"]) * 100.0) if group["capital"] else None
         sections.append(
             f"""
             <details class="day-group" data-strategy-day-key="{html.escape(group['day_key'])}" {"open" if index == 0 else ""}>
               <summary>
                 <div class="day-summary-heading">{html.escape(group['day_label'])}</div>
                 <div class="day-summary-metrics">
-                  <span><strong>{group['count']}</strong> buys</span>
+                  <span><strong>{group['count']}</strong> shadow entries</span>
+                  <span><strong>{group['active_count']}</strong> active</span>
                   <span><strong>${fmt_num(group['capital'])}</strong> deployed</span>
-                  <span><strong>{fmt_num(group['xsol'], 2)}</strong> xSOL</span>
-                  <span><strong>${fmt_num(group['marked_value'])}</strong> marked</span>
-                  <span class="{pnl_class(group['marked_pnl'])}">
-                    <strong>${fmt_num(group['marked_pnl'])}</strong>
+                  <span><strong>{fmt_num(group['remaining_xsol'], 2)}</strong> xSOL live</span>
+                  <span><strong>${fmt_num(group['shadow_value'])}</strong> equity</span>
+                  <span class="{pnl_class(group['shadow_pnl'])}">
+                    <strong>${fmt_num(group['shadow_pnl'])}</strong>
                     <span>{fmt_pct(pnl_pct)}</span>
                   </span>
                 </div>
@@ -456,12 +611,12 @@ def build_strategy_day_groups(signal_report):
                   <thead>
                     <tr>
                       <th>Signal Start</th>
-                      <th>Hyp Entry</th>
+                      <th>Shadow Entry</th>
+                      <th>Status</th>
                       <th>Tranche</th>
-                      <th>xSOL Bought</th>
-                      <th>Entry Price</th>
-                      <th>Marked Value</th>
-                      <th>Marked PnL</th>
+                      <th>xSOL Live</th>
+                      <th>Shadow Equity</th>
+                      <th>Shadow PnL</th>
                       <th>24h</th>
                       <th>Tx</th>
                     </tr>
@@ -646,6 +801,7 @@ def render_html(lot_state, snapshots, signal_report=None):
     latest_snapshot = snapshots[-1] if snapshots else None
     lots = latest_snapshot["lots"] if latest_snapshot else lot_state.get("lots", [])
     display_lots = enrich_lots_for_display(lots)
+    shadow_replay = build_shadow_replay(lots, signal_report)
     price_details = latest_snapshot.get("price_source_details") if latest_snapshot else None
     live_payload = {
         "generated_at_utc": lot_state.get("generated_at_utc"),
@@ -826,16 +982,17 @@ def render_html(lot_state, snapshots, signal_report=None):
         {build_live_setup_rows(signal_report)}
       </section>
 
-      <section class="panel">
-        <h2>Hypothetical $1,000 xSOL Buys 10 Minutes After Signal</h2>
+        <section class="panel">
+        <h2>Shadow $1,000 xSOL Buys 10 Minutes After Signal</h2>
         <div class="foot">
           One fixed-size xSOL buy per confirmed activation episode, entered 10 minutes after the first buy in that episode.
-          These are <strong>signal replays</strong>, not Stability Pool lots. Marked values below use the latest cached xSOL close from the signal study.
+          These are <strong>shadow entries</strong>, not Stability Pool lots. Each shadow entry stays open until Hylo closes the
+          corresponding episode inventory, so partial and closed rows follow Hylo's real lot lifecycle instead of expiring after the research window.
         </div>
         <section class="cards">
-          {build_strategy_cards(signal_report)}
+          {build_strategy_cards(shadow_replay)}
         </section>
-        {build_strategy_day_groups(signal_report)}
+        {build_strategy_day_groups(shadow_replay)}
       </section>
 
       <section class="panel">

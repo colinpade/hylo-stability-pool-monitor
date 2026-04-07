@@ -251,6 +251,7 @@ jobs:
             data/live_hylo_stats.json \
             data/last_processed_deployment_signature.txt \
             data/last_alerted_deployment_signature.txt \
+            data/stability_pool_balance_changes_full.jsonl \
             data/stability_pool_deployments.json \
             data/stability_pool_deployment_marks.jsonl \
             data/current_buy_xsol_events.json \

@@ -508,6 +508,26 @@ def write_history_jsonl(path, history):
             handle.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def merge_history_events(existing_events, fresh_events):
+    merged = {}
+    for row in existing_events:
+        signature = row.get("signature")
+        if signature:
+            merged[signature] = row
+    for row in fresh_events:
+        signature = row.get("signature")
+        if signature:
+            merged[signature] = row
+    return sorted(
+        merged.values(),
+        key=lambda row: (
+            row.get("slot") or 0,
+            row.get("block_time") or 0,
+            row.get("signature") or "",
+        ),
+    )
+
+
 def print_addresses():
     print(json.dumps(derive_addresses(), indent=2, sort_keys=True))
 
@@ -526,8 +546,17 @@ def run_snapshot(args):
 
 
 def run_backfill(args):
-    history = build_recent_history(max_pages=args.max_pages, page_size=args.page_size)
     path = Path(args.out)
+    existing_events = load_jsonl(path)
+    history = build_recent_history(max_pages=args.max_pages, page_size=args.page_size)
+    fresh_events = history["events"]
+    existing_signatures = {row.get("signature") for row in existing_events if row.get("signature")}
+    fresh_signatures = {row.get("signature") for row in fresh_events if row.get("signature")}
+    history["events"] = merge_history_events(existing_events, fresh_events)
+    history["fresh_event_count"] = len(fresh_events)
+    history["existing_event_count"] = len(existing_events)
+    history["carried_forward_event_count"] = len(existing_signatures - fresh_signatures)
+    history["merged_event_count"] = len(history["events"])
     write_history_jsonl(path, history)
     print(json.dumps(history, indent=2, sort_keys=True))
 

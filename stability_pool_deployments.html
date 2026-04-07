@@ -236,57 +236,386 @@
         <div class="foot">No unresolved ranked setups right now.</div>
       </section>
 
-      <section class="panel">
-        <h2>Hypothetical $1,000 xSOL Buys 10 Minutes After Signal</h2>
+        <section class="panel">
+        <h2>Shadow $1,000 xSOL Buys 10 Minutes After Signal</h2>
         <div class="foot">
           One fixed-size xSOL buy per confirmed activation episode, entered 10 minutes after the first buy in that episode.
-          These are <strong>signal replays</strong>, not Stability Pool lots. Marked values below use the latest cached xSOL close from the signal study.
+          These are <strong>shadow entries</strong>, not Stability Pool lots. Each shadow entry stays open until Hylo closes the
+          corresponding episode inventory, so partial and closed rows follow Hylo's real lot lifecycle instead of expiring after the research window.
         </div>
         <section class="cards">
           
     <div class="card">
-      <div class="card-label">Replay Signals</div>
-      <div class="card-value flat">0</div>
+      <div class="card-label">Shadow Signals</div>
+      <div class="card-value flat">8</div>
       <div class="card-sub flat">$1,000 xSOL buys at +10m</div>
     </div>
     
 
     <div class="card">
-      <div class="card-label">Replay Capital</div>
-      <div class="card-value flat">$0.00</div>
+      <div class="card-label">Active Shadow Entries</div>
+      <div class="card-value up">8</div>
+      <div class="card-sub up">stay open until Hylo closes the episode lots</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Shadow Capital</div>
+      <div class="card-value flat">$8,000.00</div>
       <div class="card-sub flat">fixed notional deployed</div>
     </div>
     
 
     <div class="card">
-      <div class="card-label">Replay Marked Value</div>
-      <div class="card-value flat">$0.00</div>
-      <div class="card-sub flat">latest cached xSOL close</div>
+      <div class="card-label">Shadow Equity</div>
+      <div class="card-value flat">$9,336.49</div>
+      <div class="card-sub flat">realized exits + latest cached xSOL close</div>
     </div>
     
 
     <div class="card">
-      <div class="card-label">Replay Marked PnL</div>
-      <div class="card-value flat">$0.00</div>
-      <div class="card-sub flat">n/a</div>
+      <div class="card-label">Shadow PnL</div>
+      <div class="card-value up">$1,336.49</div>
+      <div class="card-sub up">+16.71%</div>
+    </div>
+    
+
+    <div class="card">
+      <div class="card-label">Open Shadow xSOL</div>
+      <div class="card-value flat">156,427.01</div>
+      <div class="card-sub flat">still open because Hylo inventory is still open</div>
     </div>
     
 
     <div class="card">
       <div class="card-label">Replay 24h Mean</div>
-      <div class="card-value flat">n/a</div>
-      <div class="card-sub flat">from delayed entry</div>
-    </div>
-    
-
-    <div class="card">
-      <div class="card-label">Replay 24h Win Rate</div>
-      <div class="card-value flat">n/a</div>
-      <div class="card-sub flat">available windows only</div>
+      <div class="card-value flat">+3.75%</div>
+      <div class="card-sub flat">research stat from delayed entry</div>
     </div>
     
         </section>
-        <div class="foot">No confirmed signal-replay entries have been generated yet.</div>
+        
+            <details class="day-group" data-strategy-day-key="2026-04-02" open>
+              <summary>
+                <div class="day-summary-heading">Apr 2 PDT</div>
+                <div class="day-summary-metrics">
+                  <span><strong>4</strong> shadow entries</span>
+                  <span><strong>4</strong> active</span>
+                  <span><strong>$4,000.00</strong> deployed</span>
+                  <span><strong>80,768.49</strong> xSOL live</span>
+                  <span><strong>$4,820.74</strong> equity</span>
+                  <span class="up">
+                    <strong>$820.74</strong>
+                    <span>+20.52%</span>
+                  </span>
+                </div>
+              </summary>
+              <div class="day-group-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Signal Start</th>
+                      <th>Shadow Entry</th>
+                      <th>Status</th>
+                      <th>Tranche</th>
+                      <th>xSOL Live</th>
+                      <th>Shadow Equity</th>
+                      <th>Shadow PnL</th>
+                      <th>24h</th>
+                      <th>Tx</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+            <tr>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">6:32 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">6:42 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">2/2 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>20,879.53</div>
+                <div class="subline">+100.00% of 20,879.53 start</div>
+              </td>
+              <td class="num">
+                <div>$1,246.21</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$246.21</div>
+                <div class="subline up">+24.62%</div>
+              </td>
+              <td class="num">+11.85%</td>
+              <td><a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jd...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">6:10 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">6:20 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">3/3 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>20,331.58</div>
+                <div class="subline">+100.00% of 20,331.58 start</div>
+              </td>
+              <td class="num">
+                <div>$1,213.51</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$213.51</div>
+                <div class="subline up">+21.35%</div>
+              </td>
+              <td class="num">+8.91%</td>
+              <td><a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">5:55 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">6:05 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">1/1 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>19,873.77</div>
+                <div class="subline">+100.00% of 19,873.77 start</div>
+              </td>
+              <td class="num">
+                <div>$1,186.18</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$186.18</div>
+                <div class="subline up">+18.62%</div>
+              </td>
+              <td class="num">+6.67%</td>
+              <td><a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">5:10 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 2</div>
+                <div class="date-sub">5:20 AM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">2/2 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>19,683.61</div>
+                <div class="subline">+100.00% of 19,683.61 start</div>
+              </td>
+              <td class="num">
+                <div>$1,174.83</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$174.83</div>
+                <div class="subline up">+17.48%</div>
+              </td>
+              <td class="num">+8.33%</td>
+              <td><a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">2RyyUK4fB5...</a></td>
+            </tr>
+            
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            
+
+            <details class="day-group" data-strategy-day-key="2026-04-01" >
+              <summary>
+                <div class="day-summary-heading">Apr 1 PDT</div>
+                <div class="day-summary-metrics">
+                  <span><strong>4</strong> shadow entries</span>
+                  <span><strong>4</strong> active</span>
+                  <span><strong>$4,000.00</strong> deployed</span>
+                  <span><strong>75,658.53</strong> xSOL live</span>
+                  <span><strong>$4,515.75</strong> equity</span>
+                  <span class="up">
+                    <strong>$515.75</strong>
+                    <span>+12.89%</span>
+                  </span>
+                </div>
+              </summary>
+              <div class="day-group-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Signal Start</th>
+                      <th>Shadow Entry</th>
+                      <th>Status</th>
+                      <th>Tranche</th>
+                      <th>xSOL Live</th>
+                      <th>Shadow Equity</th>
+                      <th>Shadow PnL</th>
+                      <th>24h</th>
+                      <th>Tx</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+            <tr>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">7:25 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">7:35 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">1/1 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>19,210.14</div>
+                <div class="subline">+100.00% of 19,210.14 start</div>
+              </td>
+              <td class="num">
+                <div>$1,146.57</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$146.57</div>
+                <div class="subline up">+14.66%</div>
+              </td>
+              <td class="num">+0.09%</td>
+              <td><a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">dZvMsimCca...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">7:05 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">7:15 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">2/2 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>18,719.84</div>
+                <div class="subline">+100.00% of 18,719.84 start</div>
+              </td>
+              <td class="num">
+                <div>$1,117.31</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$117.31</div>
+                <div class="subline up">+11.73%</div>
+              </td>
+              <td class="num">-2.46%</td>
+              <td><a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">5S64PverFo...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">6:50 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">7:00 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">1/1 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>18,724.61</div>
+                <div class="subline">+100.00% of 18,724.61 start</div>
+              </td>
+              <td class="num">
+                <div>$1,117.60</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$117.60</div>
+                <div class="subline up">+11.76%</div>
+              </td>
+              <td class="num">-2.44%</td>
+              <td><a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">DMgCSZL4Zs...</a></td>
+            </tr>
+            
+
+            <tr>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">6:32 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Apr 1</div>
+                <div class="date-sub">6:42 PM PDT</div>
+              </td>
+              <td>
+                <div class="date-main">Open</div>
+                <div class="date-sub">1/1 Hylo lots open</div>
+              </td>
+              <td class="num">$1,000</td>
+              <td class="num">
+                <div>19,003.95</div>
+                <div class="subline">+100.00% of 19,003.95 start</div>
+              </td>
+              <td class="num">
+                <div>$1,134.27</div>
+                <div class="subline">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="up">$134.27</div>
+                <div class="subline up">+13.43%</div>
+              </td>
+              <td class="num">-0.98%</td>
+              <td><a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">4bGxHAsqJX...</a></td>
+            </tr>
+            
+                  </tbody>
+                </table>
+              </div>
+            </details>
+            
       </section>
 
       <section class="panel">

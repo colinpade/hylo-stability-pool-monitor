@@ -987,10 +987,11 @@ def render_html(report):
       </section>
 
       <section class="panel">
-        <h2>Hypothetical $1,000 xSOL Buys 10 Minutes After Signal</h2>
+        <h2>Research Replay: $1,000 xSOL Buys 10 Minutes After Signal</h2>
         <div class="sub">
-          Strategy replay: one fixed-size xSOL purchase per confirmed activation episode, entered 10 minutes after the first buy in the episode.
-          This avoids counting a burst of same-event on-chain buys as multiple separate trading signals.
+          Research replay only: one fixed-size xSOL purchase per confirmed activation episode, entered 10 minutes after the first buy in the episode.
+          This avoids counting a burst of same-event on-chain buys as multiple separate trading signals. The live shadow-Hylo lifecycle view stays on
+          <code>stability_pool_deployments.html</code>.
         </div>
         <section class="grid">
           {render_tranche_cards(report)}
