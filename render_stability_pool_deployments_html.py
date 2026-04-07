@@ -117,9 +117,40 @@ def card(label, value, subtext, tone="flat", card_id=None, value_id=None, subtex
     """
 
 
-def build_cards(lot_state, latest_snapshot):
+def build_cards(lot_state, latest_snapshot, shadow_replay=None):
     summary = latest_snapshot["summary"] if latest_snapshot else {}
-    cards = [
+    cards = []
+    shadow_overall = (shadow_replay or {}).get("overall") or {}
+    shadow_delay_mins = int(((shadow_replay or {}).get("delay_seconds") or 0) / 60)
+    shadow_tranche = (shadow_replay or {}).get("tranche_usd")
+    if shadow_replay:
+        shadow_subtext = (
+            f"Shadow ${fmt_num(shadow_tranche, 0)} buys at +{shadow_delay_mins}m"
+            if shadow_tranche is not None
+            else "Shadow Hylo lifecycle"
+        )
+        cards.extend(
+            [
+                card(
+                    "Shadow PnL",
+                    f"${fmt_num(shadow_overall.get('shadow_pnl_usd'))}",
+                    shadow_subtext,
+                    pnl_class(shadow_overall.get("shadow_pnl_usd")),
+                ),
+                card(
+                    "Shadow Equity",
+                    f"${fmt_num(shadow_overall.get('shadow_value_usd'))}",
+                    "realized exits + latest cached xSOL close",
+                ),
+                card(
+                    "Active Shadow Entries",
+                    str(shadow_overall.get("active_count", 0)),
+                    "open until Hylo closes the episode lots",
+                    tone=("up" if shadow_overall.get("active_count", 0) > 0 else "flat"),
+                ),
+            ]
+        )
+    cards.append(
         card(
             "Deployments",
             str(lot_state.get("deployment_count", 0)),
@@ -127,7 +158,7 @@ def build_cards(lot_state, latest_snapshot):
             card_id="card-deployments",
             value_id="summary-deployment-count",
         )
-    ]
+    )
     if latest_snapshot:
         cards.extend(
             [
@@ -967,9 +998,9 @@ def render_html(lot_state, snapshots, signal_report=None):
         Waiting for live DexScreener pricing. Live market cards and lot rows refresh in-browser every 60 seconds.
       </div>
 
-      <section class="cards">
-        {build_cards(lot_state, latest_snapshot)}
-      </section>
+        <section class="cards">
+          {build_cards(lot_state, latest_snapshot, shadow_replay=shadow_replay)}
+        </section>
 
       <section class="panel">
         <h2>Ranked Live Setups</h2>
