@@ -1,8 +1,8 @@
 {
-  "generated_at_utc": "2026-04-07T21:03:22.090967+00:00",
+  "generated_at_utc": "2026-04-07T21:07:07.809108+00:00",
   "strict_mode": true,
-  "source_event_count": 697,
-  "source_buy_event_count": 0,
+  "source_event_count": 1487,
+  "source_buy_event_count": 13,
   "source_sell_event_count": 0,
   "deployment_count": 19,
   "lots": [
@@ -164,7 +164,7 @@
       "slot": 410430851,
       "block_time": 1775093553,
       "utc": "2026-04-02T01:32:33+00:00",
-      "local": "2026-04-02T01:32:33+00:00",
+      "local": "2026-04-01T20:32:33-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -189,7 +189,7 @@
       "slot": 410433630,
       "block_time": 1775094641,
       "utc": "2026-04-02T01:50:41+00:00",
-      "local": "2026-04-02T01:50:41+00:00",
+      "local": "2026-04-01T20:50:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -214,7 +214,7 @@
       "slot": 410435931,
       "block_time": 1775095541,
       "utc": "2026-04-02T02:05:41+00:00",
-      "local": "2026-04-02T02:05:41+00:00",
+      "local": "2026-04-01T21:05:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -239,7 +239,7 @@
       "slot": 410437463,
       "block_time": 1775096141,
       "utc": "2026-04-02T02:15:41+00:00",
-      "local": "2026-04-02T02:15:41+00:00",
+      "local": "2026-04-01T21:15:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -264,7 +264,7 @@
       "slot": 410439000,
       "block_time": 1775096742,
       "utc": "2026-04-02T02:25:42+00:00",
-      "local": "2026-04-02T02:25:42+00:00",
+      "local": "2026-04-01T21:25:42-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -289,7 +289,7 @@
       "slot": 410528747,
       "block_time": 1775131841,
       "utc": "2026-04-02T12:10:41+00:00",
-      "local": "2026-04-02T12:10:41+00:00",
+      "local": "2026-04-02T07:10:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -314,7 +314,7 @@
       "slot": 410530273,
       "block_time": 1775132441,
       "utc": "2026-04-02T12:20:41+00:00",
-      "local": "2026-04-02T12:20:41+00:00",
+      "local": "2026-04-02T07:20:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -339,7 +339,7 @@
       "slot": 410535630,
       "block_time": 1775134541,
       "utc": "2026-04-02T12:55:41+00:00",
-      "local": "2026-04-02T12:55:41+00:00",
+      "local": "2026-04-02T07:55:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -364,7 +364,7 @@
       "slot": 410537921,
       "block_time": 1775135441,
       "utc": "2026-04-02T13:10:41+00:00",
-      "local": "2026-04-02T13:10:41+00:00",
+      "local": "2026-04-02T08:10:41-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -389,7 +389,7 @@
       "slot": 410538200,
       "block_time": 1775135554,
       "utc": "2026-04-02T13:12:34+00:00",
-      "local": "2026-04-02T13:12:34+00:00",
+      "local": "2026-04-02T08:12:34-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -414,7 +414,7 @@
       "slot": 410538679,
       "block_time": 1775135742,
       "utc": "2026-04-02T13:15:42+00:00",
-      "local": "2026-04-02T13:15:42+00:00",
+      "local": "2026-04-02T08:15:42-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -439,7 +439,7 @@
       "slot": 410541254,
       "block_time": 1775136753,
       "utc": "2026-04-02T13:32:33+00:00",
-      "local": "2026-04-02T13:32:33+00:00",
+      "local": "2026-04-02T08:32:33-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
@@ -464,7 +464,7 @@
       "slot": 410541736,
       "block_time": 1775136942,
       "utc": "2026-04-02T13:35:42+00:00",
-      "local": "2026-04-02T13:35:42+00:00",
+      "local": "2026-04-02T08:35:42-05:00",
       "log_hints": [
         "SwapStableToLever",
         "RebalanceStableToLever",
