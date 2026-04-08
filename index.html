@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Shadow Hylo +10m</title>
+    <title>Shadow Hylo Operator Home</title>
     <style>
       :root {
         --bg: #f3efe4;
@@ -28,7 +28,7 @@
           radial-gradient(circle at right 20%, rgba(15,122,90,0.09), transparent 24%),
           linear-gradient(180deg, #f6f1e6 0%, #efe7d7 100%);
       }
-      .wrap { max-width: 1220px; margin: 0 auto; padding: 28px 18px 40px; }
+      .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 18px 40px; }
       .nav {
         display: flex;
         justify-content: space-between;
@@ -54,55 +54,6 @@
         border-radius: 999px;
         padding: 8px 12px;
         font-size: 0.92rem;
-      }
-      .hero {
-        display: grid;
-        grid-template-columns: 1.2fr 0.9fr;
-        gap: 18px;
-        margin-bottom: 20px;
-      }
-      .hero-copy, .action-panel, .panel {
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        background: var(--panel);
-        box-shadow: var(--shadow);
-      }
-      .hero-copy {
-        padding: 26px;
-        background:
-          linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.92)),
-          linear-gradient(135deg, rgba(15,122,90,0.10), rgba(184,134,37,0.08));
-      }
-      .eyebrow {
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        font-size: 0.76rem;
-        margin-bottom: 12px;
-        font-weight: 700;
-      }
-      h1, h2, h3 {
-        font-family: "Iowan Old Style", Georgia, serif;
-        margin: 0;
-      }
-      h1 {
-        font-size: clamp(2rem, 4vw, 3.5rem);
-        line-height: 0.98;
-        margin-bottom: 14px;
-        max-width: 9.5em;
-      }
-      .hero-copy p {
-        margin: 0;
-        max-width: 56rem;
-        line-height: 1.65;
-        color: var(--muted);
-        font-size: 1rem;
-      }
-      .hero-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 18px;
       }
       .status-badge {
         display: inline-flex;
@@ -130,51 +81,246 @@
         color: #7b6125;
         border-color: #ddcfab;
       }
-      .action-panel {
+      .command-deck {
+        display: grid;
+        grid-template-columns: 1.35fr 0.85fr;
+        gap: 18px;
+        margin-bottom: 22px;
+        border: 1px solid var(--border);
+        border-radius: 32px;
         padding: 24px;
-        background: var(--panel-strong);
-        color: #f5f1e8;
+        box-shadow: var(--shadow);
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.90), rgba(255,255,255,0.66)),
+          linear-gradient(135deg, rgba(15,122,90,0.06), rgba(184,134,37,0.09));
       }
-      .action-panel p,
-      .action-panel .action-list,
-      .action-panel .action-meta {
-        color: #d7e2e6;
+      .command-deck.up {
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
+          linear-gradient(135deg, rgba(15,122,90,0.12), rgba(184,134,37,0.06));
       }
-      .action-panel.up .action-eyebrow { color: #90ddb9; }
-      .action-panel.down .action-eyebrow { color: #f1b7af; }
-      .action-panel.flat .action-eyebrow { color: #f2da9a; }
-      .action-eyebrow {
-        font-size: 0.78rem;
-        letter-spacing: 0.12em;
+      .command-deck.down {
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
+          linear-gradient(135deg, rgba(175,75,63,0.12), rgba(184,134,37,0.05));
+      }
+      .command-main {
+        padding-right: 8px;
+      }
+      .command-label {
         text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.78rem;
         margin-bottom: 12px;
         font-weight: 700;
+        color: var(--accent);
       }
-      .action-panel h2 {
-        font-size: 1.8rem;
-        line-height: 1.05;
-        margin-bottom: 12px;
+      .command-deck.down .command-label {
+        color: var(--red);
       }
-      .action-panel p {
-        line-height: 1.6;
+      h1, h2, h3 {
+        font-family: "Iowan Old Style", Georgia, serif;
+        margin: 0;
+      }
+      .command-main h1 {
+        font-size: clamp(2.4rem, 4.7vw, 4.5rem);
+        line-height: 0.98;
         margin-bottom: 14px;
+        max-width: 12ch;
       }
-      .action-meta {
+      .command-summary {
+        margin: 0;
+        max-width: 54rem;
+        line-height: 1.65;
+        color: var(--muted);
+        font-size: 1.03rem;
+      }
+      .command-facts {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
-        margin-bottom: 14px;
+        margin-top: 18px;
+        margin-bottom: 16px;
       }
-      .action-list {
+      .command-steps {
         margin: 0;
-        padding-left: 18px;
+        padding-left: 20px;
+        display: grid;
+        gap: 10px;
         line-height: 1.55;
+      }
+      .alert-card {
+        border: 1px solid rgba(22,32,40,0.08);
+        border-radius: 24px;
+        background: rgba(20, 32, 40, 0.92);
+        padding: 18px;
+        color: #f5f1e8;
+      }
+      .alert-card-label {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.76rem;
+        margin-bottom: 12px;
+        color: #d8c67b;
+        font-weight: 700;
+      }
+      .phone-card {
+        border-radius: 22px;
+        padding: 18px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      .phone-card.up {
+        background: rgba(15,122,90,0.20);
+        border-color: rgba(144,221,185,0.22);
+      }
+      .phone-card.down {
+        background: rgba(175,75,63,0.18);
+        border-color: rgba(241,183,175,0.22);
+      }
+      .phone-card-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+        color: #d7e2e6;
+        font-size: 0.9rem;
+      }
+      .phone-title {
+        font-size: 1.28rem;
+        font-family: "Iowan Old Style", Georgia, serif;
+        margin-bottom: 10px;
+      }
+      .phone-body {
+        line-height: 1.6;
+        color: #f5f1e8;
+      }
+      .phone-note {
+        margin-top: 12px;
+        color: #c7d3d8;
+        font-size: 0.9rem;
+      }
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        margin-bottom: 20px;
+      }
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+      .panel h2 {
+        font-size: 1.5rem;
+      }
+      .section-note {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.55;
+        max-width: 58rem;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      .operator-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .operator-table th,
+      .operator-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(22,32,40,0.08);
+        vertical-align: top;
+        text-align: left;
+      }
+      .operator-table th {
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        white-space: nowrap;
+      }
+      .operator-table td.num,
+      .operator-table th.num {
+        text-align: right;
+      }
+      .operator-table tbody tr:hover {
+        background: rgba(15,122,90,0.03);
+      }
+      .sort-button {
+        border: 0;
+        background: none;
+        padding: 0;
+        font: inherit;
+        color: inherit;
+        cursor: pointer;
+        text-transform: inherit;
+        letter-spacing: inherit;
+      }
+      .sort-button:hover {
+        color: var(--ink);
+      }
+      .cell-main {
+        font-size: 0.98rem;
+      }
+      .cell-sub {
+        font-size: 0.88rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .operator-table a,
+      .footer-links a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .log-list {
+        display: grid;
+        gap: 14px;
+      }
+      .log-row {
+        display: grid;
+        grid-template-columns: 170px 1fr;
+        gap: 16px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid rgba(22,32,40,0.08);
+      }
+      .log-row:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+      .log-content {
+        min-width: 0;
+      }
+      .log-top {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .log-title {
+        font-weight: 700;
+      }
+      .log-instruction {
+        line-height: 1.55;
+        margin-bottom: 8px;
+      }
+      .log-detail {
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.45;
       }
       .metric-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 12px;
-        margin: 0 0 20px;
+        margin: 0 0 18px;
       }
       .metric-card {
         border: 1px solid var(--border);
@@ -204,21 +350,8 @@
       .flat { color: inherit; }
       .grid-two {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        grid-template-columns: 1.02fr 0.98fr;
         gap: 18px;
-        margin-bottom: 20px;
-      }
-      .panel {
-        padding: 22px;
-      }
-      .panel h3 {
-        font-size: 1.45rem;
-        margin-bottom: 8px;
-      }
-      .panel-copy {
-        color: var(--muted);
-        line-height: 1.6;
-        margin-bottom: 16px;
       }
       .rule-list {
         display: grid;
@@ -248,84 +381,25 @@
         color: var(--muted);
         line-height: 1.5;
       }
-      .section-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: end;
-        margin-bottom: 16px;
-      }
-      .section-note {
-        color: var(--muted);
-        font-size: 0.95rem;
-        line-height: 1.5;
-      }
-      .positions-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 14px;
-      }
-      .position-card {
+      .details-shell {
         border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 16px;
-        background: rgba(255,255,255,0.72);
+        border-radius: 24px;
+        background: rgba(255,255,255,0.78);
+        box-shadow: var(--shadow);
+        overflow: hidden;
       }
-      .position-top {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        align-items: start;
-        margin-bottom: 14px;
+      .details-shell summary {
+        cursor: pointer;
+        padding: 20px 22px;
+        list-style: none;
+        font-family: "Iowan Old Style", Georgia, serif;
+        font-size: 1.35rem;
       }
-      .position-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px 12px;
+      .details-shell summary::-webkit-details-marker {
+        display: none;
       }
-      .position-label {
-        font-size: 0.74rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-        margin-bottom: 4px;
-      }
-      .position-main {
-        font-size: 1rem;
-      }
-      .position-sub {
-        font-size: 0.9rem;
-        color: var(--muted);
-        margin-top: 4px;
-      }
-      .position-links {
-        margin-top: 14px;
-      }
-      .position-links a,
-      .footer-links a {
-        color: var(--accent);
-        text-decoration: none;
-      }
-      .tape-list {
-        display: grid;
-        gap: 10px;
-      }
-      .tape-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid rgba(22,32,40,0.08);
-      }
-      .tape-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .tape-right {
-        text-align: right;
-        font-variant-numeric: tabular-nums;
+      .details-body {
+        padding: 0 22px 22px;
       }
       .empty-state {
         border: 1px dashed var(--border);
@@ -338,23 +412,27 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px 16px;
-        margin-top: 18px;
       }
       .live-note {
         color: var(--muted);
         font-size: 0.92rem;
-        margin-top: 10px;
+        margin-bottom: 16px;
       }
       @media (max-width: 920px) {
-        .hero,
-        .grid-two {
+        .command-deck,
+        .grid-two,
+        .log-row {
           grid-template-columns: 1fr;
         }
       }
       @media (max-width: 700px) {
         .wrap { padding: 18px 12px 30px; }
         .nav { align-items: flex-start; flex-direction: column; }
-        .position-grid { grid-template-columns: 1fr; }
+        .command-deck { padding: 18px; }
+        .details-body { padding: 0 14px 14px; }
+        .details-shell summary { padding: 16px 14px; }
+        .operator-table th,
+        .operator-table td { padding: 10px 8px; }
       }
     </style>
   </head>
@@ -370,37 +448,617 @@
         </div>
       </nav>
 
-      <section class="hero">
-        <div class="hero-copy">
-          <div class="eyebrow">Human Operator View</div>
-          <h1>Shadow Hylo with one $1,000 buy after 10m+ delay.</h1>
-          <p>
-            This homepage is the human-execution version of the strategy. Wait at least 10 minutes after the first confirmed
-            Hylo <code>buy_xsol</code> in an activation episode, buy one <strong>$1,000</strong> xSOL tranche, then stay in until
-            Hylo sells that episode inventory. The old dense dashboard is still available as <a href="v1.html">v1</a>.
-          </p>
-          <div class="hero-meta">
-            <span class="status-badge up">8 shadow entries tracked</span>
-            <span class="status-badge down">Latest confirmed Hylo sell: Apr 7, 4:30 PM PDT</span>
+      
+    <section class="command-deck down">
+      <div class="command-main">
+        <div class="command-label">Do This Now</div>
+        <h1>Do this now: match Hylo&#x27;s latest sell. Do not open a new buy.</h1>
+        <p class="command-summary">The latest confirmed Hylo action was a sell at Apr 7, 4:30 PM PDT. If you have not already done it, close 2 shadow entrys and trim 1 shadow entry so the shadow book stays aligned. After that, wait for a fresh confirmed buy before starting another +10m timer.</p>
+        <div class="command-facts">
+          <span class="status-badge down">FOLLOW SELL</span>
+          <span class="status-badge flat">Latest sell Apr 7, 4:30 PM PDT</span><span class="status-badge flat">1,389,674.20 xSOL sold</span><span class="status-badge flat">6 shadow entries still open</span>
+        </div>
+        <ol class="command-steps"><li>Do not open a fresh shadow buy off this sell.</li><li>Close 2 shadow entrys and trim 1 shadow entry to match Hylo&#x27;s reduced exposure.</li><li>Keep the remaining 6 shadow entrys open until Hylo sells them too.</li><li>Your next entry only starts after a new confirmed Hylo buy episode begins.</li></ol>
+      </div>
+      <aside class="alert-card">
+        <div class="alert-card-label">Latest Actionable Alert</div>
+        <div class="phone-card down">
+          <div class="phone-card-top">
+            <span class="status-badge down">FOLLOW SELL</span>
+            <span>Apr 7, 4:30 PM PDT</span>
           </div>
-          <div class="live-note" id="home-live-note">Waiting for live DexScreener pricing.</div>
+          <div class="phone-title">Hylo sold xSOL</div>
+          <div class="phone-body">Sell at Apr 7, 4:30 PM PDT. Close 2 shadow entrys and trim 1 shadow entry and keep the remaining 6 shadow entrys open.</div>
+          <div class="phone-note">Mirror this wording on your phone alert.</div>
+        </div>
+      </aside>
+    </section>
+    
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Current Shadow Book</h2>
+            <div class="section-note">
+              This is the live book a human should still be carrying. Click the headers to sort by signal time, buy time, PnL, equity, or remaining xSOL.
+            </div>
+          </div>
         </div>
         
-    <section class="action-panel down">
-      <div class="action-eyebrow">No Buy Right Now</div>
-      <h2>Hold the remaining shadow book and follow Hylo exits</h2>
-      <p>Latest confirmed Hylo action was a sell on Apr 7, 4:30 PM PDT. 2 shadow entries fully exited and 1 were trimmed.</p>
-      <div class="action-meta">
-        <span><span class="status-badge down">SELL • Apr 7, 4:30 PM PDT</span></span>
-        <span><span class="status-badge flat">Shadow Hylo • $1,000 • 10m+ delay</span></span>
-      </div>
-      <ul class="action-list"><li>6 shadow entries are still live.</li><li>2 shadow entries are fully closed.</li><li>Wait for a fresh confirmed Hylo buy before starting another +10m timer.</li></ul>
-    </section>
+    <div class="table-wrap">
+      <table class="operator-table" id="active-shadow-table">
+        <thead>
+          <tr>
+            <th><button class="sort-button" type="button" data-sort-key="signal-ts" data-sort-type="number">Signal</button></th>
+            <th><button class="sort-button" type="button" data-sort-key="status-rank" data-sort-type="number">Status</button></th>
+            <th><button class="sort-button" type="button" data-sort-key="entry-ts" data-sort-type="number">Earliest Buy</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="pnl" data-sort-type="number">Shadow PnL</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="equity" data-sort-type="number">Shadow Equity</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="remaining" data-sort-type="number">xSOL Live</button></th>
+            <th class="num">Hylo Lots</th>
+            <th>Tx</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr
+              data-signal-ts="1775136753"
+              data-status-rank="1"
+              data-entry-ts="1775137353"
+              data-pnl="301.73276825739777"
+              data-equity="1301.7327682573978"
+              data-remaining="20879.529136477417"
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:32 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:42 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$301.73</div>
+                <div class="cell-sub up">+30.17%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,301.73</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">20,879.53</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">2/2</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jd...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775135441"
+              data-status-rank="1"
+              data-entry-ts="1775136041"
+              data-pnl="267.570614999958"
+              data-equity="1267.570614999958"
+              data-remaining="20331.575138777578"
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:10 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:20 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$267.57</div>
+                <div class="cell-sub up">+26.76%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,267.57</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">20,331.58</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">3/3</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775134541"
+              data-status-rank="1"
+              data-entry-ts="1775135141"
+              data-pnl="239.0287013940599"
+              data-equity="1239.02870139406"
+              data-remaining="19873.768643253195"
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:55 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:05 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$239.03</div>
+                <div class="cell-sub up">+23.90%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,239.03</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">19,873.77</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">1/1</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775131841"
+              data-status-rank="1"
+              data-entry-ts="1775132441"
+              data-pnl="227.1734224690431"
+              data-equity="1227.173422469043"
+              data-remaining="19683.612377872152"
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:10 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:20 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$227.17</div>
+                <div class="cell-sub up">+22.72%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,227.17</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">19,683.61</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">2/2</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">2RyyUK4fB5...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775096742"
+              data-status-rank="1"
+              data-entry-ts="1775097342"
+              data-pnl="197.65451899417712"
+              data-equity="1197.6545189941771"
+              data-remaining="19210.13516333955"
+            >
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:25 PM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:35 PM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$197.65</div>
+                <div class="cell-sub up">+19.77%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,197.65</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">19,210.14</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">1/1</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">dZvMsimCca...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775095541"
+              data-status-rank="0"
+              data-entry-ts="1775096141"
+              data-pnl="210.85721018991262"
+              data-equity="1210.8572101899126"
+              data-remaining="13738.739404817294"
+            >
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:05 PM PDT</div>
+              </td>
+              <td><span class="status-badge down">Partial</span></td>
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:15 PM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$210.86</div>
+                <div class="cell-sub up">+21.09%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,210.86</div>
+                <div class="cell-sub">$354.32 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">13,738.74</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">1/2</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">5S64PverFo...</a>
+              </td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </div>
     
       </section>
 
-      <section class="metric-grid">
-        
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Alert Log Over Time</h2>
+            <div class="section-note">
+              Phone-style operator history. It records when a timer started, when a $1,000 buy became valid, and when Hylo sells required trims or closes.
+            </div>
+          </div>
+        </div>
+        <div class="log-list">
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 7</div>
+                <div class="cell-sub">4:30 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge down">FOLLOW SELL</span>
+                  <div class="log-title">Match Hylo&#x27;s sell</div>
+                </div>
+                <div class="log-instruction">Hylo sold xSOL. Close 2 shadow entrys and trim 1 shadow entry to keep the shadow book aligned.</div>
+                <div class="log-detail">
+                  1,389,674.20 xSOL sold • $98,850.60 hyUSD received
+                   • <a href="https://solscan.io/tx/Jmcgz1ZjSgvPxM5k2VK58nspkJ9tki9yLWk4VQVGHc8CC1gLUFyCUBmarKvew2xStLiVyHGsKmTYEZxoZvB3Htf">Jmcgz1ZjSgvP...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:42 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  2 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jdhn...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:32 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:42 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 6:32 AM PDT.
+                   • <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jdhn...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:20 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  3 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2Bq...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:10 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:20 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 6:10 AM PDT.
+                   • <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2Bq...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:05 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  1 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k4t...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:55 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:05 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 5:55 AM PDT.
+                   • <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k4t...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:20 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  2 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">2RyyUK4fB5hM...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:10 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 5:20 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 5:10 AM PDT.
+                   • <a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">2RyyUK4fB5hM...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:35 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  1 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">dZvMsimCcaXK...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:25 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:35 PM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 1, 7:25 PM PDT.
+                   • <a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">dZvMsimCcaXK...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:15 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  2 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">5S64PverFoRN...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:05 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:15 PM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 1, 7:05 PM PDT.
+                   • <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">5S64PverFoRN...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:00 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  1 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">DMgCSZL4Zssj...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">6:50 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:00 PM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 1, 6:50 PM PDT.
+                   • <a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">DMgCSZL4Zssj...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">6:42 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY READY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  1 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">4bGxHAsqJX2z...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">6:32 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">TIMER STARTED</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 6:42 PM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 1, 6:32 PM PDT.
+                   • <a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">4bGxHAsqJX2z...</a>
+                </div>
+              </div>
+            </article>
+            </div>
+      </section>
+
+      <details class="details-shell">
+        <summary>Stats, recent exits, rules, and source links</summary>
+        <div class="details-body">
+          <div class="live-note" id="home-live-note">Waiting for live DexScreener pricing.</div>
+          <section class="metric-grid">
+            
     <article class="metric-card">
       <div class="metric-label">Shadow PnL</div>
       <div class="metric-value up">$2,127.73</div>
@@ -463,254 +1121,117 @@
       <div class="metric-sub flat">$449,132.27 deployed by Hylo in this tracked deployment</div>
     </article>
     
-      </section>
-
-      <section class="grid-two">
-        <section class="panel">
-          <div class="section-head">
-            <div>
-              <h3>Current Shadow Book</h3>
-              <div class="section-note">
-                Active entries are the positions a human would still be carrying because Hylo has not fully sold the linked episode lots.
+          </section>
+          <section class="grid-two">
+            <section class="panel">
+              <div class="panel-head">
+                <div>
+                  <h2>Recently Closed Or Trimmed</h2>
+                  <div class="section-note">
+                    Shadow entries Hylo has already reduced or fully exited.
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="positions-grid">
+              
+    <div class="table-wrap">
+      <table class="operator-table">
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Status</th>
+            <th>Latest Sell</th>
+            <th class="num">Shadow PnL</th>
+            <th class="num">xSOL Live</th>
+            <th>Tx</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr>
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">6:32 PM PDT</div>
+              </td>
+              <td><span class="status-badge down">Closed</span></td>
+              <td>
+                <div class="cell-main">Apr 7</div>
+                <div class="cell-sub">4:30 PM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$351.79</div>
+                <div class="cell-sub up">+35.18%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">0.00</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">4bGxHAsqJX...</a>
+              </td>
+            </tr>
             
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:05 PM PDT</div>
-                </div>
-                <span class="status-badge up">Partial</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:15 PM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,210.86</div>
-                  <div class="position-sub">$354.32 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$210.86</div>
-                  <div class="position-sub up">+21.09%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">13,738.74</div>
-                  <div class="position-sub">1/2 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">Episode Tx</a>
-              </div>
-            </article>
+            <tr>
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">6:50 PM PDT</div>
+              </td>
+              <td><span class="status-badge down">Closed</span></td>
+              <td>
+                <div class="cell-main">Apr 7</div>
+                <div class="cell-sub">4:30 PM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$331.92</div>
+                <div class="cell-sub up">+33.19%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">0.00</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">DMgCSZL4Zs...</a>
+              </td>
+            </tr>
             
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">6:32 AM PDT</div>
-                </div>
-                <span class="status-badge up">Open</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">6:42 AM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,301.73</div>
-                  <div class="position-sub">$0.00 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$301.73</div>
-                  <div class="position-sub up">+30.17%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">20,879.53</div>
-                  <div class="position-sub">2/2 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">Episode Tx</a>
-              </div>
-            </article>
+            <tr>
+              <td>
+                <div class="cell-main">Apr 1</div>
+                <div class="cell-sub">7:05 PM PDT</div>
+              </td>
+              <td><span class="status-badge down">Partial</span></td>
+              <td>
+                <div class="cell-main">Apr 7</div>
+                <div class="cell-sub">4:30 PM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$210.86</div>
+                <div class="cell-sub up">+21.09%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">13,738.74</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">5S64PverFo...</a>
+              </td>
+            </tr>
             
-
-            <article class="position-card">
-              <div class="position-top">
+        </tbody>
+      </table>
+    </div>
+    
+            </section>
+            <section class="panel">
+              <div class="panel-head">
                 <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">6:10 AM PDT</div>
-                </div>
-                <span class="status-badge up">Open</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">6:20 AM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,267.57</div>
-                  <div class="position-sub">$0.00 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$267.57</div>
-                  <div class="position-sub up">+26.76%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">20,331.58</div>
-                  <div class="position-sub">3/3 Hylo lots open</div>
+                  <h2>Execution Rules</h2>
+                  <div class="section-note">
+                    Keep the operator model simple: one episode, one $1,000 buy, then wait for Hylo's exit.
+                  </div>
                 </div>
               </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">Episode Tx</a>
-              </div>
-            </article>
-            
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">5:55 AM PDT</div>
-                </div>
-                <span class="status-badge up">Open</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">6:05 AM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,239.03</div>
-                  <div class="position-sub">$0.00 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$239.03</div>
-                  <div class="position-sub up">+23.90%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">19,873.77</div>
-                  <div class="position-sub">1/1 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">Episode Tx</a>
-              </div>
-            </article>
-            
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">5:10 AM PDT</div>
-                </div>
-                <span class="status-badge up">Open</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 2</div>
-                  <div class="position-sub">5:20 AM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,227.17</div>
-                  <div class="position-sub">$0.00 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$227.17</div>
-                  <div class="position-sub up">+22.72%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">19,683.61</div>
-                  <div class="position-sub">2/2 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">Episode Tx</a>
-              </div>
-            </article>
-            
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:25 PM PDT</div>
-                </div>
-                <span class="status-badge up">Open</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:35 PM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,197.65</div>
-                  <div class="position-sub">$0.00 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$197.65</div>
-                  <div class="position-sub up">+19.77%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">19,210.14</div>
-                  <div class="position-sub">1/1 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">Episode Tx</a>
-              </div>
-            </article>
-            
-          </div>
-        </section>
-        <section class="panel">
-          <div class="section-head">
-            <div>
-              <h3>Execution Rules</h3>
-              <div class="section-note">
-                The homepage is meant to reduce the strategy to a few repeated operating rules instead of forcing you to parse the full research layout.
-              </div>
-            </div>
-          </div>
-          <div class="rule-list">
-            
+              <div class="rule-list">
+                
             <div class="rule-step">
               <div class="rule-num">1</div>
               <div>
@@ -746,285 +1267,28 @@
               </div>
             </div>
             
-          </div>
-        </section>
-      </section>
-
-      <section class="grid-two">
-        <section class="panel">
-          <div class="section-head">
-            <div>
-              <h3>Recently Closed Or Trimmed</h3>
-              <div class="section-note">
-                These are the shadow entries that Hylo has already reduced or fully exited.
+              </div>
+            </section>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Useful Links</h2>
+                <div class="section-note">
+                  Use these when you need research detail or the older dashboard instead of the operator view.
+                </div>
               </div>
             </div>
-          </div>
-          <div class="positions-grid">
-            
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:05 PM PDT</div>
-                </div>
-                <span class="status-badge up">Partial</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:15 PM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,210.86</div>
-                  <div class="position-sub">$354.32 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$210.86</div>
-                  <div class="position-sub up">+21.09%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">13,738.74</div>
-                  <div class="position-sub">1/2 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">Episode Tx</a>
-              </div>
-            </article>
-            
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">6:50 PM PDT</div>
-                </div>
-                <span class="status-badge up">Closed</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">7:00 PM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,331.92</div>
-                  <div class="position-sub">$1,331.92 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$331.92</div>
-                  <div class="position-sub up">+33.19%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">0.00</div>
-                  <div class="position-sub">0/1 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">Episode Tx</a>
-              </div>
-            </article>
-            
-
-            <article class="position-card">
-              <div class="position-top">
-                <div>
-                  <div class="position-label">Signal</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">6:32 PM PDT</div>
-                </div>
-                <span class="status-badge up">Closed</span>
-              </div>
-              <div class="position-grid">
-                <div>
-                  <div class="position-label">Earliest Human Entry</div>
-                  <div class="position-main">Apr 1</div>
-                  <div class="position-sub">6:42 PM PDT</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow Equity</div>
-                  <div class="position-main">$1,351.79</div>
-                  <div class="position-sub">$1,351.79 realized</div>
-                </div>
-                <div>
-                  <div class="position-label">Shadow PnL</div>
-                  <div class="position-main up">$351.79</div>
-                  <div class="position-sub up">+35.18%</div>
-                </div>
-                <div>
-                  <div class="position-label">xSOL Still Live</div>
-                  <div class="position-main">0.00</div>
-                  <div class="position-sub">0/1 Hylo lots open</div>
-                </div>
-              </div>
-              <div class="position-links">
-                <a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">Episode Tx</a>
-              </div>
-            </article>
-            
-          </div>
-        </section>
-        <section class="panel">
-          <div class="section-head">
-            <div>
-              <h3>Latest Hylo Tape</h3>
-              <div class="section-note">
-                Confirmed Stability Pool buys and sells, newest first. This is the raw tape you are shadowing.
-              </div>
+            <div class="footer-links">
+              <a href="v1.html">Open v1 dashboard</a>
+              <a href="stability_pool_deployments.html">Raw deployment lots</a>
+              <a href="stability_pool_signal_report.html">Signal research report</a>
+              <a href="current_buy_xsol_events.html">Current buy event log</a>
+              <a href="stability_pool_onchain_tracker.html">On-chain tracker</a>
             </div>
-          </div>
-          <div class="tape-list">
-            
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge down">SELL</span>
-                <div>
-                  <div class="position-main">Apr 7, 4:30 PM PDT</div>
-                  <div class="position-sub">Jmcgz1ZjSgvPxM...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>1,389,674.20</strong> xSOL</div>
-                <div>$98,850.60</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 6:35 AM PDT</div>
-                  <div class="position-sub">48AcJkrfP64ubu...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>1,609,705.38</strong> xSOL</div>
-                <div>$76,509.27</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 6:32 AM PDT</div>
-                  <div class="position-sub">2cWkZ3S5jdhn9U...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>667,285.61</strong> xSOL</div>
-                <div>$32,404.99</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 6:15 AM PDT</div>
-                  <div class="position-sub">5QcbpwrnVYg5qy...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>1,456,350.53</strong> xSOL</div>
-                <div>$71,342.86</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 6:12 AM PDT</div>
-                  <div class="position-sub">4VxkdL8sQR4UeM...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>518,926.65</strong> xSOL</div>
-                <div>$25,885.78</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 6:10 AM PDT</div>
-                  <div class="position-sub">h8NP1teYW2BqjD...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>275,998.05</strong> xSOL</div>
-                <div>$13,874.11</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 5:55 AM PDT</div>
-                  <div class="position-sub">55Vvnutf7k4tzi...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>453,240.47</strong> xSOL</div>
-                <div>$22,867.03</div>
-              </div>
-            </article>
-            
-
-            <article class="tape-row">
-              <div class="tape-left">
-                <span class="status-badge up">BUY</span>
-                <div>
-                  <div class="position-main">Apr 2, 5:20 AM PDT</div>
-                  <div class="position-sub">3nXiJsgrrB6v6h...</div>
-                </div>
-              </div>
-              <div class="tape-right">
-                <div><strong>340,589.03</strong> xSOL</div>
-                <div>$17,303.75</div>
-              </div>
-            </article>
-            
-          </div>
-        </section>
-      </section>
-
-      <section class="panel">
-        <div class="section-head">
-          <div>
-            <h3>Useful Links</h3>
-            <div class="section-note">
-              Keep the homepage for operator decisions. Use the links below when you need raw detail or the original dashboard.
-            </div>
-          </div>
+          </section>
         </div>
-        <div class="footer-links">
-          <a href="v1.html">Open v1 dashboard</a>
-          <a href="stability_pool_deployments.html">Raw deployment lots</a>
-          <a href="stability_pool_signal_report.html">Signal research report</a>
-          <a href="current_buy_xsol_events.html">Current buy event log</a>
-          <a href="stability_pool_onchain_tracker.html">On-chain tracker</a>
-        </div>
-      </section>
+      </details>
     </div>
     <script id="shadow-home-live-state" type="application/json">{"initial_xsol_price":0.065468416}</script>
     <script>
@@ -1065,6 +1329,27 @@
           if (el) {
             el.textContent = value;
           }
+        }
+
+        function sortActiveTable(key, direction, type) {
+          const table = document.getElementById("active-shadow-table");
+          if (!table) {
+            return;
+          }
+          const tbody = table.querySelector("tbody");
+          const rows = Array.from(tbody.querySelectorAll("tr"));
+          rows.sort((left, right) => {
+            const leftRaw = left.getAttribute(`data-${key}`) || "";
+            const rightRaw = right.getAttribute(`data-${key}`) || "";
+            let comparison = 0;
+            if (type === "number") {
+              comparison = Number(leftRaw) - Number(rightRaw);
+            } else {
+              comparison = leftRaw.localeCompare(rightRaw);
+            }
+            return direction === "asc" ? comparison : -comparison;
+          });
+          rows.forEach((row) => tbody.appendChild(row));
         }
 
         function bestPair(pairs, filterFn = null) {
@@ -1140,6 +1425,26 @@
           }
           countdown = REFRESH_SECONDS;
           renderState();
+        }
+
+        document.querySelectorAll(".sort-button").forEach((button) => {
+          button.addEventListener("click", () => {
+            const current = button.dataset.direction === "asc" ? "asc" : "desc";
+            const next = current === "asc" ? "desc" : "asc";
+            document.querySelectorAll(".sort-button").forEach((other) => {
+              if (other !== button) {
+                other.dataset.direction = "";
+              }
+            });
+            button.dataset.direction = next;
+            sortActiveTable(button.dataset.sortKey, next, button.dataset.sortType || "string");
+          });
+        });
+
+        const defaultSortButton = document.querySelector('.sort-button[data-sort-key="entry-ts"]');
+        if (defaultSortButton) {
+          defaultSortButton.dataset.direction = "desc";
+          sortActiveTable("entry-ts", "desc", "number");
         }
 
         renderState();
