@@ -405,16 +405,15 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         return {
             "tone": "flat",
             "status_label": "WAIT",
-            "headline": "Do this now: wait until the +10m timer clears.",
+            "headline": f"Wait. Buy ${fmt_num(tranche_usd, 0)} of xSOL at {entry_time}.",
             "summary": (
-                f"Hylo already started a new buy episode at {signal_time}. "
-                f"Do not buy yet. The earliest allowed human entry is {entry_time}, and the size stays fixed at ${fmt_num(tranche_usd, 0)}."
+                f"Hylo started a new confirmed buy episode at {signal_time}. "
+                f"Do nothing until the full +{delay_minutes}m delay clears."
             ),
             "steps": [
-                f"Set a timer for {entry_time}.",
-                f"When that timer clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL for this episode.",
-                "Do not scale into the same episode again unless Hylo starts another confirmed activation later.",
-                "After buying, hold until Hylo sells the linked episode inventory.",
+                f"Set one timer for {entry_time}.",
+                f"When it clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL once.",
+                "After that, hold until Hylo sells the linked episode inventory.",
             ],
             "facts": [
                 f"Earliest buy {entry_time}",
@@ -436,28 +435,23 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         partial_count = sum(1 for row in impacted if row.get("status") == "partial")
         sell_actions = []
         if closed_count:
-            sell_actions.append(f"close {pluralize(closed_count, 'shadow entry')}")
+            sell_actions.append(f"close {pluralize(closed_count, 'shadow entry', 'shadow entries')}")
         if partial_count:
-            sell_actions.append(f"trim {pluralize(partial_count, 'shadow entry')}")
+            sell_actions.append(f"trim {pluralize(partial_count, 'shadow entry', 'shadow entries')}")
         sell_instruction = " and ".join(sell_actions) if sell_actions else "review the linked shadow entries"
         return {
             "tone": "down",
-            "status_label": "FOLLOW SELL",
-            "headline": "Do this now: match Hylo's latest sell. Do not open a new buy.",
+            "status_label": "SELL",
+            "headline": f"Sell now. {sell_instruction.capitalize()}.",
             "summary": (
                 f"The latest confirmed Hylo action was a sell at {latest_time}. "
                 f"If you have not already done it, {sell_instruction} so the shadow book stays aligned. "
-                f"After that, wait for a fresh confirmed buy before starting another +{delay_minutes}m timer."
+                f"Do not open a new buy off this sell."
             ),
             "steps": [
-                "Do not open a fresh shadow buy off this sell.",
-                (
-                    f"{sell_instruction.capitalize()} to match Hylo's reduced exposure."
-                    if sell_actions
-                    else "Review linked shadow positions and make sure they match Hylo's reduced exposure."
-                ),
-                f"Keep the remaining {pluralize(len(active_entries), 'shadow entry')} open until Hylo sells them too.",
-                "Your next entry only starts after a new confirmed Hylo buy episode begins.",
+                (f"{sell_instruction.capitalize()} to match Hylo's reduced exposure." if sell_actions else "Review linked shadow positions and make sure they match Hylo's reduced exposure."),
+                f"Keep the remaining {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open.",
+                f"Wait for a fresh confirmed Hylo buy before starting another +{delay_minutes}m timer.",
             ],
             "facts": [
                 f"Latest sell {latest_time}",
@@ -467,7 +461,7 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
             "phone_title": "Hylo sold xSOL",
             "phone_body": (
                 f"Sell at {latest_time}. "
-                f"{sell_instruction.capitalize()} and keep the remaining {pluralize(len(active_entries), 'shadow entry')} open."
+                f"{sell_instruction.capitalize()} and keep the remaining {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open."
             ),
             "phone_timestamp": latest_time,
         }
@@ -477,16 +471,15 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         return {
             "tone": "up",
             "status_label": "HOLD",
-            "headline": "Do this now: hold the remaining shadow book.",
+            "headline": "Hold. Do not change the shadow book.",
             "summary": (
                 f"There is no fresh timer running right now. The most recent confirmed Hylo action was at {latest_time}. "
-                f"Keep the current {pluralize(len(active_entries), 'shadow entry')} open and wait for Hylo to sell before reducing them."
+                f"Keep the current {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open until Hylo sells them."
             ),
             "steps": [
-                f"Keep all {pluralize(len(active_entries), 'active shadow entry')} open.",
-                "Do not add again just because Hylo placed multiple buys inside the same episode.",
+                f"Keep all {pluralize(len(active_entries), 'active shadow entry', 'active shadow entries')} open.",
+                "Do not add again inside the same Hylo episode.",
                 "Reduce or close only when Hylo sells the linked episode lots.",
-                "If a new confirmed buy episode appears later, start a new +10m timer for that episode only.",
             ],
             "facts": [
                 f"{overall.get('active_count', 0)} active",
@@ -495,7 +488,7 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
             ],
             "phone_title": "Hold the shadow book",
             "phone_body": (
-                f"No new buy right now. Keep {pluralize(len(active_entries), 'shadow entry')} open and wait for Hylo sells."
+                f"No new buy right now. Keep {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open and wait for Hylo sells."
             ),
             "phone_timestamp": latest_time,
         }
@@ -503,16 +496,15 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
     return {
         "tone": "flat",
         "status_label": "WATCH",
-        "headline": "Do this now: wait for the next confirmed Hylo buy.",
+        "headline": "Wait. No shadow action is live right now.",
         "summary": (
             "There is no live shadow position and no active +10m timer right now. "
             "Do nothing until Hylo starts a fresh confirmed buy episode."
         ),
         "steps": [
             "Watch for a confirmed Hylo buy episode to begin.",
-            f"Once it does, start the +{delay_minutes}m timer from the first buy in that episode.",
-            f"After the timer clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL.",
-            "Then hold until Hylo sells the linked episode inventory.",
+            f"Start the +{delay_minutes}m timer from the first buy in that episode.",
+            f"When it clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL once.",
         ],
         "facts": [
             "No timer running",
@@ -539,7 +531,10 @@ def build_command_center(command):
           {status_badge(command.get('status_label', 'WATCH'), tone)}
           {facts_html}
         </div>
-        <ol class="command-steps">{steps_html}</ol>
+        <div class="command-checklist-shell">
+          <div class="command-checklist-label">Checklist</div>
+          <ul class="command-checklist">{steps_html}</ul>
+        </div>
       </div>
       <aside class="alert-card">
         <div class="alert-card-label">Latest Actionable Alert</div>
@@ -566,24 +561,40 @@ def build_active_table(entries):
         signal_day, signal_time = format_pacific_date_parts(row.get("start_utc"))
         entry_day, entry_time = format_pacific_date_parts(row.get("entry_target_utc"))
         pnl_tone = pnl_class(row.get("shadow_pnl_usd"))
-        status_tone = "down" if row.get("status") == "partial" else "up"
+        row_status = str(row.get("status") or "open").lower()
+        status_tone = "down" if row_status == "partial" else "up"
         signal_ts = int(parse_iso(row.get("start_utc")).timestamp()) if parse_iso(row.get("start_utc")) else 0
         entry_ts = int(parse_iso(row.get("entry_target_utc")).timestamp()) if parse_iso(row.get("entry_target_utc")) else 0
+        search_blob = " ".join(
+            part
+            for part in [
+                signal_day,
+                signal_time,
+                entry_day,
+                entry_time,
+                row_status,
+                row.get("first_signature") or "",
+                short_signature(row.get("first_signature", ""), 10),
+            ]
+            if part
+        ).lower()
         rows.append(
             f"""
             <tr
               data-signal-ts="{signal_ts}"
-              data-status-rank="{0 if row.get('status') == 'partial' else 1}"
+              data-status-rank="{0 if row_status == 'partial' else 1}"
+              data-status="{html.escape(row_status)}"
               data-entry-ts="{entry_ts}"
               data-pnl="{float(row.get('shadow_pnl_usd') or 0.0)}"
               data-equity="{float(row.get('shadow_value_usd') or 0.0)}"
               data-remaining="{float(row.get('remaining_xsol') or 0.0)}"
+              data-search="{html.escape(search_blob)}"
             >
               <td>
                 <div class="cell-main">{html.escape(signal_day)}</div>
                 <div class="cell-sub">{html.escape(signal_time)}</div>
               </td>
-              <td>{status_badge(str(row.get('status', 'open')).title(), status_tone)}</td>
+              <td>{status_badge(row_status.title(), status_tone)}</td>
               <td>
                 <div class="cell-main">{html.escape(entry_day)}</div>
                 <div class="cell-sub">{html.escape(entry_time)}</div>
@@ -610,7 +621,23 @@ def build_active_table(entries):
             </tr>
             """
         )
+    open_count = sum(1 for row in entries if str(row.get("status") or "").lower() == "open")
+    partial_count = sum(1 for row in entries if str(row.get("status") or "").lower() == "partial")
     return f"""
+    <div class="table-toolbar">
+      <div class="filter-group" role="tablist" aria-label="Filter active shadow entries">
+        <button class="filter-chip active" type="button" data-filter-status="all">All ({len(entries)})</button>
+        <button class="filter-chip" type="button" data-filter-status="open">Open ({open_count})</button>
+        <button class="filter-chip" type="button" data-filter-status="partial">Partial ({partial_count})</button>
+      </div>
+      <div class="toolbar-right">
+        <label class="table-search">
+          <span>Filter</span>
+          <input id="active-shadow-search" type="search" placeholder="date, status, or tx">
+        </label>
+        <div class="table-count" id="active-filter-count">Showing {len(entries)} entries</div>
+      </div>
+    </div>
     <div class="table-wrap">
       <table class="operator-table" id="active-shadow-table">
         <thead>
@@ -698,7 +725,7 @@ def build_recent_exits_table(entries, lots):
 
 def build_alert_log(shadow_replay, confirmed_events, lots):
     alerts = []
-    lots_by_signature = {lot.get("signature"): lot for lot in lots if lot.get("signature")}
+    tranche_usd = shadow_replay.get("tranche_usd") or 0
     for row in shadow_replay.get("entries") or []:
         signal_time = format_pacific_timestamp(row.get("start_utc"))
         entry_time = format_pacific_timestamp(row.get("entry_target_utc"))
@@ -706,7 +733,7 @@ def build_alert_log(shadow_replay, confirmed_events, lots):
             {
                 "ts": row.get("start_utc"),
                 "tone": "flat",
-                "label": "TIMER STARTED",
+                "label": "WAIT",
                 "title": "Wait for the +10m delay",
                 "instruction": f"Hylo started a new buy episode. Do nothing until {entry_time}.",
                 "detail": f"Signal began at {signal_time}.",
@@ -717,9 +744,9 @@ def build_alert_log(shadow_replay, confirmed_events, lots):
             {
                 "ts": row.get("entry_target_utc"),
                 "tone": "up",
-                "label": "BUY READY",
-                "title": "Buy $1,000 xSOL",
-                "instruction": "The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.",
+                "label": "BUY",
+                "title": f"Buy ${fmt_num(tranche_usd, 0)} xSOL",
+                "instruction": f"The delay cleared. Buy one ${fmt_num(tranche_usd, 0)} shadow tranche and hold until Hylo sells.",
                 "detail": f"{row.get('hylo_lot_count', 0)} linked Hylo lots in this episode.",
                 "signature": row.get("first_signature"),
             }
@@ -735,26 +762,43 @@ def build_alert_log(shadow_replay, confirmed_events, lots):
         received = float((event.get("hyusd_pool") or {}).get("delta") or 0.0)
         closed_count = sum(1 for row in impacted if row.get("status") == "closed")
         partial_count = sum(1 for row in impacted if row.get("status") == "partial")
-        action_steps = []
-        if closed_count:
-            action_steps.append(f"close {pluralize(closed_count, 'shadow entry')}")
+        base_detail = f"{fmt_num(sold_xsol, 2)} xSOL sold • ${fmt_num(received)} hyUSD received"
         if partial_count:
-            action_steps.append(f"trim {pluralize(partial_count, 'shadow entry')}")
-        alerts.append(
-            {
-                "ts": event.get("utc"),
-                "tone": "down",
-                "label": "FOLLOW SELL",
-                "title": "Match Hylo's sell",
-                "instruction": (
-                    f"Hylo sold xSOL. {' and '.join(action_steps).capitalize()} to keep the shadow book aligned."
-                    if action_steps
-                    else "Hylo sold xSOL. Review linked shadow entries and keep the book aligned."
-                ),
-                "detail": f"{fmt_num(sold_xsol, 2)} xSOL sold • ${fmt_num(received)} hyUSD received",
-                "signature": event.get("signature"),
-            }
-        )
+            alerts.append(
+                {
+                    "ts": event.get("utc"),
+                    "tone": "down",
+                    "label": "TRIM",
+                    "title": f"Trim {pluralize(partial_count, 'shadow entry', 'shadow entries')}",
+                    "instruction": f"Hylo reduced exposure. Trim {pluralize(partial_count, 'shadow entry', 'shadow entries')} to stay aligned.",
+                    "detail": base_detail,
+                    "signature": event.get("signature"),
+                }
+            )
+        if closed_count:
+            alerts.append(
+                {
+                    "ts": event.get("utc"),
+                    "tone": "down",
+                    "label": "CLOSE",
+                    "title": f"Close {pluralize(closed_count, 'shadow entry', 'shadow entries')}",
+                    "instruction": f"Hylo fully exited {pluralize(closed_count, 'shadow entry', 'shadow entries')}. Close them.",
+                    "detail": base_detail,
+                    "signature": event.get("signature"),
+                }
+            )
+        if not partial_count and not closed_count:
+            alerts.append(
+                {
+                    "ts": event.get("utc"),
+                    "tone": "down",
+                    "label": "TRIM",
+                    "title": "Review the shadow book",
+                    "instruction": "Hylo sold xSOL. Review linked shadow entries and keep the book aligned.",
+                    "detail": base_detail,
+                    "signature": event.get("signature"),
+                }
+            )
 
     alerts.sort(key=lambda row: parse_iso(row.get("ts")) or datetime.min, reverse=True)
     return alerts
@@ -816,17 +860,19 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
     <title>Shadow Hylo Operator Home</title>
     <style>
       :root {{
-        --bg: #f3efe4;
-        --ink: #162028;
-        --muted: #5f6d72;
-        --panel: #fffdf8;
-        --panel-strong: #13232c;
-        --border: #d9d0bf;
-        --accent: #0f7a5a;
-        --accent-soft: #d9efe5;
-        --gold: #b88625;
-        --red: #af4b3f;
-        --shadow: 0 18px 40px rgba(20, 32, 40, 0.08);
+        --bg: #091015;
+        --bg-soft: #0e171d;
+        --ink: #edf4f6;
+        --muted: #92a2aa;
+        --panel: #10191f;
+        --panel-2: #142027;
+        --panel-strong: #0b1217;
+        --border: #21333c;
+        --accent: #45d6a7;
+        --accent-soft: #102b24;
+        --gold: #f0c266;
+        --red: #ff8f84;
+        --shadow: 0 22px 50px rgba(0, 0, 0, 0.36);
       }}
       * {{ box-sizing: border-box; }}
       body {{
@@ -834,9 +880,9 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         color: var(--ink);
         font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
         background:
-          radial-gradient(circle at top left, rgba(184,134,37,0.10), transparent 28%),
-          radial-gradient(circle at right 20%, rgba(15,122,90,0.09), transparent 24%),
-          linear-gradient(180deg, #f6f1e6 0%, #efe7d7 100%);
+          radial-gradient(circle at top left, rgba(240,194,102,0.14), transparent 26%),
+          radial-gradient(circle at right 10%, rgba(69,214,167,0.14), transparent 22%),
+          linear-gradient(180deg, #091015 0%, #0d1419 42%, #0b1115 100%);
       }}
       .wrap {{ max-width: 1240px; margin: 0 auto; padding: 28px 18px 40px; }}
       .nav {{
@@ -860,10 +906,14 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         color: var(--ink);
         text-decoration: none;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.6);
+        background: rgba(255,255,255,0.03);
         border-radius: 999px;
         padding: 8px 12px;
         font-size: 0.92rem;
+      }}
+      .nav-links a:hover {{
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
       }}
       .status-badge {{
         display: inline-flex;
@@ -872,24 +922,24 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         border-radius: 999px;
         padding: 8px 12px;
         font-size: 0.88rem;
-        border: 1px solid transparent;
-        background: #ece6d7;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
         color: var(--ink);
       }}
       .status-badge.up {{
-        background: #ddf2e8;
+        background: rgba(69,214,167,0.12);
         color: var(--accent);
-        border-color: #bfdccc;
+        border-color: rgba(69,214,167,0.28);
       }}
       .status-badge.down {{
-        background: #f6dfda;
+        background: rgba(255,143,132,0.12);
         color: var(--red);
-        border-color: #e9c4bc;
+        border-color: rgba(255,143,132,0.25);
       }}
       .status-badge.flat {{
-        background: #efe8d8;
-        color: #7b6125;
-        border-color: #ddcfab;
+        background: rgba(240,194,102,0.10);
+        color: var(--gold);
+        border-color: rgba(240,194,102,0.24);
       }}
       .command-deck {{
         display: grid;
@@ -901,18 +951,21 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         padding: 24px;
         box-shadow: var(--shadow);
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.90), rgba(255,255,255,0.66)),
-          linear-gradient(135deg, rgba(15,122,90,0.06), rgba(184,134,37,0.09));
+          linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(69,214,167,0.12), rgba(240,194,102,0.10)),
+          var(--panel-strong);
       }}
       .command-deck.up {{
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
-          linear-gradient(135deg, rgba(15,122,90,0.12), rgba(184,134,37,0.06));
+          linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(69,214,167,0.18), rgba(240,194,102,0.08)),
+          var(--panel-strong);
       }}
       .command-deck.down {{
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
-          linear-gradient(135deg, rgba(175,75,63,0.12), rgba(184,134,37,0.05));
+          linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(255,143,132,0.18), rgba(240,194,102,0.06)),
+          var(--panel-strong);
       }}
       .command-main {{
         padding-right: 8px;
@@ -936,57 +989,70 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         font-size: clamp(2.4rem, 4.7vw, 4.5rem);
         line-height: 0.98;
         margin-bottom: 14px;
-        max-width: 12ch;
+        max-width: 14ch;
       }}
       .command-summary {{
         margin: 0;
-        max-width: 54rem;
-        line-height: 1.65;
+        max-width: 48rem;
+        line-height: 1.55;
         color: var(--muted);
-        font-size: 1.03rem;
+        font-size: 0.98rem;
       }}
       .command-facts {{
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 18px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }}
-      .command-steps {{
+      .command-checklist-shell {{
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding-top: 12px;
+      }}
+      .command-checklist-label {{
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-bottom: 10px;
+        font-weight: 700;
+      }}
+      .command-checklist {{
         margin: 0;
         padding-left: 20px;
         display: grid;
-        gap: 10px;
-        line-height: 1.55;
+        gap: 8px;
+        line-height: 1.45;
+        font-size: 0.94rem;
       }}
       .alert-card {{
-        border: 1px solid rgba(22,32,40,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         border-radius: 24px;
-        background: rgba(20, 32, 40, 0.92);
+        background: rgba(5, 10, 13, 0.78);
         padding: 18px;
-        color: #f5f1e8;
+        color: var(--ink);
       }}
       .alert-card-label {{
         text-transform: uppercase;
         letter-spacing: 0.12em;
         font-size: 0.76rem;
         margin-bottom: 12px;
-        color: #d8c67b;
+        color: var(--gold);
         font-weight: 700;
       }}
       .phone-card {{
         border-radius: 22px;
         padding: 18px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
         border: 1px solid rgba(255,255,255,0.08);
       }}
       .phone-card.up {{
-        background: rgba(15,122,90,0.20);
-        border-color: rgba(144,221,185,0.22);
+        background: rgba(69,214,167,0.14);
+        border-color: rgba(69,214,167,0.26);
       }}
       .phone-card.down {{
-        background: rgba(175,75,63,0.18);
-        border-color: rgba(241,183,175,0.22);
+        background: rgba(255,143,132,0.14);
+        border-color: rgba(255,143,132,0.24);
       }}
       .phone-card-top {{
         display: flex;
@@ -1004,11 +1070,11 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       }}
       .phone-body {{
         line-height: 1.6;
-        color: #f5f1e8;
+        color: var(--ink);
       }}
       .phone-note {{
         margin-top: 12px;
-        color: #c7d3d8;
+        color: var(--muted);
         font-size: 0.9rem;
       }}
       .panel {{
@@ -1038,6 +1104,64 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .table-wrap {{
         overflow-x: auto;
       }}
+      .table-toolbar {{
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }}
+      .filter-group {{
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }}
+      .filter-chip {{
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        cursor: pointer;
+      }}
+      .filter-chip.active,
+      .filter-chip:hover {{
+        color: var(--ink);
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
+      }}
+      .toolbar-right {{
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }}
+      .table-search {{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }}
+      .table-search input {{
+        width: 220px;
+        max-width: 100%;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--ink);
+        padding: 9px 12px;
+        font: inherit;
+      }}
+      .table-search input::placeholder {{
+        color: #72828b;
+      }}
+      .table-count {{
+        color: var(--muted);
+        font-size: 0.9rem;
+      }}
       .operator-table {{
         width: 100%;
         border-collapse: collapse;
@@ -1045,7 +1169,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .operator-table th,
       .operator-table td {{
         padding: 12px 10px;
-        border-bottom: 1px solid rgba(22,32,40,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
         vertical-align: top;
         text-align: left;
       }}
@@ -1061,7 +1185,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         text-align: right;
       }}
       .operator-table tbody tr:hover {{
-        background: rgba(15,122,90,0.03);
+        background: rgba(69,214,167,0.05);
       }}
       .sort-button {{
         border: 0;
@@ -1075,6 +1199,12 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       }}
       .sort-button:hover {{
         color: var(--ink);
+      }}
+      .sort-button[data-direction="asc"]::after {{
+        content: " ↑";
+      }}
+      .sort-button[data-direction="desc"]::after {{
+        content: " ↓";
       }}
       .cell-main {{
         font-size: 0.98rem;
@@ -1098,7 +1228,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         grid-template-columns: 170px 1fr;
         gap: 16px;
         padding-bottom: 14px;
-        border-bottom: 1px solid rgba(22,32,40,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
       }}
       .log-row:last-child {{
         border-bottom: 0;
@@ -1135,7 +1265,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .metric-card {{
         border: 1px solid var(--border);
         border-radius: 18px;
-        background: rgba(255,255,255,0.75);
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
         padding: 16px;
         box-shadow: var(--shadow);
       }}
@@ -1194,7 +1324,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .details-shell {{
         border: 1px solid var(--border);
         border-radius: 24px;
-        background: rgba(255,255,255,0.78);
+        background: rgba(16,25,31,0.88);
         box-shadow: var(--shadow);
         overflow: hidden;
       }}
@@ -1216,7 +1346,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         border-radius: 18px;
         padding: 18px;
         color: var(--muted);
-        background: rgba(255,255,255,0.55);
+        background: rgba(255,255,255,0.03);
       }}
       .footer-links {{
         display: flex;
@@ -1241,6 +1371,16 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         .command-deck {{ padding: 18px; }}
         .details-body {{ padding: 0 14px 14px; }}
         .details-shell summary {{ padding: 16px 14px; }}
+        .table-toolbar,
+        .toolbar-right {{
+          align-items: stretch;
+        }}
+        .table-search {{
+          width: 100%;
+        }}
+        .table-search input {{
+          width: 100%;
+        }}
         .operator-table th,
         .operator-table td {{ padding: 10px 8px; }}
       }}
@@ -1265,7 +1405,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           <div>
             <h2>Current Shadow Book</h2>
             <div class="section-note">
-              This is the live book a human should still be carrying. Click the headers to sort by signal time, buy time, PnL, equity, or remaining xSOL.
+              This is the live book a human should still be carrying. Filter it first, then sort by signal time, buy time, PnL, equity, or remaining xSOL.
             </div>
           </div>
         </div>
@@ -1277,7 +1417,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           <div>
             <h2>Alert Log Over Time</h2>
             <div class="section-note">
-              Phone-style operator history. It records when a timer started, when a $1,000 buy became valid, and when Hylo sells required trims or closes.
+              Phone-style operator history. Every alert is classified as WAIT, BUY, TRIM, or CLOSE so you can scan the tape faster.
             </div>
           </div>
         </div>
@@ -1399,6 +1539,32 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           rows.forEach((row) => tbody.appendChild(row));
         }}
 
+        function applyActiveFilters() {{
+          const table = document.getElementById("active-shadow-table");
+          if (!table) {{
+            return;
+          }}
+          const activeFilter = document.querySelector(".filter-chip.active")?.dataset.filterStatus || "all";
+          const query = (document.getElementById("active-shadow-search")?.value || "").trim().toLowerCase();
+          const rows = Array.from(table.querySelectorAll("tbody tr"));
+          let visible = 0;
+          rows.forEach((row) => {{
+            const rowStatus = row.getAttribute("data-status") || "";
+            const rowSearch = row.getAttribute("data-search") || "";
+            const matchesStatus = activeFilter === "all" || rowStatus === activeFilter;
+            const matchesQuery = !query || rowSearch.includes(query);
+            const show = matchesStatus && matchesQuery;
+            row.hidden = !show;
+            if (show) {{
+              visible += 1;
+            }}
+          }});
+          const count = document.getElementById("active-filter-count");
+          if (count) {{
+            count.textContent = `Showing ${{visible}} entr${{visible === 1 ? "y" : "ies"}}`;
+          }}
+        }}
+
         function bestPair(pairs, filterFn = null) {{
           const filtered = (pairs || []).filter((pair) => !filterFn || filterFn(pair));
           if (!filtered.length) {{
@@ -1485,14 +1651,29 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
             }});
             button.dataset.direction = next;
             sortActiveTable(button.dataset.sortKey, next, button.dataset.sortType || "string");
+            applyActiveFilters();
           }});
         }});
+
+        document.querySelectorAll(".filter-chip").forEach((button) => {{
+          button.addEventListener("click", () => {{
+            document.querySelectorAll(".filter-chip").forEach((other) => other.classList.remove("active"));
+            button.classList.add("active");
+            applyActiveFilters();
+          }});
+        }});
+
+        const searchInput = document.getElementById("active-shadow-search");
+        if (searchInput) {{
+          searchInput.addEventListener("input", applyActiveFilters);
+        }}
 
         const defaultSortButton = document.querySelector('.sort-button[data-sort-key="entry-ts"]');
         if (defaultSortButton) {{
           defaultSortButton.dataset.direction = "desc";
           sortActiveTable("entry-ts", "desc", "number");
         }}
+        applyActiveFilters();
 
         renderState();
         refreshPrices();

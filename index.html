@@ -6,17 +6,19 @@
     <title>Shadow Hylo Operator Home</title>
     <style>
       :root {
-        --bg: #f3efe4;
-        --ink: #162028;
-        --muted: #5f6d72;
-        --panel: #fffdf8;
-        --panel-strong: #13232c;
-        --border: #d9d0bf;
-        --accent: #0f7a5a;
-        --accent-soft: #d9efe5;
-        --gold: #b88625;
-        --red: #af4b3f;
-        --shadow: 0 18px 40px rgba(20, 32, 40, 0.08);
+        --bg: #091015;
+        --bg-soft: #0e171d;
+        --ink: #edf4f6;
+        --muted: #92a2aa;
+        --panel: #10191f;
+        --panel-2: #142027;
+        --panel-strong: #0b1217;
+        --border: #21333c;
+        --accent: #45d6a7;
+        --accent-soft: #102b24;
+        --gold: #f0c266;
+        --red: #ff8f84;
+        --shadow: 0 22px 50px rgba(0, 0, 0, 0.36);
       }
       * { box-sizing: border-box; }
       body {
@@ -24,9 +26,9 @@
         color: var(--ink);
         font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
         background:
-          radial-gradient(circle at top left, rgba(184,134,37,0.10), transparent 28%),
-          radial-gradient(circle at right 20%, rgba(15,122,90,0.09), transparent 24%),
-          linear-gradient(180deg, #f6f1e6 0%, #efe7d7 100%);
+          radial-gradient(circle at top left, rgba(240,194,102,0.14), transparent 26%),
+          radial-gradient(circle at right 10%, rgba(69,214,167,0.14), transparent 22%),
+          linear-gradient(180deg, #091015 0%, #0d1419 42%, #0b1115 100%);
       }
       .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 18px 40px; }
       .nav {
@@ -50,10 +52,14 @@
         color: var(--ink);
         text-decoration: none;
         border: 1px solid var(--border);
-        background: rgba(255,255,255,0.6);
+        background: rgba(255,255,255,0.03);
         border-radius: 999px;
         padding: 8px 12px;
         font-size: 0.92rem;
+      }
+      .nav-links a:hover {
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
       }
       .status-badge {
         display: inline-flex;
@@ -62,24 +68,24 @@
         border-radius: 999px;
         padding: 8px 12px;
         font-size: 0.88rem;
-        border: 1px solid transparent;
-        background: #ece6d7;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
         color: var(--ink);
       }
       .status-badge.up {
-        background: #ddf2e8;
+        background: rgba(69,214,167,0.12);
         color: var(--accent);
-        border-color: #bfdccc;
+        border-color: rgba(69,214,167,0.28);
       }
       .status-badge.down {
-        background: #f6dfda;
+        background: rgba(255,143,132,0.12);
         color: var(--red);
-        border-color: #e9c4bc;
+        border-color: rgba(255,143,132,0.25);
       }
       .status-badge.flat {
-        background: #efe8d8;
-        color: #7b6125;
-        border-color: #ddcfab;
+        background: rgba(240,194,102,0.10);
+        color: var(--gold);
+        border-color: rgba(240,194,102,0.24);
       }
       .command-deck {
         display: grid;
@@ -91,18 +97,21 @@
         padding: 24px;
         box-shadow: var(--shadow);
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.90), rgba(255,255,255,0.66)),
-          linear-gradient(135deg, rgba(15,122,90,0.06), rgba(184,134,37,0.09));
+          linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(69,214,167,0.12), rgba(240,194,102,0.10)),
+          var(--panel-strong);
       }
       .command-deck.up {
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
-          linear-gradient(135deg, rgba(15,122,90,0.12), rgba(184,134,37,0.06));
+          linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(69,214,167,0.18), rgba(240,194,102,0.08)),
+          var(--panel-strong);
       }
       .command-deck.down {
         background:
-          linear-gradient(135deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72)),
-          linear-gradient(135deg, rgba(175,75,63,0.12), rgba(184,134,37,0.05));
+          linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+          linear-gradient(135deg, rgba(255,143,132,0.18), rgba(240,194,102,0.06)),
+          var(--panel-strong);
       }
       .command-main {
         padding-right: 8px;
@@ -126,57 +135,70 @@
         font-size: clamp(2.4rem, 4.7vw, 4.5rem);
         line-height: 0.98;
         margin-bottom: 14px;
-        max-width: 12ch;
+        max-width: 14ch;
       }
       .command-summary {
         margin: 0;
-        max-width: 54rem;
-        line-height: 1.65;
+        max-width: 48rem;
+        line-height: 1.55;
         color: var(--muted);
-        font-size: 1.03rem;
+        font-size: 0.98rem;
       }
       .command-facts {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-top: 18px;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
       }
-      .command-steps {
+      .command-checklist-shell {
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding-top: 12px;
+      }
+      .command-checklist-label {
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 0.72rem;
+        color: var(--muted);
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+      .command-checklist {
         margin: 0;
         padding-left: 20px;
         display: grid;
-        gap: 10px;
-        line-height: 1.55;
+        gap: 8px;
+        line-height: 1.45;
+        font-size: 0.94rem;
       }
       .alert-card {
-        border: 1px solid rgba(22,32,40,0.08);
+        border: 1px solid rgba(255,255,255,0.08);
         border-radius: 24px;
-        background: rgba(20, 32, 40, 0.92);
+        background: rgba(5, 10, 13, 0.78);
         padding: 18px;
-        color: #f5f1e8;
+        color: var(--ink);
       }
       .alert-card-label {
         text-transform: uppercase;
         letter-spacing: 0.12em;
         font-size: 0.76rem;
         margin-bottom: 12px;
-        color: #d8c67b;
+        color: var(--gold);
         font-weight: 700;
       }
       .phone-card {
         border-radius: 22px;
         padding: 18px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
         border: 1px solid rgba(255,255,255,0.08);
       }
       .phone-card.up {
-        background: rgba(15,122,90,0.20);
-        border-color: rgba(144,221,185,0.22);
+        background: rgba(69,214,167,0.14);
+        border-color: rgba(69,214,167,0.26);
       }
       .phone-card.down {
-        background: rgba(175,75,63,0.18);
-        border-color: rgba(241,183,175,0.22);
+        background: rgba(255,143,132,0.14);
+        border-color: rgba(255,143,132,0.24);
       }
       .phone-card-top {
         display: flex;
@@ -194,11 +216,11 @@
       }
       .phone-body {
         line-height: 1.6;
-        color: #f5f1e8;
+        color: var(--ink);
       }
       .phone-note {
         margin-top: 12px;
-        color: #c7d3d8;
+        color: var(--muted);
         font-size: 0.9rem;
       }
       .panel {
@@ -228,6 +250,64 @@
       .table-wrap {
         overflow-x: auto;
       }
+      .table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+      }
+      .filter-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .filter-chip {
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .filter-chip.active,
+      .filter-chip:hover {
+        color: var(--ink);
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
+      }
+      .toolbar-right {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .table-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .table-search input {
+        width: 220px;
+        max-width: 100%;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--ink);
+        padding: 9px 12px;
+        font: inherit;
+      }
+      .table-search input::placeholder {
+        color: #72828b;
+      }
+      .table-count {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
       .operator-table {
         width: 100%;
         border-collapse: collapse;
@@ -235,7 +315,7 @@
       .operator-table th,
       .operator-table td {
         padding: 12px 10px;
-        border-bottom: 1px solid rgba(22,32,40,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
         vertical-align: top;
         text-align: left;
       }
@@ -251,7 +331,7 @@
         text-align: right;
       }
       .operator-table tbody tr:hover {
-        background: rgba(15,122,90,0.03);
+        background: rgba(69,214,167,0.05);
       }
       .sort-button {
         border: 0;
@@ -265,6 +345,12 @@
       }
       .sort-button:hover {
         color: var(--ink);
+      }
+      .sort-button[data-direction="asc"]::after {
+        content: " ↑";
+      }
+      .sort-button[data-direction="desc"]::after {
+        content: " ↓";
       }
       .cell-main {
         font-size: 0.98rem;
@@ -288,7 +374,7 @@
         grid-template-columns: 170px 1fr;
         gap: 16px;
         padding-bottom: 14px;
-        border-bottom: 1px solid rgba(22,32,40,0.08);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
       }
       .log-row:last-child {
         border-bottom: 0;
@@ -325,7 +411,7 @@
       .metric-card {
         border: 1px solid var(--border);
         border-radius: 18px;
-        background: rgba(255,255,255,0.75);
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
         padding: 16px;
         box-shadow: var(--shadow);
       }
@@ -384,7 +470,7 @@
       .details-shell {
         border: 1px solid var(--border);
         border-radius: 24px;
-        background: rgba(255,255,255,0.78);
+        background: rgba(16,25,31,0.88);
         box-shadow: var(--shadow);
         overflow: hidden;
       }
@@ -406,7 +492,7 @@
         border-radius: 18px;
         padding: 18px;
         color: var(--muted);
-        background: rgba(255,255,255,0.55);
+        background: rgba(255,255,255,0.03);
       }
       .footer-links {
         display: flex;
@@ -431,6 +517,16 @@
         .command-deck { padding: 18px; }
         .details-body { padding: 0 14px 14px; }
         .details-shell summary { padding: 16px 14px; }
+        .table-toolbar,
+        .toolbar-right {
+          align-items: stretch;
+        }
+        .table-search {
+          width: 100%;
+        }
+        .table-search input {
+          width: 100%;
+        }
         .operator-table th,
         .operator-table td { padding: 10px 8px; }
       }
@@ -452,23 +548,26 @@
     <section class="command-deck down">
       <div class="command-main">
         <div class="command-label">Do This Now</div>
-        <h1>Do this now: match Hylo&#x27;s latest sell. Do not open a new buy.</h1>
-        <p class="command-summary">The latest confirmed Hylo action was a sell at Apr 7, 4:30 PM PDT. If you have not already done it, close 2 shadow entrys and trim 1 shadow entry so the shadow book stays aligned. After that, wait for a fresh confirmed buy before starting another +10m timer.</p>
+        <h1>Sell now. Close 2 shadow entries and trim 1 shadow entry.</h1>
+        <p class="command-summary">The latest confirmed Hylo action was a sell at Apr 7, 4:30 PM PDT. If you have not already done it, close 2 shadow entries and trim 1 shadow entry so the shadow book stays aligned. Do not open a new buy off this sell.</p>
         <div class="command-facts">
-          <span class="status-badge down">FOLLOW SELL</span>
+          <span class="status-badge down">SELL</span>
           <span class="status-badge flat">Latest sell Apr 7, 4:30 PM PDT</span><span class="status-badge flat">1,389,674.20 xSOL sold</span><span class="status-badge flat">6 shadow entries still open</span>
         </div>
-        <ol class="command-steps"><li>Do not open a fresh shadow buy off this sell.</li><li>Close 2 shadow entrys and trim 1 shadow entry to match Hylo&#x27;s reduced exposure.</li><li>Keep the remaining 6 shadow entrys open until Hylo sells them too.</li><li>Your next entry only starts after a new confirmed Hylo buy episode begins.</li></ol>
+        <div class="command-checklist-shell">
+          <div class="command-checklist-label">Checklist</div>
+          <ul class="command-checklist"><li>Close 2 shadow entries and trim 1 shadow entry to match Hylo&#x27;s reduced exposure.</li><li>Keep the remaining 6 shadow entries open.</li><li>Wait for a fresh confirmed Hylo buy before starting another +10m timer.</li></ul>
+        </div>
       </div>
       <aside class="alert-card">
         <div class="alert-card-label">Latest Actionable Alert</div>
         <div class="phone-card down">
           <div class="phone-card-top">
-            <span class="status-badge down">FOLLOW SELL</span>
+            <span class="status-badge down">SELL</span>
             <span>Apr 7, 4:30 PM PDT</span>
           </div>
           <div class="phone-title">Hylo sold xSOL</div>
-          <div class="phone-body">Sell at Apr 7, 4:30 PM PDT. Close 2 shadow entrys and trim 1 shadow entry and keep the remaining 6 shadow entrys open.</div>
+          <div class="phone-body">Sell at Apr 7, 4:30 PM PDT. Close 2 shadow entries and trim 1 shadow entry and keep the remaining 6 shadow entries open.</div>
           <div class="phone-note">Mirror this wording on your phone alert.</div>
         </div>
       </aside>
@@ -480,11 +579,25 @@
           <div>
             <h2>Current Shadow Book</h2>
             <div class="section-note">
-              This is the live book a human should still be carrying. Click the headers to sort by signal time, buy time, PnL, equity, or remaining xSOL.
+              This is the live book a human should still be carrying. Filter it first, then sort by signal time, buy time, PnL, equity, or remaining xSOL.
             </div>
           </div>
         </div>
         
+    <div class="table-toolbar">
+      <div class="filter-group" role="tablist" aria-label="Filter active shadow entries">
+        <button class="filter-chip active" type="button" data-filter-status="all">All (6)</button>
+        <button class="filter-chip" type="button" data-filter-status="open">Open (5)</button>
+        <button class="filter-chip" type="button" data-filter-status="partial">Partial (1)</button>
+      </div>
+      <div class="toolbar-right">
+        <label class="table-search">
+          <span>Filter</span>
+          <input id="active-shadow-search" type="search" placeholder="date, status, or tx">
+        </label>
+        <div class="table-count" id="active-filter-count">Showing 6 entries</div>
+      </div>
+    </div>
     <div class="table-wrap">
       <table class="operator-table" id="active-shadow-table">
         <thead>
@@ -504,10 +617,12 @@
             <tr
               data-signal-ts="1775136753"
               data-status-rank="1"
+              data-status="open"
               data-entry-ts="1775137353"
               data-pnl="301.8609314725593"
               data-equity="1301.8609314725593"
               data-remaining="20879.529136477417"
+              data-search="apr 2 6:32 am pdt apr 2 6:42 am pdt open 2cwkz3s5jdhn9ukter2cx7emlj9h28crkhr8k8pkw1phmfgcwhyhdapsjm35odramsso9onxih4v81mkjvy7w2jx 2cwkz3s5jd..."
             >
               <td>
                 <div class="cell-main">Apr 2</div>
@@ -542,10 +657,12 @@
             <tr
               data-signal-ts="1775135441"
               data-status-rank="1"
+              data-status="open"
               data-entry-ts="1775136041"
               data-pnl="267.6954147510469"
               data-equity="1267.6954147510469"
               data-remaining="20331.575138777578"
+              data-search="apr 2 6:10 am pdt apr 2 6:20 am pdt open h8np1teyw2bqjdqtxvrptatw2tltrylbquhbdw7kvnk5gtvpyxxdo1vugtwfo2wplvlgmhqnjpwfkhavegnsvfx h8np1teyw2..."
             >
               <td>
                 <div class="cell-main">Apr 2</div>
@@ -580,10 +697,12 @@
             <tr
               data-signal-ts="1775134541"
               data-status-rank="1"
+              data-status="open"
               data-entry-ts="1775135141"
               data-pnl="239.15069102658686"
               data-equity="1239.1506910265869"
               data-remaining="19873.768643253195"
+              data-search="apr 2 5:55 am pdt apr 2 6:05 am pdt open 55vvnutf7k4tziqk1ckgpxeqfdfwkjkymrf65pt5zpnrned489txgybmx4hanuceguiyhqcukzymmkzd6mp9he9f 55vvnutf7k..."
             >
               <td>
                 <div class="cell-main">Apr 2</div>
@@ -618,10 +737,12 @@
             <tr
               data-signal-ts="1775131841"
               data-status-rank="1"
+              data-status="open"
               data-entry-ts="1775132441"
               data-pnl="227.2942448799247"
               data-equity="1227.2942448799247"
               data-remaining="19683.612377872152"
+              data-search="apr 2 5:10 am pdt apr 2 5:20 am pdt open 2ryyuk4fb5hm9t2iemox28ryvpwtnm5jvnczremtcrbgcnzyevuu5j2sg5edabhub1akxxujgheqsbjdmct9eoct 2ryyuk4fb5..."
             >
               <td>
                 <div class="cell-main">Apr 2</div>
@@ -656,10 +777,12 @@
             <tr
               data-signal-ts="1775096742"
               data-status-rank="1"
+              data-status="open"
               data-entry-ts="1775097342"
               data-pnl="197.7724350961223"
               data-equity="1197.7724350961223"
               data-remaining="19210.13516333955"
+              data-search="apr 1 7:25 pm pdt apr 1 7:35 pm pdt open dzvmsimccaxkwtbvbdrbmnnojchmredea5x8iimzfsn3b3huyzxhvnxjke2qh9gmw3pgg3yoyb6xji7hsmkagvb dzvmsimcca..."
             >
               <td>
                 <div class="cell-main">Apr 1</div>
@@ -694,10 +817,12 @@
             <tr
               data-signal-ts="1775095541"
               data-status-rank="0"
+              data-status="partial"
               data-entry-ts="1775096141"
               data-pnl="210.94154164216343"
               data-equity="1210.9415416421634"
               data-remaining="13738.739404817294"
+              data-search="apr 1 7:05 pm pdt apr 1 7:15 pm pdt partial 5s64pverforndh8tsshvzfyehwhtohgy6hspvtmhhmzkwjdmyuzhjehbymybjybxgm72zqf2luksbay1czre958f 5s64pverfo..."
             >
               <td>
                 <div class="cell-main">Apr 1</div>
@@ -740,7 +865,7 @@
           <div>
             <h2>Alert Log Over Time</h2>
             <div class="section-note">
-              Phone-style operator history. It records when a timer started, when a $1,000 buy became valid, and when Hylo sells required trims or closes.
+              Phone-style operator history. Every alert is classified as WAIT, BUY, TRIM, or CLOSE so you can scan the tape faster.
             </div>
           </div>
         </div>
@@ -752,10 +877,28 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge down">FOLLOW SELL</span>
-                  <div class="log-title">Match Hylo&#x27;s sell</div>
+                  <span class="status-badge down">TRIM</span>
+                  <div class="log-title">Trim 1 shadow entry</div>
                 </div>
-                <div class="log-instruction">Hylo sold xSOL. Close 2 shadow entrys and trim 1 shadow entry to keep the shadow book aligned.</div>
+                <div class="log-instruction">Hylo reduced exposure. Trim 1 shadow entry to stay aligned.</div>
+                <div class="log-detail">
+                  1,389,674.20 xSOL sold • $98,850.60 hyUSD received
+                   • <a href="https://solscan.io/tx/Jmcgz1ZjSgvPxM5k2VK58nspkJ9tki9yLWk4VQVGHc8CC1gLUFyCUBmarKvew2xStLiVyHGsKmTYEZxoZvB3Htf">Jmcgz1ZjSgvP...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 7</div>
+                <div class="cell-sub">4:30 PM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge down">CLOSE</span>
+                  <div class="log-title">Close 2 shadow entries</div>
+                </div>
+                <div class="log-instruction">Hylo fully exited 2 shadow entries. Close them.</div>
                 <div class="log-detail">
                   1,389,674.20 xSOL sold • $98,850.60 hyUSD received
                    • <a href="https://solscan.io/tx/Jmcgz1ZjSgvPxM5k2VK58nspkJ9tki9yLWk4VQVGHc8CC1gLUFyCUBmarKvew2xStLiVyHGsKmTYEZxoZvB3Htf">Jmcgz1ZjSgvP...</a>
@@ -770,7 +913,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -788,7 +931,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:42 AM PDT.</div>
@@ -806,7 +949,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -824,7 +967,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:20 AM PDT.</div>
@@ -842,7 +985,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -860,7 +1003,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:05 AM PDT.</div>
@@ -878,7 +1021,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -896,7 +1039,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 5:20 AM PDT.</div>
@@ -914,7 +1057,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -932,7 +1075,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:35 PM PDT.</div>
@@ -950,7 +1093,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -968,7 +1111,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:15 PM PDT.</div>
@@ -986,7 +1129,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -1004,7 +1147,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 7:00 PM PDT.</div>
@@ -1022,7 +1165,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge up">BUY READY</span>
+                  <span class="status-badge up">BUY</span>
                   <div class="log-title">Buy $1,000 xSOL</div>
                 </div>
                 <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
@@ -1040,7 +1183,7 @@
               </div>
               <div class="log-content">
                 <div class="log-top">
-                  <span class="status-badge flat">TIMER STARTED</span>
+                  <span class="status-badge flat">WAIT</span>
                   <div class="log-title">Wait for the +10m delay</div>
                 </div>
                 <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 1, 6:42 PM PDT.</div>
@@ -1352,6 +1495,32 @@
           rows.forEach((row) => tbody.appendChild(row));
         }
 
+        function applyActiveFilters() {
+          const table = document.getElementById("active-shadow-table");
+          if (!table) {
+            return;
+          }
+          const activeFilter = document.querySelector(".filter-chip.active")?.dataset.filterStatus || "all";
+          const query = (document.getElementById("active-shadow-search")?.value || "").trim().toLowerCase();
+          const rows = Array.from(table.querySelectorAll("tbody tr"));
+          let visible = 0;
+          rows.forEach((row) => {
+            const rowStatus = row.getAttribute("data-status") || "";
+            const rowSearch = row.getAttribute("data-search") || "";
+            const matchesStatus = activeFilter === "all" || rowStatus === activeFilter;
+            const matchesQuery = !query || rowSearch.includes(query);
+            const show = matchesStatus && matchesQuery;
+            row.hidden = !show;
+            if (show) {
+              visible += 1;
+            }
+          });
+          const count = document.getElementById("active-filter-count");
+          if (count) {
+            count.textContent = `Showing ${visible} entr${visible === 1 ? "y" : "ies"}`;
+          }
+        }
+
         function bestPair(pairs, filterFn = null) {
           const filtered = (pairs || []).filter((pair) => !filterFn || filterFn(pair));
           if (!filtered.length) {
@@ -1438,14 +1607,29 @@
             });
             button.dataset.direction = next;
             sortActiveTable(button.dataset.sortKey, next, button.dataset.sortType || "string");
+            applyActiveFilters();
           });
         });
+
+        document.querySelectorAll(".filter-chip").forEach((button) => {
+          button.addEventListener("click", () => {
+            document.querySelectorAll(".filter-chip").forEach((other) => other.classList.remove("active"));
+            button.classList.add("active");
+            applyActiveFilters();
+          });
+        });
+
+        const searchInput = document.getElementById("active-shadow-search");
+        if (searchInput) {
+          searchInput.addEventListener("input", applyActiveFilters);
+        }
 
         const defaultSortButton = document.querySelector('.sort-button[data-sort-key="entry-ts"]');
         if (defaultSortButton) {
           defaultSortButton.dataset.direction = "desc";
           sortActiveTable("entry-ts", "desc", "number");
         }
+        applyActiveFilters();
 
         renderState();
         refreshPrices();
