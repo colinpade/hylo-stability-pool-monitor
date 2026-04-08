@@ -426,6 +426,9 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         impacted = build_sell_impact(shadow_replay, lots, latest_event.get("signature"))
         latest_time = format_pacific_timestamp(latest_event.get("utc"))
         sold_xsol = abs(float((latest_event.get("xsol_pool") or {}).get("delta") or 0.0))
+        hylo_remaining_xsol = sum(float(lot.get("remaining_xsol") or 0.0) for lot in lots)
+        hylo_pre_sell_xsol = hylo_remaining_xsol + sold_xsol
+        sold_pct_of_book = ((sold_xsol / hylo_pre_sell_xsol) * 100.0) if hylo_pre_sell_xsol > 0 else None
         closed_count = sum(1 for row in impacted if row.get("status") == "closed")
         partial_count = sum(1 for row in impacted if row.get("status") == "partial")
         sell_actions = []
@@ -444,7 +447,12 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
             "tone": "down",
             "status_label": "SELL",
             "headline": f"Sell now. {sell_brief}.",
-            "summary": "Match Hylo's sell. No new buy.",
+            "summary": (
+                f"Match Hylo's sell. No new buy. "
+                f"{fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
+                if sold_pct_of_book is not None
+                else "Match Hylo's sell. No new buy."
+            ),
             "steps": [
                 f"{sell_brief}.",
                 f"Keep {len(active_entries)} open.",
@@ -453,10 +461,19 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
             "facts": [
                 latest_time,
                 f"{fmt_num(sold_xsol, 2)} xSOL sold",
+                (
+                    f"{fmt_num(sold_pct_of_book, 2)}% of Hylo xSOL book"
+                    if sold_pct_of_book is not None
+                    else "Sell size percentage unavailable"
+                ),
                 f"{overall.get('active_count', 0)} left open",
             ],
             "phone_title": "Hylo sold xSOL",
-            "phone_body": f"Sell now. {sell_brief}.",
+            "phone_body": (
+                f"Sell now. {sell_brief}. {fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
+                if sold_pct_of_book is not None
+                else f"Sell now. {sell_brief}."
+            ),
             "phone_timestamp": latest_time,
             "ack_label": "Mark sell done",
         }
