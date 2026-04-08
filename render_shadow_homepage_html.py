@@ -387,7 +387,6 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
     delay_minutes = int((shadow_replay.get("delay_seconds") or 0) / 60)
     entries = shadow_replay.get("entries") or []
     active_entries = [row for row in entries if row.get("status") in {"open", "partial"}]
-    closed_entries = [row for row in entries if row.get("status") == "closed"]
     latest_event = confirmed_events[-1] if confirmed_events else None
 
     pending_entries = []
@@ -405,26 +404,22 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         return {
             "tone": "flat",
             "status_label": "WAIT",
-            "headline": f"Wait. Buy ${fmt_num(tranche_usd, 0)} of xSOL at {entry_time}.",
-            "summary": (
-                f"Hylo started a new confirmed buy episode at {signal_time}. "
-                f"Do nothing until the full +{delay_minutes}m delay clears."
-            ),
+            "headline": f"Wait until {entry_time}.",
+            "summary": f"Then buy ${fmt_num(tranche_usd, 0)} once.",
             "steps": [
                 f"Set one timer for {entry_time}.",
-                f"When it clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL once.",
-                "After that, hold until Hylo sells the linked episode inventory.",
+                f"Buy ${fmt_num(tranche_usd, 0)} once.",
+                "Hold until Hylo sells.",
             ],
             "facts": [
-                f"Earliest buy {entry_time}",
-                f"Buy size ${fmt_num(tranche_usd, 0)}",
-                f"{overall.get('active_count', 0)} shadow entries already open",
+                f"{signal_time} trigger",
+                f"${fmt_num(tranche_usd, 0)} size",
+                f"{overall.get('active_count', 0)} still open",
             ],
             "phone_title": "Shadow buy timer running",
-            "phone_body": (
-                f"Wait until {entry_time}. Then buy one ${fmt_num(tranche_usd, 0)} xSOL tranche for the new Hylo episode."
-            ),
+            "phone_body": f"Wait until {entry_time}. Then buy one ${fmt_num(tranche_usd, 0)} tranche.",
             "phone_timestamp": entry_time,
+            "ack_label": "Mark timer set",
         }
 
     if latest_event and latest_event.get("action") == "sell_xsol":
@@ -439,31 +434,31 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         if partial_count:
             sell_actions.append(f"trim {pluralize(partial_count, 'shadow entry', 'shadow entries')}")
         sell_instruction = " and ".join(sell_actions) if sell_actions else "review the linked shadow entries"
+        sell_brief_parts = []
+        if closed_count:
+            sell_brief_parts.append(f"close {closed_count}")
+        if partial_count:
+            sell_brief_parts.append(f"trim {partial_count}")
+        sell_brief = ", ".join(sell_brief_parts).capitalize() if sell_brief_parts else "Review linked entries"
         return {
             "tone": "down",
             "status_label": "SELL",
-            "headline": f"Sell now. {sell_instruction.capitalize()}.",
-            "summary": (
-                f"The latest confirmed Hylo action was a sell at {latest_time}. "
-                f"If you have not already done it, {sell_instruction} so the shadow book stays aligned. "
-                f"Do not open a new buy off this sell."
-            ),
+            "headline": f"Sell now. {sell_brief}.",
+            "summary": "Match Hylo's sell. No new buy.",
             "steps": [
-                (f"{sell_instruction.capitalize()} to match Hylo's reduced exposure." if sell_actions else "Review linked shadow positions and make sure they match Hylo's reduced exposure."),
-                f"Keep the remaining {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open.",
-                f"Wait for a fresh confirmed Hylo buy before starting another +{delay_minutes}m timer.",
+                f"{sell_brief}.",
+                f"Keep {len(active_entries)} open.",
+                "Wait for next buy.",
             ],
             "facts": [
-                f"Latest sell {latest_time}",
+                latest_time,
                 f"{fmt_num(sold_xsol, 2)} xSOL sold",
-                f"{overall.get('active_count', 0)} shadow entries still open",
+                f"{overall.get('active_count', 0)} left open",
             ],
             "phone_title": "Hylo sold xSOL",
-            "phone_body": (
-                f"Sell at {latest_time}. "
-                f"{sell_instruction.capitalize()} and keep the remaining {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open."
-            ),
+            "phone_body": f"Sell now. {sell_brief}.",
             "phone_timestamp": latest_time,
+            "ack_label": "Mark sell done",
         }
 
     latest_time = format_pacific_timestamp(latest_event.get("utc")) if latest_event else "n/a"
@@ -471,49 +466,41 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
         return {
             "tone": "up",
             "status_label": "HOLD",
-            "headline": "Hold. Do not change the shadow book.",
-            "summary": (
-                f"There is no fresh timer running right now. The most recent confirmed Hylo action was at {latest_time}. "
-                f"Keep the current {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open until Hylo sells them."
-            ),
+            "headline": "Hold. No trade right now.",
+            "summary": f"Keep {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open.",
             "steps": [
-                f"Keep all {pluralize(len(active_entries), 'active shadow entry', 'active shadow entries')} open.",
-                "Do not add again inside the same Hylo episode.",
-                "Reduce or close only when Hylo sells the linked episode lots.",
+                "Do not add again.",
+                "Sell only when Hylo sells.",
             ],
             "facts": [
+                latest_time,
                 f"{overall.get('active_count', 0)} active",
-                f"{overall.get('partial_count', 0)} partial",
                 f"Shadow PnL ${fmt_num(overall.get('shadow_pnl_usd'))}",
             ],
             "phone_title": "Hold the shadow book",
-            "phone_body": (
-                f"No new buy right now. Keep {pluralize(len(active_entries), 'shadow entry', 'shadow entries')} open and wait for Hylo sells."
-            ),
+            "phone_body": f"Hold {pluralize(len(active_entries), 'shadow entry', 'shadow entries')}. No new trade.",
             "phone_timestamp": latest_time,
+            "ack_label": "Mark reviewed",
         }
 
     return {
         "tone": "flat",
         "status_label": "WATCH",
-        "headline": "Wait. No shadow action is live right now.",
-        "summary": (
-            "There is no live shadow position and no active +10m timer right now. "
-            "Do nothing until Hylo starts a fresh confirmed buy episode."
-        ),
+        "headline": "Wait for the next Hylo buy.",
+        "summary": "Nothing is live right now.",
         "steps": [
-            "Watch for a confirmed Hylo buy episode to begin.",
-            f"Start the +{delay_minutes}m timer from the first buy in that episode.",
-            f"When it clears, buy exactly ${fmt_num(tranche_usd, 0)} of xSOL once.",
+            f"Start a +{delay_minutes}m timer on the next buy.",
+            f"Buy ${fmt_num(tranche_usd, 0)} once when it clears.",
         ],
         "facts": [
-            "No timer running",
-            "No active shadow entry",
+            "No timer",
+            "No open shadow book",
             f"Buy size ${fmt_num(tranche_usd, 0)}",
         ],
         "phone_title": "Watch only",
-        "phone_body": "No shadow action right now. Wait for the next confirmed Hylo buy before starting a new timer.",
+        "phone_body": "No shadow action right now.",
         "phone_timestamp": "Waiting for trigger",
+        "ack_label": "Mark checked",
     }
 
 
@@ -521,6 +508,13 @@ def build_command_center(command):
     facts_html = "".join(status_badge(item, "flat") for item in command.get("facts") or [])
     steps_html = "".join(f"<li>{html.escape(step)}</li>" for step in command.get("steps") or [])
     tone = command.get("tone", "flat")
+    command_key = "|".join(
+        [
+            str(command.get("status_label") or ""),
+            str(command.get("phone_timestamp") or ""),
+            str(command.get("headline") or ""),
+        ]
+    )
     return f"""
     <section class="command-deck {html.escape(tone)}">
       <div class="command-main">
@@ -532,8 +526,21 @@ def build_command_center(command):
           {facts_html}
         </div>
         <div class="command-checklist-shell">
-          <div class="command-checklist-label">Checklist</div>
+          <div class="command-checklist-label">Next</div>
           <ul class="command-checklist">{steps_html}</ul>
+        </div>
+        <div class="command-ack-shell">
+          <div class="command-ack-state" id="command-ack-state">Not marked done on this browser.</div>
+          <div class="command-ack-actions">
+            <button
+              class="action-button primary"
+              type="button"
+              id="command-ack-button"
+              data-command-key="{html.escape(command_key)}"
+              data-ack-label="{html.escape(command.get('ack_label', 'Mark done'))}"
+            >{html.escape(command.get('ack_label', 'Mark done'))}</button>
+            <button class="action-button" type="button" id="command-ack-reset" hidden>Clear</button>
+          </div>
         </div>
       </div>
       <aside class="alert-card">
@@ -545,7 +552,7 @@ def build_command_center(command):
           </div>
           <div class="phone-title">{html.escape(command.get('phone_title', ''))}</div>
           <div class="phone-body">{html.escape(command.get('phone_body', ''))}</div>
-          <div class="phone-note">Mirror this wording on your phone alert.</div>
+          <div class="phone-note">Phone wording.</div>
         </div>
       </aside>
     </section>
@@ -993,10 +1000,10 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       }}
       .command-summary {{
         margin: 0;
-        max-width: 48rem;
-        line-height: 1.55;
+        max-width: 28rem;
+        line-height: 1.35;
         color: var(--muted);
-        font-size: 0.98rem;
+        font-size: 0.92rem;
       }}
       .command-facts {{
         display: flex;
@@ -1021,9 +1028,48 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         margin: 0;
         padding-left: 20px;
         display: grid;
-        gap: 8px;
-        line-height: 1.45;
-        font-size: 0.94rem;
+        gap: 6px;
+        line-height: 1.35;
+        font-size: 0.9rem;
+      }}
+      .command-ack-shell {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }}
+      .command-ack-state {{
+        color: var(--muted);
+        font-size: 0.9rem;
+      }}
+      .command-ack-state.done {{
+        color: var(--accent);
+      }}
+      .command-ack-actions {{
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }}
+      .action-button {{
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        cursor: pointer;
+      }}
+      .action-button:hover {{
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
+      }}
+      .action-button.primary {{
+        border-color: rgba(69,214,167,0.32);
+        background: rgba(69,214,167,0.14);
       }}
       .alert-card {{
         border: 1px solid rgba(255,255,255,0.08);
@@ -1075,7 +1121,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .phone-note {{
         margin-top: 12px;
         color: var(--muted);
-        font-size: 0.9rem;
+        font-size: 0.82rem;
       }}
       .panel {{
         border: 1px solid var(--border);
@@ -1369,6 +1415,10 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         .wrap {{ padding: 18px 12px 30px; }}
         .nav {{ align-items: flex-start; flex-direction: column; }}
         .command-deck {{ padding: 18px; }}
+        .command-ack-shell,
+        .command-ack-actions {{
+          align-items: stretch;
+        }}
         .details-body {{ padding: 0 14px 14px; }}
         .details-shell summary {{ padding: 16px 14px; }}
         .table-toolbar,
@@ -1481,6 +1531,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
     <script>
       (() => {{
         const REFRESH_SECONDS = 60;
+        const ACK_PREFIX = "shadow-home:ack:";
         const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
         const SOL_TOKEN = "So11111111111111111111111111111111111111112";
         const payload = JSON.parse(document.getElementById("shadow-home-live-state").textContent);
@@ -1515,6 +1566,65 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           const el = document.getElementById(id);
           if (el) {{
             el.textContent = value;
+          }}
+        }}
+
+        function readStoredAck(storageKey) {{
+          try {{
+            return JSON.parse(window.localStorage.getItem(storageKey) || "null");
+          }} catch (error) {{
+            return null;
+          }}
+        }}
+
+        function writeStoredAck(storageKey, value) {{
+          try {{
+            window.localStorage.setItem(storageKey, JSON.stringify(value));
+          }} catch (error) {{
+            console.error(error);
+          }}
+        }}
+
+        function clearStoredAck(storageKey) {{
+          try {{
+            window.localStorage.removeItem(storageKey);
+          }} catch (error) {{
+            console.error(error);
+          }}
+        }}
+
+        function formatAckTime(value) {{
+          try {{
+            return new Date(value).toLocaleString(undefined, {{
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            }});
+          }} catch (error) {{
+            return value;
+          }}
+        }}
+
+        function renderCommandAck() {{
+          const button = document.getElementById("command-ack-button");
+          const reset = document.getElementById("command-ack-reset");
+          const state = document.getElementById("command-ack-state");
+          if (!button || !reset || !state) {{
+            return;
+          }}
+          const storageKey = `${{ACK_PREFIX}}${{button.dataset.commandKey || ""}}`;
+          const stored = readStoredAck(storageKey);
+          if (stored?.doneAt) {{
+            state.textContent = `Marked done here at ${{formatAckTime(stored.doneAt)}}.`;
+            state.classList.add("done");
+            reset.hidden = false;
+            button.textContent = button.dataset.ackLabel || "Mark done";
+          }} else {{
+            state.textContent = "Not marked done on this browser.";
+            state.classList.remove("done");
+            reset.hidden = true;
+            button.textContent = button.dataset.ackLabel || "Mark done";
           }}
         }}
 
@@ -1668,12 +1778,30 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           searchInput.addEventListener("input", applyActiveFilters);
         }}
 
+        const ackButton = document.getElementById("command-ack-button");
+        const ackReset = document.getElementById("command-ack-reset");
+        if (ackButton) {{
+          ackButton.addEventListener("click", () => {{
+            const storageKey = `${{ACK_PREFIX}}${{ackButton.dataset.commandKey || ""}}`;
+            writeStoredAck(storageKey, {{ doneAt: new Date().toISOString() }});
+            renderCommandAck();
+          }});
+        }}
+        if (ackReset) {{
+          ackReset.addEventListener("click", () => {{
+            const storageKey = `${{ACK_PREFIX}}${{ackButton?.dataset.commandKey || ""}}`;
+            clearStoredAck(storageKey);
+            renderCommandAck();
+          }});
+        }}
+
         const defaultSortButton = document.querySelector('.sort-button[data-sort-key="entry-ts"]');
         if (defaultSortButton) {{
           defaultSortButton.dataset.direction = "desc";
           sortActiveTable("entry-ts", "desc", "number");
         }}
         applyActiveFilters();
+        renderCommandAck();
 
         renderState();
         refreshPrices();

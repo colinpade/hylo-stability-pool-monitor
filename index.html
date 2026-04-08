@@ -139,10 +139,10 @@
       }
       .command-summary {
         margin: 0;
-        max-width: 48rem;
-        line-height: 1.55;
+        max-width: 28rem;
+        line-height: 1.35;
         color: var(--muted);
-        font-size: 0.98rem;
+        font-size: 0.92rem;
       }
       .command-facts {
         display: flex;
@@ -167,9 +167,48 @@
         margin: 0;
         padding-left: 20px;
         display: grid;
-        gap: 8px;
-        line-height: 1.45;
-        font-size: 0.94rem;
+        gap: 6px;
+        line-height: 1.35;
+        font-size: 0.9rem;
+      }
+      .command-ack-shell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+      }
+      .command-ack-state {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .command-ack-state.done {
+        color: var(--accent);
+      }
+      .command-ack-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .action-button {
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.03);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font: inherit;
+        cursor: pointer;
+      }
+      .action-button:hover {
+        border-color: rgba(69,214,167,0.4);
+        background: rgba(69,214,167,0.08);
+      }
+      .action-button.primary {
+        border-color: rgba(69,214,167,0.32);
+        background: rgba(69,214,167,0.14);
       }
       .alert-card {
         border: 1px solid rgba(255,255,255,0.08);
@@ -221,7 +260,7 @@
       .phone-note {
         margin-top: 12px;
         color: var(--muted);
-        font-size: 0.9rem;
+        font-size: 0.82rem;
       }
       .panel {
         border: 1px solid var(--border);
@@ -515,6 +554,10 @@
         .wrap { padding: 18px 12px 30px; }
         .nav { align-items: flex-start; flex-direction: column; }
         .command-deck { padding: 18px; }
+        .command-ack-shell,
+        .command-ack-actions {
+          align-items: stretch;
+        }
         .details-body { padding: 0 14px 14px; }
         .details-shell summary { padding: 16px 14px; }
         .table-toolbar,
@@ -548,15 +591,28 @@
     <section class="command-deck down">
       <div class="command-main">
         <div class="command-label">Do This Now</div>
-        <h1>Sell now. Close 2 shadow entries and trim 1 shadow entry.</h1>
-        <p class="command-summary">The latest confirmed Hylo action was a sell at Apr 7, 4:30 PM PDT. If you have not already done it, close 2 shadow entries and trim 1 shadow entry so the shadow book stays aligned. Do not open a new buy off this sell.</p>
+        <h1>Sell now. Close 2, trim 1.</h1>
+        <p class="command-summary">Match Hylo&#x27;s sell. No new buy.</p>
         <div class="command-facts">
           <span class="status-badge down">SELL</span>
-          <span class="status-badge flat">Latest sell Apr 7, 4:30 PM PDT</span><span class="status-badge flat">1,389,674.20 xSOL sold</span><span class="status-badge flat">6 shadow entries still open</span>
+          <span class="status-badge flat">Apr 7, 4:30 PM PDT</span><span class="status-badge flat">1,389,674.20 xSOL sold</span><span class="status-badge flat">6 left open</span>
         </div>
         <div class="command-checklist-shell">
-          <div class="command-checklist-label">Checklist</div>
-          <ul class="command-checklist"><li>Close 2 shadow entries and trim 1 shadow entry to match Hylo&#x27;s reduced exposure.</li><li>Keep the remaining 6 shadow entries open.</li><li>Wait for a fresh confirmed Hylo buy before starting another +10m timer.</li></ul>
+          <div class="command-checklist-label">Next</div>
+          <ul class="command-checklist"><li>Close 2, trim 1.</li><li>Keep 6 open.</li><li>Wait for next buy.</li></ul>
+        </div>
+        <div class="command-ack-shell">
+          <div class="command-ack-state" id="command-ack-state">Not marked done on this browser.</div>
+          <div class="command-ack-actions">
+            <button
+              class="action-button primary"
+              type="button"
+              id="command-ack-button"
+              data-command-key="SELL|Apr 7, 4:30 PM PDT|Sell now. Close 2, trim 1."
+              data-ack-label="Mark sell done"
+            >Mark sell done</button>
+            <button class="action-button" type="button" id="command-ack-reset" hidden>Clear</button>
+          </div>
         </div>
       </div>
       <aside class="alert-card">
@@ -567,8 +623,8 @@
             <span>Apr 7, 4:30 PM PDT</span>
           </div>
           <div class="phone-title">Hylo sold xSOL</div>
-          <div class="phone-body">Sell at Apr 7, 4:30 PM PDT. Close 2 shadow entries and trim 1 shadow entry and keep the remaining 6 shadow entries open.</div>
-          <div class="phone-note">Mirror this wording on your phone alert.</div>
+          <div class="phone-body">Sell now. Close 2, trim 1.</div>
+          <div class="phone-note">Phone wording.</div>
         </div>
       </aside>
     </section>
@@ -1437,6 +1493,7 @@
     <script>
       (() => {
         const REFRESH_SECONDS = 60;
+        const ACK_PREFIX = "shadow-home:ack:";
         const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
         const SOL_TOKEN = "So11111111111111111111111111111111111111112";
         const payload = JSON.parse(document.getElementById("shadow-home-live-state").textContent);
@@ -1471,6 +1528,65 @@
           const el = document.getElementById(id);
           if (el) {
             el.textContent = value;
+          }
+        }
+
+        function readStoredAck(storageKey) {
+          try {
+            return JSON.parse(window.localStorage.getItem(storageKey) || "null");
+          } catch (error) {
+            return null;
+          }
+        }
+
+        function writeStoredAck(storageKey, value) {
+          try {
+            window.localStorage.setItem(storageKey, JSON.stringify(value));
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        function clearStoredAck(storageKey) {
+          try {
+            window.localStorage.removeItem(storageKey);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        function formatAckTime(value) {
+          try {
+            return new Date(value).toLocaleString(undefined, {
+              month: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            });
+          } catch (error) {
+            return value;
+          }
+        }
+
+        function renderCommandAck() {
+          const button = document.getElementById("command-ack-button");
+          const reset = document.getElementById("command-ack-reset");
+          const state = document.getElementById("command-ack-state");
+          if (!button || !reset || !state) {
+            return;
+          }
+          const storageKey = `${ACK_PREFIX}${button.dataset.commandKey || ""}`;
+          const stored = readStoredAck(storageKey);
+          if (stored?.doneAt) {
+            state.textContent = `Marked done here at ${formatAckTime(stored.doneAt)}.`;
+            state.classList.add("done");
+            reset.hidden = false;
+            button.textContent = button.dataset.ackLabel || "Mark done";
+          } else {
+            state.textContent = "Not marked done on this browser.";
+            state.classList.remove("done");
+            reset.hidden = true;
+            button.textContent = button.dataset.ackLabel || "Mark done";
           }
         }
 
@@ -1624,12 +1740,30 @@
           searchInput.addEventListener("input", applyActiveFilters);
         }
 
+        const ackButton = document.getElementById("command-ack-button");
+        const ackReset = document.getElementById("command-ack-reset");
+        if (ackButton) {
+          ackButton.addEventListener("click", () => {
+            const storageKey = `${ACK_PREFIX}${ackButton.dataset.commandKey || ""}`;
+            writeStoredAck(storageKey, { doneAt: new Date().toISOString() });
+            renderCommandAck();
+          });
+        }
+        if (ackReset) {
+          ackReset.addEventListener("click", () => {
+            const storageKey = `${ACK_PREFIX}${ackButton?.dataset.commandKey || ""}`;
+            clearStoredAck(storageKey);
+            renderCommandAck();
+          });
+        }
+
         const defaultSortButton = document.querySelector('.sort-button[data-sort-key="entry-ts"]');
         if (defaultSortButton) {
           defaultSortButton.dataset.direction = "desc";
           sortActiveTable("entry-ts", "desc", "number");
         }
         applyActiveFilters();
+        renderCommandAck();
 
         renderState();
         refreshPrices();
