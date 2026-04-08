@@ -3,7 +3,7 @@
 This repo is prepared for:
 - GitHub Actions scheduled monitoring
 - GitHub Pages public dashboard
-- `ntfy.sh` push alerts when new confirmed Stability Pool xSOL buys appear
+- `ntfy.sh` push alerts when new confirmed Stability Pool xSOL buys or sells appear
 
 ## What the workflow does
 
@@ -15,7 +15,7 @@ The workflow:
 - rebuilds the grouped trigger signal report
 - publishes the latest dashboard to GitHub Pages
 - commits updated tracker artifacts back to `main`
-- sends an `ntfy.sh` alert if the confirmed deployment count increases
+- sends an `ntfy.sh` alert when a new confirmed buy or sell is detected
 
 Workflow file:
 - `.github/workflows/stability-pool-monitor.yml`
