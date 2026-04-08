@@ -533,9 +533,14 @@ def build_command_center(command):
         ]
     )
     return f"""
-    <section class="command-deck {html.escape(tone)}">
+    <section class="command-deck {html.escape(tone)}" id="command-deck">
       <div class="command-main">
-        <div class="command-label">Do This Now</div>
+        <div
+          class="command-label"
+          id="command-label"
+          data-default-label="Do This Now"
+          data-done-label="Handled Here"
+        >Do This Now</div>
         <h1>{html.escape(command.get('headline', ''))}</h1>
         <p class="command-summary">{html.escape(command.get('summary', ''))}</p>
         <div class="command-facts">
@@ -560,16 +565,26 @@ def build_command_center(command):
           </div>
         </div>
       </div>
-      <aside class="alert-card">
-        <div class="alert-card-label">Latest Actionable Alert</div>
-        <div class="phone-card {html.escape(tone)}">
+      <aside class="alert-card" id="command-alert-card">
+        <div
+          class="alert-card-label"
+          id="command-alert-label"
+          data-default-label="Latest Actionable Alert"
+          data-done-label="Latest Alert"
+        >Latest Actionable Alert</div>
+        <div class="phone-card {html.escape(tone)}" id="command-phone-card">
           <div class="phone-card-top">
             {status_badge(command.get('status_label', 'WATCH'), tone)}
             <span>{html.escape(command.get('phone_timestamp', ''))}</span>
           </div>
           <div class="phone-title">{html.escape(command.get('phone_title', ''))}</div>
           <div class="phone-body">{html.escape(command.get('phone_body', ''))}</div>
-          <div class="phone-note">Phone wording.</div>
+          <div
+            class="phone-note"
+            id="command-phone-note"
+            data-default-note="Phone wording."
+            data-done-note="Already handled on this browser."
+          >Phone wording.</div>
         </div>
       </aside>
     </section>
@@ -1071,6 +1086,29 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         gap: 10px;
         flex-wrap: wrap;
       }}
+      .command-deck.acknowledged {{
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.015), rgba(255,255,255,0.008)),
+          linear-gradient(135deg, rgba(146,162,170,0.08), rgba(146,162,170,0.04)),
+          var(--panel);
+        border-color: rgba(255,255,255,0.05);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+      }}
+      .command-deck.acknowledged .command-label {{
+        color: var(--muted);
+      }}
+      .command-deck.acknowledged .command-main h1,
+      .command-deck.acknowledged .command-summary,
+      .command-deck.acknowledged .command-facts,
+      .command-deck.acknowledged .command-checklist-shell {{
+        opacity: 0.58;
+      }}
+      .command-deck.acknowledged .status-badge {{
+        filter: saturate(0.5);
+      }}
+      .command-ack-shell.done {{
+        border-top-color: rgba(69,214,167,0.16);
+      }}
       .action-button {{
         border: 1px solid var(--border);
         background: rgba(255,255,255,0.03);
@@ -1088,12 +1126,19 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         border-color: rgba(69,214,167,0.32);
         background: rgba(69,214,167,0.14);
       }}
+      .action-button.subtle {{
+        color: var(--muted);
+      }}
       .alert-card {{
         border: 1px solid rgba(255,255,255,0.08);
         border-radius: 24px;
         background: rgba(5, 10, 13, 0.78);
         padding: 18px;
         color: var(--ink);
+      }}
+      .alert-card.acknowledged {{
+        background: rgba(5, 10, 13, 0.46);
+        border-color: rgba(255,255,255,0.05);
       }}
       .alert-card-label {{
         text-transform: uppercase;
@@ -1116,6 +1161,14 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
       .phone-card.down {{
         background: rgba(255,143,132,0.14);
         border-color: rgba(255,143,132,0.24);
+      }}
+      .phone-card.acknowledged {{
+        background: rgba(255,255,255,0.025) !important;
+        border-color: rgba(255,255,255,0.05) !important;
+        opacity: 0.7;
+      }}
+      .phone-card.acknowledged .status-badge {{
+        filter: saturate(0.45);
       }}
       .phone-card-top {{
         display: flex;
@@ -1627,6 +1680,13 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           const button = document.getElementById("command-ack-button");
           const reset = document.getElementById("command-ack-reset");
           const state = document.getElementById("command-ack-state");
+          const deck = document.getElementById("command-deck");
+          const ackShell = document.querySelector(".command-ack-shell");
+          const commandLabel = document.getElementById("command-label");
+          const alertCard = document.getElementById("command-alert-card");
+          const alertLabel = document.getElementById("command-alert-label");
+          const phoneCard = document.getElementById("command-phone-card");
+          const phoneNote = document.getElementById("command-phone-note");
           if (!button || !reset || !state) {{
             return;
           }}
@@ -1635,13 +1695,46 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
           if (stored?.doneAt) {{
             state.textContent = `Marked done here at ${{formatAckTime(stored.doneAt)}}.`;
             state.classList.add("done");
+            ackShell?.classList.add("done");
+            deck?.classList.add("acknowledged");
+            alertCard?.classList.add("acknowledged");
+            phoneCard?.classList.add("acknowledged");
+            if (commandLabel) {{
+              commandLabel.textContent = commandLabel.dataset.doneLabel || "Handled Here";
+            }}
+            if (alertLabel) {{
+              alertLabel.textContent = alertLabel.dataset.doneLabel || "Latest Alert";
+            }}
+            if (phoneNote) {{
+              phoneNote.textContent = phoneNote.dataset.doneNote || "Already handled on this browser.";
+            }}
             reset.hidden = false;
-            button.textContent = button.dataset.ackLabel || "Mark done";
+            button.hidden = true;
+            button.classList.remove("primary");
+            reset.textContent = "Mark not done";
+            reset.classList.add("subtle");
           }} else {{
             state.textContent = "Not marked done on this browser.";
             state.classList.remove("done");
+            ackShell?.classList.remove("done");
+            deck?.classList.remove("acknowledged");
+            alertCard?.classList.remove("acknowledged");
+            phoneCard?.classList.remove("acknowledged");
+            if (commandLabel) {{
+              commandLabel.textContent = commandLabel.dataset.defaultLabel || "Do This Now";
+            }}
+            if (alertLabel) {{
+              alertLabel.textContent = alertLabel.dataset.defaultLabel || "Latest Actionable Alert";
+            }}
+            if (phoneNote) {{
+              phoneNote.textContent = phoneNote.dataset.defaultNote || "Phone wording.";
+            }}
             reset.hidden = true;
+            button.hidden = false;
             button.textContent = button.dataset.ackLabel || "Mark done";
+            button.classList.add("primary");
+            reset.textContent = "Clear";
+            reset.classList.remove("subtle");
           }}
         }}
 
