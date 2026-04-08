@@ -5,6 +5,7 @@ events_out="${EVENTS_OUT:-data/stability_pool_balance_changes_full.jsonl}"
 lots_out="${LOTS_OUT:-data/stability_pool_deployments.json}"
 marks_out="${MARKS_OUT:-data/stability_pool_deployment_marks.jsonl}"
 html_out="${HTML_OUT:-stability_pool_deployments.html}"
+home_html_out="${HOME_HTML_OUT:-index.html}"
 tracker_html_out="${TRACKER_HTML_OUT:-stability_pool_onchain_tracker.html}"
 current_buys_json_out="${CURRENT_BUYS_JSON_OUT:-data/current_buy_xsol_events.json}"
 current_buys_html_out="${CURRENT_BUYS_HTML_OUT:-current_buy_xsol_events.html}"
@@ -27,5 +28,12 @@ python3 refresh_xsol_ohlcv.py --out "$ohlcv_out"
 python3 extract_current_buy_xsol.py --backfill "$events_out" --ohlcv "$ohlcv_out" --json-out "$current_buys_json_out" --html-out "$current_buys_html_out"
 python3 analyze_signal_episodes.py --backfill "$events_out" --ohlcv "$ohlcv_out" --json-out "$signal_json_out" --html-out "$signal_html_out"
 python3 render_stability_pool_deployments_html.py --lots "$lots_out" --marks "$marks_out" --out "$html_out"
+python3 render_shadow_homepage_html.py \
+  --lots "$lots_out" \
+  --marks "$marks_out" \
+  --signal-report "$signal_json_out" \
+  --current-buys "$current_buys_json_out" \
+  --events "$events_out" \
+  --out "$home_html_out"
 
-echo "$html_out"
+echo "$home_html_out"

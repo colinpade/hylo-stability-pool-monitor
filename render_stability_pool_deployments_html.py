@@ -855,7 +855,7 @@ def render_html(lot_state, snapshots, signal_report=None):
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hylo Stability Pool Deployments</title>
+    <title>Hylo Stability Pool Deployments v1</title>
     <style>
       :root {{
         --bg: #0c0f11;
@@ -988,7 +988,11 @@ def render_html(lot_state, snapshots, signal_report=None):
   </head>
   <body>
     <div class="wrap">
-      <h1>Hylo Stability Pool Deployments</h1>
+      <h1>Hylo Stability Pool Deployments v1</h1>
+      <div class="sub">
+        <a href="index.html">Operator Home</a> keeps the shadow-Hylo <code>$1,000</code> / <code>+10m</code> workflow front and center.
+        This page remains the legacy detail view.
+      </div>
       <div class="sub">
         Persistent lot tracker built from confirmed on-chain <code>buy_xsol</code> events. A new deployment is created
         when the Stability Pool spends <code>hyUSD</code>, receives <code>xSOL</code>, and the transaction logs include the

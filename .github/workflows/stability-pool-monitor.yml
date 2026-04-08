@@ -347,7 +347,8 @@ jobs:
         run: |
           rm -rf site
           mkdir -p site/data
-          cp stability_pool_deployments.html site/index.html
+          cp index.html site/index.html
+          cp stability_pool_deployments.html site/v1.html
           cp stability_pool_deployments.html site/stability_pool_deployments.html
           cp stability_pool_onchain_tracker.html site/stability_pool_onchain_tracker.html
           cp hylo_stability_pool_trace_report.html site/hylo_stability_pool_trace_report.html
@@ -490,6 +491,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add \
+            index.html \
             data/live_hylo_stats.json \
             data/last_processed_deployment_signature.txt \
             data/last_processed_sell_signature.txt \
@@ -501,6 +503,7 @@ jobs:
             data/stability_pool_signal_report.json \
             data/xsol_usdc_ohlcv_5m.json \
             stability_pool_deployments.html \
+            stability_pool_onchain_tracker.html \
             current_buy_xsol_events.html \
             stability_pool_signal_report.html
           if ! git diff --cached --quiet; then

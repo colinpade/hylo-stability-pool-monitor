@@ -13,7 +13,7 @@ The workflow:
 - rebuilds the deployment-lot tracker
 - refreshes the cached `xSOL / USDC` 5-minute market series
 - rebuilds the grouped trigger signal report
-- publishes the latest dashboard to GitHub Pages
+- publishes the operator-focused shadow dashboard to GitHub Pages
 - commits updated tracker artifacts back to `main`
 - sends an `ntfy.sh` alert when a new confirmed buy or sell is detected
 
@@ -42,7 +42,9 @@ Once Pages is enabled, the dashboard should appear at:
 `https://<github-user>.github.io/<repo>/`
 
 The workflow copies:
-- `stability_pool_deployments.html` -> site index
+- `index.html` -> site index
+- `stability_pool_deployments.html` -> `v1.html`
+- `stability_pool_deployments.html` -> `stability_pool_deployments.html`
 - `stability_pool_onchain_tracker.html`
 - `hylo_stability_pool_trace_report.html`
 - `hylo_viability_report.html`

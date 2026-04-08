@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shadow Hylo +10m</title>
+    <style>
+      :root {
+        --bg: #f3efe4;
+        --ink: #162028;
+        --muted: #5f6d72;
+        --panel: #fffdf8;
+        --panel-strong: #13232c;
+        --border: #d9d0bf;
+        --accent: #0f7a5a;
+        --accent-soft: #d9efe5;
+        --gold: #b88625;
+        --red: #af4b3f;
+        --shadow: 0 18px 40px rgba(20, 32, 40, 0.08);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(184,134,37,0.10), transparent 28%),
+          radial-gradient(circle at right 20%, rgba(15,122,90,0.09), transparent 24%),
+          linear-gradient(180deg, #f6f1e6 0%, #efe7d7 100%);
+      }
+      .wrap { max-width: 1220px; margin: 0 auto; padding: 28px 18px 40px; }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .brand {
+        font-family: "Iowan Old Style", Georgia, serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
+      }
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .nav-links a {
+        color: var(--ink);
+        text-decoration: none;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.6);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.92rem;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.9fr;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+      .hero-copy, .action-panel, .panel {
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+      }
+      .hero-copy {
+        padding: 26px;
+        background:
+          linear-gradient(135deg, rgba(255,255,255,0.72), rgba(255,255,255,0.92)),
+          linear-gradient(135deg, rgba(15,122,90,0.10), rgba(184,134,37,0.08));
+      }
+      .eyebrow {
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 0.76rem;
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+      h1, h2, h3 {
+        font-family: "Iowan Old Style", Georgia, serif;
+        margin: 0;
+      }
+      h1 {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        line-height: 0.98;
+        margin-bottom: 14px;
+        max-width: 9.5em;
+      }
+      .hero-copy p {
+        margin: 0;
+        max-width: 56rem;
+        line-height: 1.65;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.88rem;
+        border: 1px solid transparent;
+        background: #ece6d7;
+        color: var(--ink);
+      }
+      .status-badge.up {
+        background: #ddf2e8;
+        color: var(--accent);
+        border-color: #bfdccc;
+      }
+      .status-badge.down {
+        background: #f6dfda;
+        color: var(--red);
+        border-color: #e9c4bc;
+      }
+      .status-badge.flat {
+        background: #efe8d8;
+        color: #7b6125;
+        border-color: #ddcfab;
+      }
+      .action-panel {
+        padding: 24px;
+        background: var(--panel-strong);
+        color: #f5f1e8;
+      }
+      .action-panel p,
+      .action-panel .action-list,
+      .action-panel .action-meta {
+        color: #d7e2e6;
+      }
+      .action-panel.up .action-eyebrow { color: #90ddb9; }
+      .action-panel.down .action-eyebrow { color: #f1b7af; }
+      .action-panel.flat .action-eyebrow { color: #f2da9a; }
+      .action-eyebrow {
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+      .action-panel h2 {
+        font-size: 1.8rem;
+        line-height: 1.05;
+        margin-bottom: 12px;
+      }
+      .action-panel p {
+        line-height: 1.6;
+        margin-bottom: 14px;
+      }
+      .action-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .action-list {
+        margin: 0;
+        padding-left: 18px;
+        line-height: 1.55;
+      }
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin: 0 0 20px;
+      }
+      .metric-card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: rgba(255,255,255,0.75);
+        padding: 16px;
+        box-shadow: var(--shadow);
+      }
+      .metric-label {
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .metric-value {
+        font-size: 1.55rem;
+      }
+      .metric-sub {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.4;
+      }
+      .up { color: var(--accent); }
+      .down { color: var(--red); }
+      .flat { color: inherit; }
+      .grid-two {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+      .panel {
+        padding: 22px;
+      }
+      .panel h3 {
+        font-size: 1.45rem;
+        margin-bottom: 8px;
+      }
+      .panel-copy {
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+      .rule-list {
+        display: grid;
+        gap: 14px;
+      }
+      .rule-step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+        align-items: start;
+      }
+      .rule-num {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+      .rule-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .rule-copy {
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+      .section-note {
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .positions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+      .position-card {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        background: rgba(255,255,255,0.72);
+      }
+      .position-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: start;
+        margin-bottom: 14px;
+      }
+      .position-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px 12px;
+      }
+      .position-label {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .position-main {
+        font-size: 1rem;
+      }
+      .position-sub {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-top: 4px;
+      }
+      .position-links {
+        margin-top: 14px;
+      }
+      .position-links a,
+      .footer-links a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .tape-list {
+        display: grid;
+        gap: 10px;
+      }
+      .tape-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(22,32,40,0.08);
+      }
+      .tape-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .tape-right {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+      .empty-state {
+        border: 1px dashed var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        color: var(--muted);
+        background: rgba(255,255,255,0.55);
+      }
+      .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        margin-top: 18px;
+      }
+      .live-note {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin-top: 10px;
+      }
+      @media (max-width: 920px) {
+        .hero,
+        .grid-two {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 700px) {
+        .wrap { padding: 18px 12px 30px; }
+        .nav { align-items: flex-start; flex-direction: column; }
+        .position-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="nav">
+        <div class="brand">Shadow Hylo +10m</div>
+        <div class="nav-links">
+          <a href="v1.html">v1</a>
+          <a href="stability_pool_signal_report.html">Research</a>
+          <a href="current_buy_xsol_events.html">Current Buys</a>
+          <a href="stability_pool_onchain_tracker.html">On-chain Tracker</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Human Operator View</div>
+          <h1>Shadow Hylo with one $1,000 buy after 10m+ delay.</h1>
+          <p>
+            This homepage is the human-execution version of the strategy. Wait at least 10 minutes after the first confirmed
+            Hylo <code>buy_xsol</code> in an activation episode, buy one <strong>$1,000</strong> xSOL tranche, then stay in until
+            Hylo sells that episode inventory. The old dense dashboard is still available as <a href="v1.html">v1</a>.
+          </p>
+          <div class="hero-meta">
+            <span class="status-badge up">8 shadow entries tracked</span>
+            <span class="status-badge down">Latest confirmed Hylo sell: Apr 7, 4:30 PM PDT</span>
+          </div>
+          <div class="live-note" id="home-live-note">Waiting for live DexScreener pricing.</div>
+        </div>
+        
+    <section class="action-panel down">
+      <div class="action-eyebrow">No Buy Right Now</div>
+      <h2>Hold the remaining shadow book and follow Hylo exits</h2>
+      <p>Latest confirmed Hylo action was a sell on Apr 7, 4:30 PM PDT. 2 shadow entries fully exited and 1 were trimmed.</p>
+      <div class="action-meta">
+        <span><span class="status-badge down">SELL • Apr 7, 4:30 PM PDT</span></span>
+        <span><span class="status-badge flat">Shadow Hylo • $1,000 • 10m+ delay</span></span>
+      </div>
+      <ul class="action-list"><li>6 shadow entries are still live.</li><li>2 shadow entries are fully closed.</li><li>Wait for a fresh confirmed Hylo buy before starting another +10m timer.</li></ul>
+    </section>
+    
+      </section>
+
+      <section class="metric-grid">
+        
+    <article class="metric-card">
+      <div class="metric-label">Shadow PnL</div>
+      <div class="metric-value up">$2,304.14</div>
+      <div class="metric-sub up">+28.80%</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Shadow Capital</div>
+      <div class="metric-value flat">$8,000.00</div>
+      <div class="metric-sub flat">$1,000 per episode after +10m</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Active Shadow Entries</div>
+      <div class="metric-value up">6</div>
+      <div class="metric-sub up">2 closed • 1 partial</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Shadow Equity</div>
+      <div class="metric-value flat">$10,304.14</div>
+      <div class="metric-sub flat">$3,038.03 realized • $7,266.11 still open</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Open Shadow xSOL</div>
+      <div class="metric-value flat">113,717.36</div>
+      <div class="metric-sub flat">still live because Hylo still has inventory open</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Protocol xSOL Mark</div>
+      <div class="metric-value flat" id="home-protocol-xsol">0.063896222</div>
+      <div class="metric-sub flat">saved mark at Apr 8, 7:05 AM PDT</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Live xSOL Price</div>
+      <div class="metric-value flat" id="home-live-xsol">0.063896222</div>
+      <div class="metric-sub flat" id="home-live-xsol-sub">waiting for browser refresh</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Latest SOL Price</div>
+      <div class="metric-value flat" id="home-live-sol">Loading...</div>
+      <div class="metric-sub flat" id="home-live-sol-sub">waiting for browser refresh</div>
+    </article>
+    
+
+    <article class="metric-card">
+      <div class="metric-label">Hylo Buy Transactions</div>
+      <div class="metric-value flat">13</div>
+      <div class="metric-sub flat">$449,132.27 deployed by Hylo in this tracked deployment</div>
+    </article>
+    
+      </section>
+
+      <section class="grid-two">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h3>Current Shadow Book</h3>
+              <div class="section-note">
+                Active entries are the positions a human would still be carrying because Hylo has not fully sold the linked episode lots.
+              </div>
+            </div>
+          </div>
+          <div class="positions-grid">
+            
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:05 PM PDT</div>
+                </div>
+                <span class="status-badge up">Partial</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:15 PM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,232.17</div>
+                  <div class="position-sub">$354.32 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$232.17</div>
+                  <div class="position-sub up">+23.22%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">13,738.74</div>
+                  <div class="position-sub">1/2 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">6:32 AM PDT</div>
+                </div>
+                <span class="status-badge up">Open</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">6:42 AM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,334.12</div>
+                  <div class="position-sub">$0.00 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$334.12</div>
+                  <div class="position-sub up">+33.41%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">20,879.53</div>
+                  <div class="position-sub">2/2 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">6:10 AM PDT</div>
+                </div>
+                <span class="status-badge up">Open</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">6:20 AM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,299.11</div>
+                  <div class="position-sub">$0.00 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$299.11</div>
+                  <div class="position-sub up">+29.91%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">20,331.58</div>
+                  <div class="position-sub">3/3 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">5:55 AM PDT</div>
+                </div>
+                <span class="status-badge up">Open</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">6:05 AM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,269.86</div>
+                  <div class="position-sub">$0.00 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$269.86</div>
+                  <div class="position-sub up">+26.99%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">19,873.77</div>
+                  <div class="position-sub">1/1 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">5:10 AM PDT</div>
+                </div>
+                <span class="status-badge up">Open</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 2</div>
+                  <div class="position-sub">5:20 AM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,257.71</div>
+                  <div class="position-sub">$0.00 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$257.71</div>
+                  <div class="position-sub up">+25.77%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">19,683.61</div>
+                  <div class="position-sub">2/2 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/2RyyUK4fB5hM9T2iemox28RYvPwTNM5JvNcZRemTCrbgcNzyEvUu5j2Sg5eDABHUB1AkXxUjgHEqsbJdMcT9EocT">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:25 PM PDT</div>
+                </div>
+                <span class="status-badge up">Open</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:35 PM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,227.46</div>
+                  <div class="position-sub">$0.00 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$227.46</div>
+                  <div class="position-sub up">+22.75%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">19,210.14</div>
+                  <div class="position-sub">1/1 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/dZvMsimCcaXKwTBvbdRBmNnoJCHmRedEA5x8iiMZfsN3b3huyZxHVNxJke2qH9GmW3pGg3YoyB6xji7hsmKAGVB">Episode Tx</a>
+              </div>
+            </article>
+            
+          </div>
+        </section>
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h3>Execution Rules</h3>
+              <div class="section-note">
+                The homepage is meant to reduce the strategy to a few repeated operating rules instead of forcing you to parse the full research layout.
+              </div>
+            </div>
+          </div>
+          <div class="rule-list">
+            
+            <div class="rule-step">
+              <div class="rule-num">1</div>
+              <div>
+                <div class="rule-title">Wait for a confirmed Hylo buy</div>
+                <div class="rule-copy">Only start a timer after the dashboard recognizes a confirmed activation episode.</div>
+              </div>
+            </div>
+            
+
+            <div class="rule-step">
+              <div class="rule-num">2</div>
+              <div>
+                <div class="rule-title">Respect the +10m minimum delay</div>
+                <div class="rule-copy">Your earliest entry is 10 minutes after the first buy in that episode. Later is acceptable if execution is slower.</div>
+              </div>
+            </div>
+            
+
+            <div class="rule-step">
+              <div class="rule-num">3</div>
+              <div>
+                <div class="rule-title">Buy exactly one $1,000 tranche</div>
+                <div class="rule-copy">Treat each episode as one fixed-size shadow position instead of scaling into every same-burst transaction.</div>
+              </div>
+            </div>
+            
+
+            <div class="rule-step">
+              <div class="rule-num">4</div>
+              <div>
+                <div class="rule-title">Exit only when Hylo exits</div>
+                <div class="rule-copy">Hold until Hylo sells the linked episode lots; partial sells mean partial shadow reductions.</div>
+              </div>
+            </div>
+            
+          </div>
+        </section>
+      </section>
+
+      <section class="grid-two">
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h3>Recently Closed Or Trimmed</h3>
+              <div class="section-note">
+                These are the shadow entries that Hylo has already reduced or fully exited.
+              </div>
+            </div>
+          </div>
+          <div class="positions-grid">
+            
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:05 PM PDT</div>
+                </div>
+                <span class="status-badge up">Partial</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:15 PM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,232.17</div>
+                  <div class="position-sub">$354.32 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$232.17</div>
+                  <div class="position-sub up">+23.22%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">13,738.74</div>
+                  <div class="position-sub">1/2 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/5S64PverFoRNDh8TSShvzFYeHwhToHgY6HSPvTMHHMZKwjDmYuZHjEHbyMybJYBXgM72zQf2LukSbaY1CzRE958F">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">6:50 PM PDT</div>
+                </div>
+                <span class="status-badge up">Closed</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">7:00 PM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,331.92</div>
+                  <div class="position-sub">$1,331.92 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$331.92</div>
+                  <div class="position-sub up">+33.19%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">0.00</div>
+                  <div class="position-sub">0/1 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/DMgCSZL4Zssj76qMqdfDkjSEyhYBZQw3cJM8qkUpy8TrGoFpJaMQ6vVj8np7oEzmd8ppZkMB5dGawBHvmcVguZy">Episode Tx</a>
+              </div>
+            </article>
+            
+
+            <article class="position-card">
+              <div class="position-top">
+                <div>
+                  <div class="position-label">Signal</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">6:32 PM PDT</div>
+                </div>
+                <span class="status-badge up">Closed</span>
+              </div>
+              <div class="position-grid">
+                <div>
+                  <div class="position-label">Earliest Human Entry</div>
+                  <div class="position-main">Apr 1</div>
+                  <div class="position-sub">6:42 PM PDT</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow Equity</div>
+                  <div class="position-main">$1,351.79</div>
+                  <div class="position-sub">$1,351.79 realized</div>
+                </div>
+                <div>
+                  <div class="position-label">Shadow PnL</div>
+                  <div class="position-main up">$351.79</div>
+                  <div class="position-sub up">+35.18%</div>
+                </div>
+                <div>
+                  <div class="position-label">xSOL Still Live</div>
+                  <div class="position-main">0.00</div>
+                  <div class="position-sub">0/1 Hylo lots open</div>
+                </div>
+              </div>
+              <div class="position-links">
+                <a href="https://solscan.io/tx/4bGxHAsqJX2zVbxWVChU8dULNSKBtjvmpyfvDDWp8VUfbXyGEpmx82DBHSnCRtKZoowMEtWEdQxxzwSeE2xYyQJi">Episode Tx</a>
+              </div>
+            </article>
+            
+          </div>
+        </section>
+        <section class="panel">
+          <div class="section-head">
+            <div>
+              <h3>Latest Hylo Tape</h3>
+              <div class="section-note">
+                Confirmed Stability Pool buys and sells, newest first. This is the raw tape you are shadowing.
+              </div>
+            </div>
+          </div>
+          <div class="tape-list">
+            
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge down">SELL</span>
+                <div>
+                  <div class="position-main">Apr 7, 4:30 PM PDT</div>
+                  <div class="position-sub">Jmcgz1ZjSgvPxM...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>1,389,674.20</strong> xSOL</div>
+                <div>$98,850.60</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 6:35 AM PDT</div>
+                  <div class="position-sub">48AcJkrfP64ubu...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>1,609,705.38</strong> xSOL</div>
+                <div>$76,509.27</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 6:32 AM PDT</div>
+                  <div class="position-sub">2cWkZ3S5jdhn9U...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>667,285.61</strong> xSOL</div>
+                <div>$32,404.99</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 6:15 AM PDT</div>
+                  <div class="position-sub">5QcbpwrnVYg5qy...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>1,456,350.53</strong> xSOL</div>
+                <div>$71,342.86</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 6:12 AM PDT</div>
+                  <div class="position-sub">4VxkdL8sQR4UeM...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>518,926.65</strong> xSOL</div>
+                <div>$25,885.78</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 6:10 AM PDT</div>
+                  <div class="position-sub">h8NP1teYW2BqjD...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>275,998.05</strong> xSOL</div>
+                <div>$13,874.11</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 5:55 AM PDT</div>
+                  <div class="position-sub">55Vvnutf7k4tzi...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>453,240.47</strong> xSOL</div>
+                <div>$22,867.03</div>
+              </div>
+            </article>
+            
+
+            <article class="tape-row">
+              <div class="tape-left">
+                <span class="status-badge up">BUY</span>
+                <div>
+                  <div class="position-main">Apr 2, 5:20 AM PDT</div>
+                  <div class="position-sub">3nXiJsgrrB6v6h...</div>
+                </div>
+              </div>
+              <div class="tape-right">
+                <div><strong>340,589.03</strong> xSOL</div>
+                <div>$17,303.75</div>
+              </div>
+            </article>
+            
+          </div>
+        </section>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <div>
+            <h3>Useful Links</h3>
+            <div class="section-note">
+              Keep the homepage for operator decisions. Use the links below when you need raw detail or the original dashboard.
+            </div>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="v1.html">Open v1 dashboard</a>
+          <a href="stability_pool_deployments.html">Raw deployment lots</a>
+          <a href="stability_pool_signal_report.html">Signal research report</a>
+          <a href="current_buy_xsol_events.html">Current buy event log</a>
+          <a href="stability_pool_onchain_tracker.html">On-chain tracker</a>
+        </div>
+      </section>
+    </div>
+    <script id="shadow-home-live-state" type="application/json">{"initial_xsol_price":0.065468416}</script>
+    <script>
+      (() => {
+        const REFRESH_SECONDS = 60;
+        const XSOL_TOKEN = "4sWNB8zGWHkh6UnmwiEtzNxL4XrN7uK9tosbESbJFfVs";
+        const SOL_TOKEN = "So11111111111111111111111111111111111111112";
+        const payload = JSON.parse(document.getElementById("shadow-home-live-state").textContent);
+        let countdown = REFRESH_SECONDS;
+        let liveState = {
+          xsol: payload.initial_xsol_price,
+          xsolSource: "saved mark",
+          sol: null,
+          solSource: "",
+          lastUpdated: null,
+          lastError: "",
+        };
+
+        function formatNum(value, digits = 2) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "n/a";
+          }
+          return Number(value).toLocaleString(undefined, {
+            minimumFractionDigits: digits,
+            maximumFractionDigits: digits,
+          });
+        }
+
+        function formatCurrency(value, digits = 2) {
+          if (value === null || value === undefined || Number.isNaN(value)) {
+            return "n/a";
+          }
+          return `$${formatNum(value, digits)}`;
+        }
+
+        function setText(id, value) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.textContent = value;
+          }
+        }
+
+        function bestPair(pairs, filterFn = null) {
+          const filtered = (pairs || []).filter((pair) => !filterFn || filterFn(pair));
+          if (!filtered.length) {
+            return null;
+          }
+          return filtered.sort((a, b) => Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0))[0];
+        }
+
+        async function fetchDexPrice(tokenMint, filterFn = null) {
+          const response = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${tokenMint}`, {
+            cache: "no-store",
+          });
+          if (!response.ok) {
+            throw new Error(`DexScreener returned ${response.status}`);
+          }
+          const data = await response.json();
+          const pair = bestPair(data.pairs || [], filterFn);
+          if (!pair || !pair.priceUsd) {
+            throw new Error("No liquid pair found");
+          }
+          return {
+            price: Number(pair.priceUsd),
+            dexId: pair.dexId || "dexscreener",
+          };
+        }
+
+        function renderState() {
+          if (liveState.xsol) {
+            setText("home-live-xsol", formatNum(liveState.xsol, 9));
+            setText("home-live-xsol-sub", `${liveState.xsolSource} • refresh in ${countdown}s`);
+          }
+          if (liveState.sol) {
+            setText("home-live-sol", formatCurrency(liveState.sol));
+            setText("home-live-sol-sub", `${liveState.solSource} • refresh in ${countdown}s`);
+          } else {
+            setText("home-live-sol", "Loading...");
+            setText("home-live-sol-sub", `refresh in ${countdown}s`);
+          }
+          if (liveState.lastUpdated) {
+            setText("home-live-note", `Live DexScreener prices updated. Next refresh in ${countdown}s.`);
+          } else if (liveState.lastError) {
+            setText("home-live-note", `Live refresh failed: ${liveState.lastError}. Retrying in ${countdown}s.`);
+          } else {
+            setText("home-live-note", `Waiting for live DexScreener pricing. Refresh every ${REFRESH_SECONDS}s.`);
+          }
+        }
+
+        async function refreshPrices() {
+          try {
+            const [xsolResult, solResult] = await Promise.all([
+              fetchDexPrice(XSOL_TOKEN),
+              fetchDexPrice(
+                SOL_TOKEN,
+                (pair) => {
+                  const quote = pair?.quoteToken?.symbol;
+                  return quote === "USDC" || quote === "USDT";
+                }
+              ),
+            ]);
+            liveState = {
+              xsol: xsolResult.price,
+              xsolSource: `DexScreener ${xsolResult.dexId}`,
+              sol: solResult.price,
+              solSource: `DexScreener ${solResult.dexId}`,
+              lastUpdated: new Date(),
+              lastError: "",
+            };
+          } catch (error) {
+            console.error(error);
+            liveState.lastError = error?.message || "unknown error";
+          }
+          countdown = REFRESH_SECONDS;
+          renderState();
+        }
+
+        renderState();
+        refreshPrices();
+        window.setInterval(() => {
+          countdown -= 1;
+          if (countdown <= 0) {
+            refreshPrices();
+            return;
+          }
+          renderState();
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>
