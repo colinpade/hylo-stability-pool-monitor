@@ -2,6 +2,7 @@
 import argparse
 import html
 import json
+from bisect import bisect_right
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -20,12 +21,28 @@ from render_stability_pool_deployments_html import (
 
 BUY_HINTS = {"RebalanceStableToLever", "SwapStableToLever"}
 SELL_HINTS = {"SwapLeverToStable"}
+COMPOSITION_CHANGE_THRESHOLD_PP = 0.5
+COMPOSITION_STRONG_CHANGE_THRESHOLD_PP = 1.0
 
 
 def parse_iso(ts):
     if not ts:
         return None
     return datetime.fromisoformat(ts)
+
+
+def load_ohlcv(path):
+    raw = load_json(path)
+    rows = raw["data"]["attributes"]["ohlcv_list"]
+    bars = [
+        {
+            "ts": int(row[0]),
+            "close": float(row[4]),
+        }
+        for row in rows
+    ]
+    bars.sort(key=lambda row: row["ts"])
+    return bars
 
 
 def card(label, value, subtext="", tone="flat", value_id=None, subtext_id=None):
@@ -42,6 +59,181 @@ def card(label, value, subtext="", tone="flat", value_id=None, subtext_id=None):
 
 def status_badge(label, tone="flat"):
     return f'<span class="status-badge {html.escape(tone)}">{html.escape(label)}</span>'
+
+
+def fmt_pp(value, digits=2):
+    if value is None:
+        return "n/a"
+    sign = "+" if value > 0 else ""
+    return f"{sign}{value:.{digits}f} pp"
+
+
+def delta_tone(value, flat_threshold=0.05):
+    if value is None or abs(value) < flat_threshold:
+        return "flat"
+    return "up" if value > 0 else "down"
+
+
+def classify_composition_shift(delta_pp):
+    if delta_pp is None:
+        return {
+            "label": "n/a",
+            "tone": "flat",
+            "level": "quiet",
+        }
+    abs_delta = abs(delta_pp)
+    if abs_delta >= COMPOSITION_STRONG_CHANGE_THRESHOLD_PP:
+        return {
+            "label": "Large move",
+            "tone": delta_tone(delta_pp, flat_threshold=0.0),
+            "level": "strong",
+        }
+    if abs_delta >= COMPOSITION_CHANGE_THRESHOLD_PP:
+        return {
+            "label": "xSOL heavier" if delta_pp > 0 else "xSOL lighter",
+            "tone": delta_tone(delta_pp, flat_threshold=0.0),
+            "level": "alert",
+        }
+    return {
+        "label": "Quiet",
+        "tone": "flat",
+        "level": "quiet",
+    }
+
+
+def price_at_or_before(bars, ts):
+    if not bars:
+        return None
+    timestamps = [row["ts"] for row in bars]
+    idx = bisect_right(timestamps, ts) - 1
+    if idx < 0:
+        return float(bars[0]["close"])
+    return float(bars[idx]["close"])
+
+
+def pool_amounts_at(events, target_dt):
+    if not events or target_dt is None:
+        return None
+    latest = None
+    for row in events:
+        event_dt = parse_iso(row.get("utc"))
+        if event_dt is None:
+            continue
+        if event_dt <= target_dt:
+            latest = row
+            continue
+        break
+    if latest is not None:
+        return {
+            "hyusd_amount": float(((latest.get("hyusd_pool") or {}).get("post_amount")) or 0.0),
+            "xsol_amount": float(((latest.get("xsol_pool") or {}).get("post_amount")) or 0.0),
+            "balance_time_utc": latest.get("utc"),
+        }
+    first = events[0]
+    return {
+        "hyusd_amount": float(((first.get("hyusd_pool") or {}).get("pre_amount")) or 0.0),
+        "xsol_amount": float(((first.get("xsol_pool") or {}).get("pre_amount")) or 0.0),
+        "balance_time_utc": first.get("utc"),
+    }
+
+
+def build_pool_mix_state(events, target_dt, xsol_price):
+    amounts = pool_amounts_at(events, target_dt)
+    if not amounts or xsol_price is None:
+        return None
+    stable_value = float(amounts["hyusd_amount"])
+    lever_value = float(amounts["xsol_amount"]) * float(xsol_price)
+    total_value = stable_value + lever_value
+    if total_value <= 0:
+        return None
+    return {
+        **amounts,
+        "target_dt": target_dt,
+        "xsol_price": float(xsol_price),
+        "stable_value": stable_value,
+        "lever_value": lever_value,
+        "stable_pct": (stable_value / total_value) * 100.0,
+        "lever_pct": (lever_value / total_value) * 100.0,
+    }
+
+
+def build_pool_composition_monitor(latest_snapshot, signal_report, event_rows, ohlcv_bars):
+    ordered_events = sorted(
+        event_rows,
+        key=lambda row: (
+            row.get("slot") or 0,
+            row.get("block_time") or 0,
+            row.get("signature") or "",
+        ),
+    )
+    if not ordered_events:
+        return None
+
+    anchor_dt = (
+        parse_iso(signal_report.get("generated_at_utc"))
+        or parse_iso(latest_snapshot.get("captured_at_utc"))
+        or parse_iso(ordered_events[-1].get("utc"))
+    )
+    if anchor_dt is None:
+        return None
+
+    price_details = latest_snapshot.get("price_source_details") or {}
+    price_snapshot_dt = parse_iso(latest_snapshot.get("captured_at_utc"))
+    snapshot_is_fresh = (
+        price_snapshot_dt is not None
+        and abs((anchor_dt - price_snapshot_dt).total_seconds()) <= 7200
+    )
+    current_price = None
+    current_price_source = "5m xSOL close"
+    if snapshot_is_fresh and price_details.get("stability_pool_levercoin_nav") is not None:
+        current_price = price_details.get("stability_pool_levercoin_nav")
+        current_price_source = "saved pool NAV"
+    elif snapshot_is_fresh and latest_snapshot.get("xsol_price") is not None:
+        current_price = latest_snapshot.get("xsol_price")
+        current_price_source = "saved xSOL mark"
+    if current_price is None:
+        current_price = price_at_or_before(ohlcv_bars, int(anchor_dt.timestamp()))
+    if current_price is None and price_details.get("stability_pool_levercoin_nav") is not None:
+        current_price = price_details.get("stability_pool_levercoin_nav")
+        current_price_source = "saved pool NAV"
+    if current_price is None and latest_snapshot.get("xsol_price") is not None:
+        current_price = latest_snapshot.get("xsol_price")
+        current_price_source = "saved xSOL mark"
+
+    current_state = build_pool_mix_state(ordered_events, anchor_dt, current_price)
+    if current_state is None:
+        return None
+
+    changes = []
+    for label, hours in (("24h", 24), ("72h", 72)):
+        lookback_dt = anchor_dt - timedelta(hours=hours)
+        lookback_price = price_at_or_before(ohlcv_bars, int(lookback_dt.timestamp())) or current_state["xsol_price"]
+        prior_state = build_pool_mix_state(ordered_events, lookback_dt, lookback_price)
+        if prior_state is None:
+            changes.append(
+                {
+                    "label": label,
+                    "delta_pp": None,
+                    "from_pct": None,
+                    "to_pct": current_state["lever_pct"],
+                }
+            )
+            continue
+        changes.append(
+            {
+                "label": label,
+                "delta_pp": current_state["lever_pct"] - prior_state["lever_pct"],
+                "from_pct": prior_state["lever_pct"],
+                "to_pct": current_state["lever_pct"],
+            }
+        )
+
+    return {
+        "as_of_label": format_pacific_timestamp(anchor_dt.isoformat()),
+        "current_price_source": current_price_source,
+        "current_state": current_state,
+        "changes": changes,
+    }
 
 
 def load_confirmed_events(rows):
@@ -220,6 +412,67 @@ def build_primary_metrics(shadow_replay, latest_snapshot, current_buys):
         ),
     ]
     return "\n".join(cards)
+
+
+def build_pool_composition_card(pool_mix):
+    if not pool_mix:
+        return ""
+    current = pool_mix["current_state"]
+    stable_width = max(0.0, min(100.0, float(current["stable_pct"])))
+    lever_width = max(0.0, min(100.0, float(current["lever_pct"])))
+    shifts = []
+    for change in pool_mix.get("changes") or []:
+        tone = delta_tone(change.get("delta_pp"))
+        shift_state = classify_composition_shift(change.get("delta_pp"))
+        value_tone = tone if shift_state.get("level") != "quiet" else "flat"
+        from_pct = fmt_num(change.get("from_pct"), 1) if change.get("from_pct") is not None else "n/a"
+        to_pct = fmt_num(change.get("to_pct"), 1) if change.get("to_pct") is not None else "n/a"
+        shifts.append(
+            f"""
+            <article class="composition-shift composition-shift-{html.escape(shift_state.get('level', 'quiet'))}">
+              <div class="composition-shift-top">
+                <div class="composition-shift-label">{html.escape(change.get('label', ''))} xSOL share</div>
+                <span class="composition-shift-badge {html.escape(shift_state.get('tone', 'flat'))} composition-shift-badge-{html.escape(shift_state.get('level', 'quiet'))}">{html.escape(shift_state.get('label', ''))}</span>
+              </div>
+              <div class="composition-shift-value {html.escape(value_tone)}">{html.escape(fmt_pp(change.get('delta_pp')))}</div>
+              <div class="composition-shift-sub">{html.escape(from_pct)}% -> {html.escape(to_pct)}%</div>
+            </article>
+            """
+        )
+    return f"""
+    <section class="composition-card">
+      <div class="composition-head">
+        <div class="composition-card-label">Stability Pool Mix</div>
+        <div class="composition-card-time">{html.escape(pool_mix.get('as_of_label', ''))}</div>
+      </div>
+      <div class="composition-bar" aria-hidden="true">
+        <span class="composition-segment stable" style="width: {stable_width:.2f}%"></span>
+        <span class="composition-segment lever" style="width: {lever_width:.2f}%"></span>
+      </div>
+      <div class="composition-list">
+        <div>
+          <div class="composition-row">
+            <div class="composition-token"><span class="composition-dot stable"></span>hyUSD</div>
+            <div class="composition-value">{fmt_num(current.get('stable_pct'), 1)}%</div>
+          </div>
+          <div class="composition-detail">${fmt_num(current.get('stable_value'))} • {fmt_num(current.get('hyusd_amount'), 0)} hyUSD</div>
+        </div>
+        <div>
+          <div class="composition-row">
+            <div class="composition-token"><span class="composition-dot lever"></span>xSOL</div>
+            <div class="composition-value">{fmt_num(current.get('lever_pct'), 1)}%</div>
+          </div>
+          <div class="composition-detail">${fmt_num(current.get('lever_value'))} • {fmt_num(current.get('xsol_amount'), 0)} xSOL</div>
+        </div>
+      </div>
+      <div class="composition-shift-grid">
+        {"".join(shifts)}
+      </div>
+      <div class="composition-footnote">
+        Current mix uses {html.escape(pool_mix.get('current_price_source', 'saved price'))}. Drift replays pool balances and 5m xSOL closes. Flags turn on at {COMPOSITION_CHANGE_THRESHOLD_PP:.2f} pp and go strong at {COMPOSITION_STRONG_CHANGE_THRESHOLD_PP:.2f} pp.
+      </div>
+    </section>
+    """
 
 
 def build_rules_panel():
@@ -521,7 +774,7 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
     }
 
 
-def build_command_center(command):
+def build_command_center(command, pool_mix=None):
     facts_html = "".join(status_badge(item, "flat") for item in command.get("facts") or [])
     steps_html = "".join(f"<li>{html.escape(step)}</li>" for step in command.get("steps") or [])
     tone = command.get("tone", "flat")
@@ -586,6 +839,7 @@ def build_command_center(command):
             data-done-note="Already handled on this browser."
           >Phone wording.</div>
         </div>
+        {build_pool_composition_card(pool_mix)}
       </aside>
     </section>
     """
@@ -879,7 +1133,7 @@ def build_alert_log_table(alerts):
     return f'<div class="log-list">{"".join(rows)}</div>'
 
 
-def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
+def render_html(lot_state, snapshots, signal_report, current_buys, event_rows, ohlcv_bars):
     latest_snapshot = snapshots[-1] if snapshots else {}
     lots = latest_snapshot.get("lots") or lot_state.get("lots") or []
     shadow_replay = build_shadow_replay(lots, signal_report)
@@ -888,6 +1142,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
     reduced_entries = [row for row in (shadow_replay.get("entries") or []) if row.get("status") in {"partial", "closed"}]
     command = build_current_command(signal_report, shadow_replay, confirmed_events, lots)
     alert_log = build_alert_log(shadow_replay, confirmed_events, lots)
+    pool_mix = build_pool_composition_monitor(latest_snapshot, signal_report, event_rows, ohlcv_bars)
     live_payload = {
         "initial_xsol_price": latest_snapshot.get("xsol_price") or shadow_replay.get("mark_price"),
     }
@@ -1135,6 +1390,9 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         background: rgba(5, 10, 13, 0.78);
         padding: 18px;
         color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
       }}
       .alert-card.acknowledged {{
         background: rgba(5, 10, 13, 0.46);
@@ -1192,6 +1450,161 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         margin-top: 12px;
         color: var(--muted);
         font-size: 0.82rem;
+      }}
+      .composition-card {{
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+      }}
+      .composition-head {{
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+        margin-bottom: 12px;
+      }}
+      .composition-card-label {{
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.74rem;
+        color: var(--gold);
+        font-weight: 700;
+      }}
+      .composition-card-time {{
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-align: right;
+      }}
+      .composition-bar {{
+        display: flex;
+        width: 100%;
+        height: 12px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.05);
+        margin-bottom: 12px;
+      }}
+      .composition-segment.stable {{
+        background: linear-gradient(90deg, #f0c266, #b78731);
+      }}
+      .composition-segment.lever {{
+        background: linear-gradient(90deg, #45d6a7, #249c75);
+      }}
+      .composition-list {{
+        display: grid;
+        gap: 10px;
+        margin-bottom: 12px;
+      }}
+      .composition-row {{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }}
+      .composition-token {{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+      }}
+      .composition-dot {{
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        display: inline-block;
+      }}
+      .composition-dot.stable {{
+        background: var(--gold);
+      }}
+      .composition-dot.lever {{
+        background: var(--accent);
+      }}
+      .composition-value {{
+        font-size: 1rem;
+        font-weight: 700;
+      }}
+      .composition-detail {{
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }}
+      .composition-shift-grid {{
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+      }}
+      .composition-shift {{
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(5, 10, 13, 0.4);
+        padding: 10px 12px;
+      }}
+      .composition-shift-alert {{
+        border-color: rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.05);
+      }}
+      .composition-shift-strong {{
+        border-color: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.06);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      }}
+      .composition-shift-top {{
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 6px;
+      }}
+      .composition-shift-label {{
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.68rem;
+        color: var(--muted);
+      }}
+      .composition-shift-badge {{
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 4px 8px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+        color: var(--muted);
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+      }}
+      .composition-shift-badge-alert.up,
+      .composition-shift-badge-strong.up {{
+        color: var(--accent);
+        border-color: rgba(69,214,167,0.28);
+        background: rgba(69,214,167,0.12);
+      }}
+      .composition-shift-badge-alert.down,
+      .composition-shift-badge-strong.down {{
+        color: var(--red);
+        border-color: rgba(255,143,132,0.24);
+        background: rgba(255,143,132,0.12);
+      }}
+      .composition-shift-badge-strong {{
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+      }}
+      .composition-shift-value {{
+        font-size: 1rem;
+        font-weight: 700;
+      }}
+      .composition-shift-sub {{
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }}
+      .composition-footnote {{
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.4;
       }}
       .panel {{
         border: 1px solid var(--border);
@@ -1503,6 +1916,9 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         }}
         .operator-table th,
         .operator-table td {{ padding: 10px 8px; }}
+        .composition-shift-grid {{
+          grid-template-columns: 1fr;
+        }}
       }}
     </style>
   </head>
@@ -1518,7 +1934,7 @@ def render_html(lot_state, snapshots, signal_report, current_buys, event_rows):
         </div>
       </nav>
 
-      {build_command_center(command)}
+      {build_command_center(command, pool_mix)}
 
       <section class="panel">
         <div class="panel-head">
@@ -1937,6 +2353,7 @@ def main():
     parser.add_argument("--signal-report", default="data/stability_pool_signal_report.json", help="Signal report JSON.")
     parser.add_argument("--current-buys", default="data/current_buy_xsol_events.json", help="Current buy summary JSON.")
     parser.add_argument("--events", default="data/stability_pool_balance_changes_full.jsonl", help="Backfill event JSONL.")
+    parser.add_argument("--ohlcv", default="data/xsol_usdc_ohlcv_5m.json", help="xSOL OHLCV JSON for composition lookbacks.")
     parser.add_argument("--out", default="index.html", help="Output HTML path.")
     args = parser.parse_args()
 
@@ -1945,8 +2362,9 @@ def main():
     signal_report = load_json(args.signal_report)
     current_buys = load_json(args.current_buys)
     event_rows = load_jsonl(args.events)
+    ohlcv_bars = load_ohlcv(args.ohlcv)
     Path(args.out).write_text(
-        render_html(lot_state, marks, signal_report, current_buys, event_rows),
+        render_html(lot_state, marks, signal_report, current_buys, event_rows, ohlcv_bars),
         encoding="utf-8",
     )
     print(args.out)

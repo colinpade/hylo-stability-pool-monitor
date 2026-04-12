@@ -242,6 +242,9 @@
         background: rgba(5, 10, 13, 0.78);
         padding: 18px;
         color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
       }
       .alert-card.acknowledged {
         background: rgba(5, 10, 13, 0.46);
@@ -299,6 +302,161 @@
         margin-top: 12px;
         color: var(--muted);
         font-size: 0.82rem;
+      }
+      .composition-card {
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+      .composition-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+        margin-bottom: 12px;
+      }
+      .composition-card-label {
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.74rem;
+        color: var(--gold);
+        font-weight: 700;
+      }
+      .composition-card-time {
+        color: var(--muted);
+        font-size: 0.8rem;
+        text-align: right;
+      }
+      .composition-bar {
+        display: flex;
+        width: 100%;
+        height: 12px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.05);
+        margin-bottom: 12px;
+      }
+      .composition-segment.stable {
+        background: linear-gradient(90deg, #f0c266, #b78731);
+      }
+      .composition-segment.lever {
+        background: linear-gradient(90deg, #45d6a7, #249c75);
+      }
+      .composition-list {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .composition-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .composition-token {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+      }
+      .composition-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        display: inline-block;
+      }
+      .composition-dot.stable {
+        background: var(--gold);
+      }
+      .composition-dot.lever {
+        background: var(--accent);
+      }
+      .composition-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .composition-detail {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }
+      .composition-shift-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .composition-shift {
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(5, 10, 13, 0.4);
+        padding: 10px 12px;
+      }
+      .composition-shift-alert {
+        border-color: rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.05);
+      }
+      .composition-shift-strong {
+        border-color: rgba(255,255,255,0.2);
+        background: rgba(255,255,255,0.06);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      }
+      .composition-shift-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .composition-shift-label {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.68rem;
+        color: var(--muted);
+      }
+      .composition-shift-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 4px 8px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.04);
+        color: var(--muted);
+        font-size: 0.68rem;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      .composition-shift-badge-alert.up,
+      .composition-shift-badge-strong.up {
+        color: var(--accent);
+        border-color: rgba(69,214,167,0.28);
+        background: rgba(69,214,167,0.12);
+      }
+      .composition-shift-badge-alert.down,
+      .composition-shift-badge-strong.down {
+        color: var(--red);
+        border-color: rgba(255,143,132,0.24);
+        background: rgba(255,143,132,0.12);
+      }
+      .composition-shift-badge-strong {
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+      }
+      .composition-shift-value {
+        font-size: 1rem;
+        font-weight: 700;
+      }
+      .composition-shift-sub {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .composition-footnote {
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.4;
       }
       .panel {
         border: 1px solid var(--border);
@@ -610,6 +768,9 @@
         }
         .operator-table th,
         .operator-table td { padding: 10px 8px; }
+        .composition-shift-grid {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -679,6 +840,58 @@
             data-done-note="Already handled on this browser."
           >Phone wording.</div>
         </div>
+        
+    <section class="composition-card">
+      <div class="composition-head">
+        <div class="composition-card-label">Stability Pool Mix</div>
+        <div class="composition-card-time">Apr 8, 2:28 PM PDT</div>
+      </div>
+      <div class="composition-bar" aria-hidden="true">
+        <span class="composition-segment stable" style="width: 89.01%"></span>
+        <span class="composition-segment lever" style="width: 10.99%"></span>
+      </div>
+      <div class="composition-list">
+        <div>
+          <div class="composition-row">
+            <div class="composition-token"><span class="composition-dot stable"></span>hyUSD</div>
+            <div class="composition-value">89.0%</div>
+          </div>
+          <div class="composition-detail">$8,502,071.01 • 8,502,071 hyUSD</div>
+        </div>
+        <div>
+          <div class="composition-row">
+            <div class="composition-token"><span class="composition-dot lever"></span>xSOL</div>
+            <div class="composition-value">11.0%</div>
+          </div>
+          <div class="composition-detail">$1,050,267.87 • 17,185,922 xSOL</div>
+        </div>
+      </div>
+      <div class="composition-shift-grid">
+        
+            <article class="composition-shift composition-shift-alert">
+              <div class="composition-shift-top">
+                <div class="composition-shift-label">24h xSOL share</div>
+                <span class="composition-shift-badge down composition-shift-badge-alert">xSOL lighter</span>
+              </div>
+              <div class="composition-shift-value down">-0.68 pp</div>
+              <div class="composition-shift-sub">11.7% -> 11.0%</div>
+            </article>
+            
+            <article class="composition-shift composition-shift-quiet">
+              <div class="composition-shift-top">
+                <div class="composition-shift-label">72h xSOL share</div>
+                <span class="composition-shift-badge flat composition-shift-badge-quiet">Quiet</span>
+              </div>
+              <div class="composition-shift-value flat">+0.12 pp</div>
+              <div class="composition-shift-sub">10.9% -> 11.0%</div>
+            </article>
+            
+      </div>
+      <div class="composition-footnote">
+        Current mix uses 5m xSOL close. Drift replays pool balances and 5m xSOL closes. Flags turn on at 0.50 pp and go strong at 1.00 pp.
+      </div>
+    </section>
+    
       </aside>
     </section>
     
