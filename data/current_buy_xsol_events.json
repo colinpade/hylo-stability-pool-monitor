@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-04-15T22:39:07+00:00",
+    "newest_utc": "2026-04-15T23:13:05+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-04-15T22:39:07+00:00"
+    "newest_local": "2026-04-15T23:13:05+00:00"
   },
   "buy_xsol_event_count": 13,
   "buy_xsol_total_hyusd_spent": 449132.274345,
@@ -87,11 +87,11 @@
       "hyusd_spent": 31384.92953,
       "xsol_bought": 614449.089699,
       "implied_hyusd_per_xsol": 0.05107816100008306,
-      "entry_close": 0.051321908275714326,
+      "entry_close": null,
       "matches_screenshot_row": false,
-      "1h_return_pct": -3.4426587010099707,
-      "6h_return_pct": 1.512693834351042,
-      "24h_return_pct": 7.233122792432201
+      "1h_return_pct": null,
+      "6h_return_pct": null,
+      "24h_return_pct": null
     },
     {
       "utc": "2026-04-02T12:20:41+00:00",
@@ -101,11 +101,11 @@
       "hyusd_spent": 17303.753595,
       "xsol_bought": 340589.02733,
       "implied_hyusd_per_xsol": 0.050805376000073614,
-      "entry_close": 0.05080368282014008,
+      "entry_close": null,
       "matches_screenshot_row": false,
-      "1h_return_pct": -3.1869776762627366,
-      "6h_return_pct": 2.548179041105003,
-      "24h_return_pct": 8.331289529456388
+      "1h_return_pct": null,
+      "6h_return_pct": null,
+      "24h_return_pct": null
     },
     {
       "utc": "2026-04-02T12:55:41+00:00",
