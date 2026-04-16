@@ -115,11 +115,11 @@
       "hyusd_spent": 22867.029804,
       "xsol_bought": 453240.473974,
       "implied_hyusd_per_xsol": 0.050452312000079144,
-      "entry_close": null,
+      "entry_close": 0.050343575126566,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": -0.4217390337527327,
+      "6h_return_pct": 4.938717023465999,
+      "24h_return_pct": 6.6195390421412315
     },
     {
       "utc": "2026-04-02T13:10:41+00:00",
@@ -129,11 +129,11 @@
       "hyusd_spent": 13874.108814,
       "xsol_bought": 275998.046464,
       "implied_hyusd_per_xsol": 0.050268866000142784,
-      "entry_close": null,
+      "entry_close": 0.04955507013493609,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": 1.6128710782214117,
+      "6h_return_pct": 6.702306192802832,
+      "24h_return_pct": 8.100139377370198
     },
     {
       "utc": "2026-04-02T13:12:34+00:00",
@@ -143,11 +143,11 @@
       "hyusd_spent": 25885.780641,
       "xsol_bought": 518926.652706,
       "implied_hyusd_per_xsol": 0.049883313000046836,
-      "entry_close": null,
+      "entry_close": 0.04955507013493609,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": 1.6128710782214117,
+      "6h_return_pct": 6.702306192802832,
+      "24h_return_pct": 8.100139377370198
     },
     {
       "utc": "2026-04-02T13:15:42+00:00",
@@ -157,11 +157,11 @@
       "hyusd_spent": 71342.858149,
       "xsol_bought": 1456350.533183,
       "implied_hyusd_per_xsol": 0.048987422000027044,
-      "entry_close": null,
+      "entry_close": 0.04918458078994289,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": 2.3782834380304596,
+      "6h_return_pct": 7.5060553941931785,
+      "24h_return_pct": 8.914417941675556
     },
     {
       "utc": "2026-04-02T13:32:33+00:00",
@@ -171,11 +171,11 @@
       "hyusd_spent": 32404.986656,
       "xsol_bought": 667285.609024,
       "implied_hyusd_per_xsol": 0.04856239400006977,
-      "entry_close": null,
+      "entry_close": 0.04833083591821063,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": 5.657404248143938,
+      "6h_return_pct": 8.871890276687267,
+      "24h_return_pct": 10.838347540840099
     },
     {
       "utc": "2026-04-02T13:35:42+00:00",
@@ -185,11 +185,11 @@
       "hyusd_spent": 76509.266112,
       "xsol_bought": 1609705.379684,
       "implied_hyusd_per_xsol": 0.047529981000013474,
-      "entry_close": null,
+      "entry_close": 0.047893800356491656,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
-      "6h_return_pct": null,
-      "24h_return_pct": null
+      "1h_return_pct": 8.904112291731536,
+      "6h_return_pct": 9.86535680822822,
+      "24h_return_pct": 11.849758185160542
     }
   ],
   "notes": [
