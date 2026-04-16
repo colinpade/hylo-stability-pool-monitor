@@ -677,59 +677,61 @@ def build_current_command(signal_report, shadow_replay, confirmed_events, lots):
 
     if latest_event and latest_event.get("action") == "sell_xsol":
         impacted = build_sell_impact(shadow_replay, lots, latest_event.get("signature"))
-        latest_time = format_pacific_timestamp(latest_event.get("utc"))
-        sold_xsol = abs(float((latest_event.get("xsol_pool") or {}).get("delta") or 0.0))
-        hylo_remaining_xsol = sum(float(lot.get("remaining_xsol") or 0.0) for lot in lots)
-        hylo_pre_sell_xsol = hylo_remaining_xsol + sold_xsol
-        sold_pct_of_book = ((sold_xsol / hylo_pre_sell_xsol) * 100.0) if hylo_pre_sell_xsol > 0 else None
-        closed_count = sum(1 for row in impacted if row.get("status") == "closed")
-        partial_count = sum(1 for row in impacted if row.get("status") == "partial")
-        sell_actions = []
-        if closed_count:
-            sell_actions.append(f"close {pluralize(closed_count, 'shadow entry', 'shadow entries')}")
-        if partial_count:
-            sell_actions.append(f"trim {pluralize(partial_count, 'shadow entry', 'shadow entries')}")
-        sell_instruction = " and ".join(sell_actions) if sell_actions else "review the linked shadow entries"
-        sell_brief_parts = []
-        if closed_count:
-            sell_brief_parts.append(f"close {closed_count}")
-        if partial_count:
-            sell_brief_parts.append(f"trim {partial_count}")
-        sell_brief = ", ".join(sell_brief_parts).capitalize() if sell_brief_parts else "Review linked entries"
-        return {
-            "tone": "down",
-            "status_label": "SELL",
-            "headline": f"Sell now. {sell_brief}.",
-            "summary": (
-                f"Match Hylo's sell. No new buy. "
-                f"{fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
-                if sold_pct_of_book is not None
-                else "Match Hylo's sell. No new buy."
-            ),
-            "steps": [
-                f"{sell_brief}.",
-                f"Keep {len(active_entries)} open.",
-                "Wait for next buy.",
-            ],
-            "facts": [
-                latest_time,
-                f"{fmt_num(sold_xsol, 2)} xSOL sold",
-                (
-                    f"{fmt_num(sold_pct_of_book, 2)}% of Hylo xSOL book"
+        if not impacted:
+            latest_event = None
+        else:
+            latest_time = format_pacific_timestamp(latest_event.get("utc"))
+            sold_xsol = abs(float((latest_event.get("xsol_pool") or {}).get("delta") or 0.0))
+            hylo_remaining_xsol = sum(float(lot.get("remaining_xsol") or 0.0) for lot in lots)
+            hylo_pre_sell_xsol = hylo_remaining_xsol + sold_xsol
+            sold_pct_of_book = ((sold_xsol / hylo_pre_sell_xsol) * 100.0) if hylo_pre_sell_xsol > 0 else None
+            closed_count = sum(1 for row in impacted if row.get("status") == "closed")
+            partial_count = sum(1 for row in impacted if row.get("status") == "partial")
+            sell_actions = []
+            if closed_count:
+                sell_actions.append(f"close {pluralize(closed_count, 'shadow entry', 'shadow entries')}")
+            if partial_count:
+                sell_actions.append(f"trim {pluralize(partial_count, 'shadow entry', 'shadow entries')}")
+            sell_brief_parts = []
+            if closed_count:
+                sell_brief_parts.append(f"close {closed_count}")
+            if partial_count:
+                sell_brief_parts.append(f"trim {partial_count}")
+            sell_brief = ", ".join(sell_brief_parts).capitalize() if sell_brief_parts else "Review linked entries"
+            return {
+                "tone": "down",
+                "status_label": "SELL",
+                "headline": f"Sell now. {sell_brief}.",
+                "summary": (
+                    f"Match Hylo's sell. No new buy. "
+                    f"{fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
                     if sold_pct_of_book is not None
-                    else "Sell size percentage unavailable"
+                    else "Match Hylo's sell. No new buy."
                 ),
-                f"{overall.get('active_count', 0)} left open",
-            ],
-            "phone_title": "Hylo sold xSOL",
-            "phone_body": (
-                f"Sell now. {sell_brief}. {fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
-                if sold_pct_of_book is not None
-                else f"Sell now. {sell_brief}."
-            ),
-            "phone_timestamp": latest_time,
-            "ack_label": "Mark sell done",
-        }
+                "steps": [
+                    f"{sell_brief}.",
+                    f"Keep {len(active_entries)} open.",
+                    "Wait for next buy.",
+                ],
+                "facts": [
+                    latest_time,
+                    f"{fmt_num(sold_xsol, 2)} xSOL sold",
+                    (
+                        f"{fmt_num(sold_pct_of_book, 2)}% of Hylo xSOL book"
+                        if sold_pct_of_book is not None
+                        else "Sell size percentage unavailable"
+                    ),
+                    f"{overall.get('active_count', 0)} left open",
+                ],
+                "phone_title": "Hylo sold xSOL",
+                "phone_body": (
+                    f"Sell now. {sell_brief}. {fmt_num(sold_pct_of_book, 2)}% of Hylo's tracked xSOL book."
+                    if sold_pct_of_book is not None
+                    else f"Sell now. {sell_brief}."
+                ),
+                "phone_timestamp": latest_time,
+                "ack_label": "Mark sell done",
+            }
 
     latest_time = format_pacific_timestamp(latest_event.get("utc")) if latest_event else "n/a"
     if active_entries:
