@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-16T01:28:05.277747+00:00",
+  "generated_at_utc": "2026-04-16T01:53:06.890783+00:00",
   "timezone": "America/Los_Angeles",
   "gap_seconds": 600,
   "episode_count": 0,
@@ -103,9 +103,9 @@
       "pre_drop_bucket": {},
       "xsol_share_after_bucket": {}
     },
-    "mark_price": 0.06421717135609963,
-    "mark_time_utc": "2026-04-16T01:25:00+00:00",
-    "mark_time_local": "2026-04-15T18:25:00-07:00"
+    "mark_price": 0.06530810313760226,
+    "mark_time_utc": "2026-04-16T01:35:00+00:00",
+    "mark_time_local": "2026-04-15T18:35:00-07:00"
   },
   "notes": [
     "Episodes group confirmed buy_xsol transactions when consecutive buys are separated by 600 seconds or less.",
