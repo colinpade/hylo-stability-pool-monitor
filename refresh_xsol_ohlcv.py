@@ -36,6 +36,40 @@ def validate(payload):
     return len(rows)
 
 
+def merged_payload(existing_payload, fetched_payload):
+    existing_rows = (
+        ((existing_payload or {}).get("data") or {}).get("attributes", {}).get("ohlcv_list") or []
+    )
+    fetched_rows = (
+        ((fetched_payload or {}).get("data") or {}).get("attributes", {}).get("ohlcv_list") or []
+    )
+    merged_by_ts = {}
+    for row in existing_rows:
+        if row:
+            merged_by_ts[int(row[0])] = row
+    for row in fetched_rows:
+        if row:
+            merged_by_ts[int(row[0])] = row
+    merged_rows = sorted(merged_by_ts.values(), key=lambda row: int(row[0]), reverse=True)
+    payload = json.loads(json.dumps(fetched_payload))
+    payload["data"]["attributes"]["ohlcv_list"] = merged_rows
+    return payload
+
+
+def load_existing_payload(path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return None
+
+
+def time_span(payload):
+    rows = payload["data"]["attributes"]["ohlcv_list"]
+    newest = int(rows[0][0])
+    oldest = int(rows[-1][0])
+    return oldest, newest
+
+
 def main():
     parser = argparse.ArgumentParser(description="Refresh cached xSOL/USDC 5-minute OHLCV from GeckoTerminal.")
     parser.add_argument(
@@ -51,9 +85,13 @@ def main():
     args = parser.parse_args()
 
     out_path = Path(args.out)
+    existing_payload = load_existing_payload(out_path) if out_path.exists() else None
     try:
-        payload = fetch_json(args.url)
+        fetched_payload = fetch_json(args.url)
+        validate(fetched_payload)
+        payload = merged_payload(existing_payload, fetched_payload)
         row_count = validate(payload)
+        oldest_ts, newest_ts = time_span(payload)
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         print(
@@ -61,7 +99,12 @@ def main():
                 {
                     "out": args.out,
                     "source": args.url,
+                    "fetched_ohlcv_rows": len(
+                        fetched_payload["data"]["attributes"]["ohlcv_list"]
+                    ),
                     "ohlcv_rows": row_count,
+                    "oldest_ts": oldest_ts,
+                    "newest_ts": newest_ts,
                     "status": "refreshed",
                 },
                 indent=2,
