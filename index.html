@@ -787,7 +787,7 @@
       </nav>
 
       
-    <section class="command-deck flat" id="command-deck">
+    <section class="command-deck up" id="command-deck">
       <div class="command-main">
         <div
           class="command-label"
@@ -795,15 +795,15 @@
           data-default-label="Do This Now"
           data-done-label="Handled Here"
         >Do This Now</div>
-        <h1>Wait for the next Hylo buy.</h1>
-        <p class="command-summary">Nothing is live right now.</p>
+        <h1>Hold. No trade right now.</h1>
+        <p class="command-summary">Keep 3 shadow entries open.</p>
         <div class="command-facts">
-          <span class="status-badge flat">WATCH</span>
-          <span class="status-badge flat">No timer</span><span class="status-badge flat">No open shadow book</span><span class="status-badge flat">Buy size $1,000</span>
+          <span class="status-badge up">HOLD</span>
+          <span class="status-badge flat">n/a</span><span class="status-badge flat">3 active</span><span class="status-badge flat">Shadow PnL $989.34</span>
         </div>
         <div class="command-checklist-shell">
           <div class="command-checklist-label">Next</div>
-          <ul class="command-checklist"><li>Start a +10m timer on the next buy.</li><li>Buy $1,000 once when it clears.</li></ul>
+          <ul class="command-checklist"><li>Do not add again.</li><li>Sell only when Hylo sells.</li></ul>
         </div>
         <div class="command-ack-shell">
           <div class="command-ack-state" id="command-ack-state">Not marked done on this browser.</div>
@@ -812,9 +812,9 @@
               class="action-button primary"
               type="button"
               id="command-ack-button"
-              data-command-key="WATCH|Waiting for trigger|Wait for the next Hylo buy."
-              data-ack-label="Mark checked"
-            >Mark checked</button>
+              data-command-key="HOLD|n/a|Hold. No trade right now."
+              data-ack-label="Mark reviewed"
+            >Mark reviewed</button>
             <button class="action-button" type="button" id="command-ack-reset" hidden>Clear</button>
           </div>
         </div>
@@ -826,13 +826,13 @@
           data-default-label="Latest Actionable Alert"
           data-done-label="Latest Alert"
         >Latest Actionable Alert</div>
-        <div class="phone-card flat" id="command-phone-card">
+        <div class="phone-card up" id="command-phone-card">
           <div class="phone-card-top">
-            <span class="status-badge flat">WATCH</span>
-            <span>Waiting for trigger</span>
+            <span class="status-badge up">HOLD</span>
+            <span>n/a</span>
           </div>
-          <div class="phone-title">Watch only</div>
-          <div class="phone-body">No shadow action right now.</div>
+          <div class="phone-title">Hold the shadow book</div>
+          <div class="phone-body">Hold 3 shadow entries. No new trade.</div>
           <div
             class="phone-note"
             id="command-phone-note"
@@ -844,7 +844,7 @@
     <section class="composition-card">
       <div class="composition-head">
         <div class="composition-card-label">Stability Pool Mix</div>
-        <div class="composition-card-time">Apr 15, 6:53 PM PDT</div>
+        <div class="composition-card-time">Apr 15, 7:22 PM PDT</div>
       </div>
       <div class="composition-bar" aria-hidden="true">
         <span class="composition-segment stable" style="width: 88.87%"></span>
@@ -905,7 +905,161 @@
             </div>
           </div>
         </div>
-        <div class="empty-state">No active shadow entries right now.</div>
+        
+    <div class="table-toolbar">
+      <div class="filter-group" role="tablist" aria-label="Filter active shadow entries">
+        <button class="filter-chip active" type="button" data-filter-status="all">All (3)</button>
+        <button class="filter-chip" type="button" data-filter-status="open">Open (3)</button>
+        <button class="filter-chip" type="button" data-filter-status="partial">Partial (0)</button>
+      </div>
+      <div class="toolbar-right">
+        <label class="table-search">
+          <span>Filter</span>
+          <input id="active-shadow-search" type="search" placeholder="date, status, or tx">
+        </label>
+        <div class="table-count" id="active-filter-count">Showing 3 entries</div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="operator-table" id="active-shadow-table">
+        <thead>
+          <tr>
+            <th><button class="sort-button" type="button" data-sort-key="signal-ts" data-sort-type="number">Signal</button></th>
+            <th><button class="sort-button" type="button" data-sort-key="status-rank" data-sort-type="number">Status</button></th>
+            <th><button class="sort-button" type="button" data-sort-key="entry-ts" data-sort-type="number">Earliest Buy</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="pnl" data-sort-type="number">Shadow PnL</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="equity" data-sort-type="number">Shadow Equity</button></th>
+            <th class="num"><button class="sort-button" type="button" data-sort-key="remaining" data-sort-type="number">xSOL Live</button></th>
+            <th class="num">Hylo Lots</th>
+            <th>Tx</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+            <tr
+              data-signal-ts="1775136753"
+              data-status-rank="1"
+              data-status="open"
+              data-entry-ts="1775137353"
+              data-pnl="363.6024423096385"
+              data-equity="1363.6024423096385"
+              data-remaining="20879.529136477417"
+              data-search="apr 2 6:32 am pdt apr 2 6:42 am pdt open 2cwkz3s5jdhn9ukter2cx7emlj9h28crkhr8k8pkw1phmfgcwhyhdapsjm35odramsso9onxih4v81mkjvy7w2jx 2cwkz3s5jd..."
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:32 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:42 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$363.60</div>
+                <div class="cell-sub up">+36.36%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,363.60</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">20,879.53</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">2/2</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jd...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775135441"
+              data-status-rank="1"
+              data-status="open"
+              data-entry-ts="1775136041"
+              data-pnl="327.81660611319603"
+              data-equity="1327.816606113196"
+              data-remaining="20331.575138777578"
+              data-search="apr 2 6:10 am pdt apr 2 6:20 am pdt open h8np1teyw2bqjdqtxvrptatw2tltrylbquhbdw7kvnk5gtvpyxxdo1vugtwfo2wplvlgmhqnjpwfkhavegnsvfx h8np1teyw2..."
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:10 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:20 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$327.82</div>
+                <div class="cell-sub up">+32.78%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,327.82</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">20,331.58</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">3/3</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2...</a>
+              </td>
+            </tr>
+            
+            <tr
+              data-signal-ts="1775134541"
+              data-status-rank="1"
+              data-status="open"
+              data-entry-ts="1775135141"
+              data-pnl="297.91813228642536"
+              data-equity="1297.9181322864254"
+              data-remaining="19873.768643253195"
+              data-search="apr 2 5:55 am pdt apr 2 6:05 am pdt open 55vvnutf7k4tziqk1ckgpxeqfdfwkjkymrf65pt5zpnrned489txgybmx4hanuceguiyhqcukzymmkzd6mp9he9f 55vvnutf7k..."
+            >
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:55 AM PDT</div>
+              </td>
+              <td><span class="status-badge up">Open</span></td>
+              <td>
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:05 AM PDT</div>
+              </td>
+              <td class="num">
+                <div class="cell-main up">$297.92</div>
+                <div class="cell-sub up">+29.79%</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">$1,297.92</div>
+                <div class="cell-sub">$0.00 realized</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">19,873.77</div>
+                <div class="cell-sub">xSOL still live</div>
+              </td>
+              <td class="num">
+                <div class="cell-main">1/1</div>
+                <div class="cell-sub">Hylo lots open</div>
+              </td>
+              <td>
+                <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k...</a>
+              </td>
+            </tr>
+            
+        </tbody>
+      </table>
+    </div>
+    
       </section>
 
       <section class="panel">
@@ -917,7 +1071,115 @@
             </div>
           </div>
         </div>
-        <div class="empty-state">No actionable alert history is available yet.</div>
+        <div class="log-list">
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:42 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  2 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jdhn...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:32 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">WAIT</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:42 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 6:32 AM PDT.
+                   • <a href="https://solscan.io/tx/2cWkZ3S5jdhn9UktEr2CX7emLJ9h28CRKHr8K8PKW1PHmfGcWhYHDAPsJM35odRamSSo9oNxih4V81mKjVy7W2JX">2cWkZ3S5jdhn...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:20 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  3 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2Bq...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:10 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">WAIT</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:20 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 6:10 AM PDT.
+                   • <a href="https://solscan.io/tx/h8NP1teYW2BqjDQTXvrPTaTw2tLTRyLbqUHbDw7kVNK5gTvPYxxdo1VUGtWFo2WPLVLgmHQnjpwfkhaVeGNSvfX">h8NP1teYW2Bq...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">6:05 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge up">BUY</span>
+                  <div class="log-title">Buy $1,000 xSOL</div>
+                </div>
+                <div class="log-instruction">The delay cleared. Buy one $1,000 shadow tranche and hold until Hylo sells.</div>
+                <div class="log-detail">
+                  1 linked Hylo lots in this episode.
+                   • <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k4t...</a>
+                </div>
+              </div>
+            </article>
+            
+            <article class="log-row">
+              <div class="log-time">
+                <div class="cell-main">Apr 2</div>
+                <div class="cell-sub">5:55 AM PDT</div>
+              </div>
+              <div class="log-content">
+                <div class="log-top">
+                  <span class="status-badge flat">WAIT</span>
+                  <div class="log-title">Wait for the +10m delay</div>
+                </div>
+                <div class="log-instruction">Hylo started a new buy episode. Do nothing until Apr 2, 6:05 AM PDT.</div>
+                <div class="log-detail">
+                  Signal began at Apr 2, 5:55 AM PDT.
+                   • <a href="https://solscan.io/tx/55Vvnutf7k4tziqK1cKgPxEQFDfWKJKYMrf65PT5zPNRned489Txgybmx4hanUceGuiYHQcUKZYmMKzd6mp9He9f">55Vvnutf7k4t...</a>
+                </div>
+              </div>
+            </article>
+            </div>
       </section>
 
       <details class="details-shell">
@@ -928,35 +1190,35 @@
             
     <article class="metric-card">
       <div class="metric-label">Shadow PnL</div>
-      <div class="metric-value flat">$0.00</div>
-      <div class="metric-sub flat">n/a</div>
+      <div class="metric-value up">$989.34</div>
+      <div class="metric-sub up">+32.98%</div>
     </article>
     
 
     <article class="metric-card">
       <div class="metric-label">Shadow Capital</div>
-      <div class="metric-value flat">$0.00</div>
+      <div class="metric-value flat">$3,000.00</div>
       <div class="metric-sub flat">$1,000 per episode after +10m</div>
     </article>
     
 
     <article class="metric-card">
       <div class="metric-label">Active Shadow Entries</div>
-      <div class="metric-value flat">0</div>
-      <div class="metric-sub flat">0 closed • 0 partial</div>
+      <div class="metric-value up">3</div>
+      <div class="metric-sub up">0 closed • 0 partial</div>
     </article>
     
 
     <article class="metric-card">
       <div class="metric-label">Shadow Equity</div>
-      <div class="metric-value flat">$0.00</div>
-      <div class="metric-sub flat">$0.00 realized • $0.00 still open</div>
+      <div class="metric-value flat">$3,989.34</div>
+      <div class="metric-sub flat">$0.00 realized • $3,989.34 still open</div>
     </article>
     
 
     <article class="metric-card">
       <div class="metric-label">Open Shadow xSOL</div>
-      <div class="metric-value flat">0.00</div>
+      <div class="metric-value flat">61,084.87</div>
       <div class="metric-sub flat">still live because Hylo still has inventory open</div>
     </article>
     
