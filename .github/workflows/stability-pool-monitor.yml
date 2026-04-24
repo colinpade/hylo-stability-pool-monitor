@@ -49,6 +49,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Run unit tests
+        shell: bash
+        run: |
+          python3 -m unittest discover -s tests -p 'test_*.py'
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
@@ -180,6 +185,8 @@ jobs:
           out_path = Path(os.environ["GITHUB_OUTPUT"])
 
           def write(key, value):
+              if value is None:
+                  value = ""
               with out_path.open("a", encoding="utf-8") as handle:
                   handle.write(f"{key}={value}\n")
 
@@ -245,32 +252,31 @@ jobs:
           import os
           from pathlib import Path
 
-          REQUIRED_HINTS = {"SwapLeverToStable"}
+          import ntfy_alerts
+
           prev_sig = os.environ.get("PREV_SELL_SIG") or ""
 
-          sells = []
           backfill_path = Path("data/stability_pool_balance_changes_full.jsonl")
+          events = []
           if backfill_path.exists():
               with backfill_path.open("r", encoding="utf-8") as handle:
                   for line in handle:
                       line = line.strip()
-                      if not line:
-                          continue
-                      row = json.loads(line)
-                      if row.get("action") != "sell_xsol":
-                          continue
-                      if not REQUIRED_HINTS.issubset(set(row.get("log_hints") or [])):
-                          continue
-                      sells.append(row)
-          sells.sort(key=lambda row: ((row.get("slot") or 0), (row.get("block_time") or 0), (row.get("signature") or "")))
+                      if line:
+                          events.append(json.loads(line))
 
-          new_sells = sells
-          if prev_sig:
-              matches = [idx for idx, row in enumerate(sells) if row.get("signature") == prev_sig]
-              if matches:
-                  new_sells = sells[matches[-1] + 1 :]
+          new_sells = ntfy_alerts.new_trade_events(events, action="sell_xsol", prev_signature=prev_sig)
 
           latest_sell = new_sells[-1] if new_sells else None
+          mirror_percent = ntfy_alerts.compute_mirror_action_percent(new_sells, action="sell_xsol")
+          target_xsol_pct, target_hyusd_pct = ntfy_alerts.compute_target_allocation_from_event(latest_sell or {})
+          model_snapshots = ntfy_alerts.build_model_snapshots(events)
+          model_snapshot = model_snapshots.get((latest_sell or {}).get("signature"))
+          model_action_usd = ntfy_alerts.sum_model_action_value(
+              model_snapshots,
+              [row.get("signature") for row in new_sells if row.get("signature")],
+          )
+
           affected_lots = []
           deployments_path = Path("data/stability_pool_deployments.json")
           if latest_sell and deployments_path.exists():
@@ -287,6 +293,8 @@ jobs:
           out_path = Path(os.environ["GITHUB_OUTPUT"])
 
           def write(key, value):
+              if value is None:
+                  value = ""
               with out_path.open("a", encoding="utf-8") as handle:
                   handle.write(f"{key}={value}\n")
 
@@ -305,6 +313,14 @@ jobs:
                   "affected_lot_count",
                   "closed_lot_count",
                   "partial_lot_count",
+                  "mirror_percent",
+                  "target_xsol_pct",
+                  "target_hyusd_pct",
+                  "model_action_usd",
+                  "model_after_xsol_usd",
+                  "model_after_hyusd_usd",
+                  "model_after_xsol_pct",
+                  "model_after_hyusd_pct",
               ):
                   write(key, "")
           else:
@@ -317,6 +333,84 @@ jobs:
               write("affected_lot_count", len(affected_lots))
               write("closed_lot_count", sum(1 for lot, _allocs in affected_lots if lot.get("status") == "closed"))
               write("partial_lot_count", sum(1 for lot, _allocs in affected_lots if lot.get("status") == "partial"))
+              write("mirror_percent", mirror_percent)
+              write("target_xsol_pct", target_xsol_pct)
+              write("target_hyusd_pct", target_hyusd_pct)
+              write("model_action_usd", model_action_usd)
+              write("model_after_xsol_usd", (model_snapshot or {}).get("xsol_value"))
+              write("model_after_hyusd_usd", (model_snapshot or {}).get("cash"))
+              write("model_after_xsol_pct", (model_snapshot or {}).get("xsol_pct"))
+              write("model_after_hyusd_pct", (model_snapshot or {}).get("hyusd_pct"))
+          PY
+
+      - name: Resolve buy alert context
+        id: buy_context
+        shell: bash
+        env:
+          LATEST_BUY_SIG: ${{ steps.latest.outputs.signature }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          import ntfy_alerts
+
+          latest_sig = os.environ.get("LATEST_BUY_SIG") or ""
+          backfill_path = Path("data/stability_pool_balance_changes_full.jsonl")
+          events = []
+          if backfill_path.exists():
+              with backfill_path.open("r", encoding="utf-8") as handle:
+                  for line in handle:
+                      line = line.strip()
+                      if line:
+                          events.append(json.loads(line))
+
+          latest_buy = None
+          if latest_sig:
+              for row in ntfy_alerts.confirmed_trade_events(events, action="buy_xsol"):
+                  if row.get("signature") == latest_sig:
+                      latest_buy = row
+                      break
+
+          mirror_percent = ntfy_alerts.compute_mirror_action_percent([latest_buy] if latest_buy else [], action="buy_xsol")
+          target_xsol_pct, target_hyusd_pct = ntfy_alerts.compute_target_allocation_from_event(latest_buy or {})
+          model_snapshots = ntfy_alerts.build_model_snapshots(events)
+          model_snapshot = model_snapshots.get(latest_sig)
+
+          out_path = Path(os.environ["GITHUB_OUTPUT"])
+
+          def write(key, value):
+              if value is None:
+                  value = ""
+              with out_path.open("a", encoding="utf-8") as handle:
+                  handle.write(f"{key}={value}\n")
+
+          if not latest_buy or not model_snapshot:
+              for key in (
+                  "buy_time_utc",
+                  "entry_price",
+                  "mirror_percent",
+                  "target_xsol_pct",
+                  "target_hyusd_pct",
+                  "model_action_usd",
+                  "model_after_xsol_usd",
+                  "model_after_hyusd_usd",
+                  "model_after_xsol_pct",
+                  "model_after_hyusd_pct",
+              ):
+                  write(key, "")
+          else:
+              write("buy_time_utc", latest_buy.get("utc") or "")
+              write("entry_price", latest_buy.get("estimated_hyusd_per_xsol") or "")
+              write("mirror_percent", mirror_percent)
+              write("target_xsol_pct", target_xsol_pct)
+              write("target_hyusd_pct", target_hyusd_pct)
+              write("model_action_usd", model_snapshot.get("action_value"))
+              write("model_after_xsol_usd", model_snapshot.get("xsol_value"))
+              write("model_after_hyusd_usd", model_snapshot.get("cash"))
+              write("model_after_xsol_pct", model_snapshot.get("xsol_pct"))
+              write("model_after_hyusd_pct", model_snapshot.get("hyusd_pct"))
           PY
 
       - name: Resolve setup for latest deployment
@@ -376,95 +470,71 @@ jobs:
             echo "Remote advanced during run: ${synced_sha} -> ${remote_sha}"
           fi
 
-      - name: Send ntfy alert
+      - name: Send mirror buy alert
         if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && steps.setup.outputs.alert_eligible == 'true' && env.NTFY_TOPIC != ''
-        env:
-          PAGES_URL: ${{ steps.meta.outputs.pages_url }}
         shell: bash
         run: |
-          latest_json="$(jq -r '.lots[-1] | @json' data/stability_pool_deployments.json)"
-          amount="$(echo "$latest_json" | jq -r '.xsol_bought | tostring')"
-          spent="$(echo "$latest_json" | jq -r '.entry_value | tostring')"
-          local_time="$(echo "$latest_json" | jq -r '.local')"
-          tx="$(echo "$latest_json" | jq -r '.signature')"
-          setup_grade="${{ steps.setup.outputs.grade }}"
-          setup_score="${{ steps.setup.outputs.score }}"
-          setup_expected_24h="${{ steps.setup.outputs.expected_24h }}"
-          setup_confidence="${{ steps.setup.outputs.confidence }}"
-          setup_reason="${{ steps.setup.outputs.reason }}"
-          title="Hylo Stability Pool setup cleared alert bar"
-          body="New confirmed deployment at ${local_time}\nxSOL: ${amount}\nhyUSD spent: ${spent}\nSetup: ${setup_grade}"
-          if [[ -n "$setup_score" ]]; then
-            body="${body} • score ${setup_score}"
-          fi
-          if [[ -n "$setup_expected_24h" ]]; then
-            body="${body} • exp 24h ${setup_expected_24h}%"
-          fi
-          body="${body}\nConfidence: ${setup_confidence}\nWhy: ${setup_reason}\nDashboard: ${PAGES_URL}\nTx: https://solscan.io/tx/${tx}"
-          if [[ -n "$NTFY_AUTH_HEADER" ]]; then
-            curl --silent --show-error \
-              -H "$NTFY_AUTH_HEADER" \
-              -H "Title: ${title}" \
-              -d "$body" \
-              "https://ntfy.sh/${NTFY_TOPIC}"
-          else
-            curl --silent --show-error \
-              -H "Title: ${title}" \
-              -d "$body" \
-              "https://ntfy.sh/${NTFY_TOPIC}"
-          fi
+          python3 ntfy_alerts.py \
+            --topic "$NTFY_TOPIC" \
+            --auth-header "$NTFY_AUTH_HEADER" \
+            mirror-buy \
+            --mirror-percent "${{ steps.buy_context.outputs.mirror_percent }}" \
+            --target-xsol-pct "${{ steps.buy_context.outputs.target_xsol_pct }}" \
+            --target-hyusd-pct "${{ steps.buy_context.outputs.target_hyusd_pct }}" \
+            --buy-time-utc "${{ steps.buy_context.outputs.buy_time_utc }}" \
+            --entry-price "${{ steps.buy_context.outputs.entry_price }}" \
+            --tx "$(jq -r '.lots[-1].signature' data/stability_pool_deployments.json)"
 
-      - name: Send ntfy sell alert
-        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.sell_diff.outputs.new_sells == 'true' && env.NTFY_TOPIC != ''
-        env:
-          PAGES_URL: ${{ steps.meta.outputs.pages_url }}
+      - name: Send $10k model buy alert
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true' && steps.setup.outputs.alert_eligible == 'true' && env.NTFY_TOPIC != ''
         shell: bash
         run: |
-          sell_count="${{ steps.sell_summary.outputs.count }}"
-          sell_time="${{ steps.sell_summary.outputs.latest_local }}"
-          if [[ -z "$sell_time" ]]; then
-            sell_time="${{ steps.sell_summary.outputs.latest_utc }}"
-          fi
-          sold="${{ steps.sell_summary.outputs.latest_xsol_sold }}"
-          received="${{ steps.sell_summary.outputs.latest_hyusd_received }}"
-          total_sold="${{ steps.sell_summary.outputs.total_xsol_sold }}"
-          total_received="${{ steps.sell_summary.outputs.total_hyusd_received }}"
-          sale_price="${{ steps.sell_summary.outputs.latest_sale_price }}"
-          affected_lots="${{ steps.sell_summary.outputs.affected_lot_count }}"
-          closed_lots="${{ steps.sell_summary.outputs.closed_lot_count }}"
-          partial_lots="${{ steps.sell_summary.outputs.partial_lot_count }}"
-          tx="${{ steps.sell_summary.outputs.latest_signature }}"
-          title="Hylo Stability Pool sold xSOL"
-          body="Confirmed xSOL sale at ${sell_time}\nxSOL sold: ${sold}\nhyUSD received: ${received}"
-          if [[ -n "$sell_count" && "$sell_count" != "1" ]]; then
-            title="Hylo Stability Pool recorded ${sell_count} xSOL sells"
-            body="New confirmed xSOL sells: ${sell_count}\nTotal xSOL sold: ${total_sold}\nTotal hyUSD received: ${total_received}\nLatest sell at ${sell_time}\nLatest xSOL sold: ${sold}\nLatest hyUSD received: ${received}"
-          fi
-          if [[ -n "$sale_price" ]]; then
-            body="${body}\nSale price: ${sale_price}"
-          fi
-          if [[ -n "$affected_lots" ]]; then
-            body="${body}\nAffected lots: ${affected_lots}"
-          fi
-          if [[ -n "$closed_lots" && "$closed_lots" != "0" ]]; then
-            body="${body}\nClosed lots: ${closed_lots}"
-          fi
-          if [[ -n "$partial_lots" && "$partial_lots" != "0" ]]; then
-            body="${body}\nPartial lots: ${partial_lots}"
-          fi
-          body="${body}\nDashboard: ${PAGES_URL}\nTx: https://solscan.io/tx/${tx}"
-          if [[ -n "$NTFY_AUTH_HEADER" ]]; then
-            curl --silent --show-error \
-              -H "$NTFY_AUTH_HEADER" \
-              -H "Title: ${title}" \
-              -d "$body" \
-              "https://ntfy.sh/${NTFY_TOPIC}"
-          else
-            curl --silent --show-error \
-              -H "Title: ${title}" \
-              -d "$body" \
-              "https://ntfy.sh/${NTFY_TOPIC}"
-          fi
+          python3 ntfy_alerts.py \
+            --topic "$NTFY_TOPIC" \
+            --auth-header "$NTFY_AUTH_HEADER" \
+            model-buy \
+            --action-usd "${{ steps.buy_context.outputs.model_action_usd }}" \
+            --after-xsol-usd "${{ steps.buy_context.outputs.model_after_xsol_usd }}" \
+            --after-hyusd-usd "${{ steps.buy_context.outputs.model_after_hyusd_usd }}" \
+            --after-xsol-pct "${{ steps.buy_context.outputs.model_after_xsol_pct }}" \
+            --after-hyusd-pct "${{ steps.buy_context.outputs.model_after_hyusd_pct }}" \
+            --target-xsol-pct "${{ steps.buy_context.outputs.target_xsol_pct }}" \
+            --target-hyusd-pct "${{ steps.buy_context.outputs.target_hyusd_pct }}" \
+            --buy-time-utc "${{ steps.buy_context.outputs.buy_time_utc }}" \
+            --entry-price "${{ steps.buy_context.outputs.entry_price }}"
+
+      - name: Send mirror sell alert
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.sell_diff.outputs.new_sells == 'true' && env.NTFY_TOPIC != ''
+        shell: bash
+        run: |
+          python3 ntfy_alerts.py \
+            --topic "$NTFY_TOPIC" \
+            --auth-header "$NTFY_AUTH_HEADER" \
+            mirror-sell \
+            --mirror-percent "${{ steps.sell_summary.outputs.mirror_percent }}" \
+            --target-xsol-pct "${{ steps.sell_summary.outputs.target_xsol_pct }}" \
+            --target-hyusd-pct "${{ steps.sell_summary.outputs.target_hyusd_pct }}" \
+            --sell-time-utc "${{ steps.sell_summary.outputs.latest_utc }}" \
+            --sale-price "${{ steps.sell_summary.outputs.latest_sale_price }}" \
+            --tx "${{ steps.sell_summary.outputs.latest_signature }}"
+
+      - name: Send $10k model sell alert
+        if: steps.freshness.outputs.remote_unchanged == 'true' && steps.sell_diff.outputs.new_sells == 'true' && env.NTFY_TOPIC != ''
+        shell: bash
+        run: |
+          python3 ntfy_alerts.py \
+            --topic "$NTFY_TOPIC" \
+            --auth-header "$NTFY_AUTH_HEADER" \
+            model-sell \
+            --action-usd "${{ steps.sell_summary.outputs.model_action_usd }}" \
+            --after-xsol-usd "${{ steps.sell_summary.outputs.model_after_xsol_usd }}" \
+            --after-hyusd-usd "${{ steps.sell_summary.outputs.model_after_hyusd_usd }}" \
+            --after-xsol-pct "${{ steps.sell_summary.outputs.model_after_xsol_pct }}" \
+            --after-hyusd-pct "${{ steps.sell_summary.outputs.model_after_hyusd_pct }}" \
+            --target-xsol-pct "${{ steps.sell_summary.outputs.target_xsol_pct }}" \
+            --target-hyusd-pct "${{ steps.sell_summary.outputs.target_hyusd_pct }}" \
+            --sell-time-utc "${{ steps.sell_summary.outputs.latest_utc }}" \
+            --sale-price "${{ steps.sell_summary.outputs.latest_sale_price }}"
 
       - name: Record latest processed deployment signature
         if: steps.freshness.outputs.remote_unchanged == 'true' && steps.diff.outputs.new_deployments == 'true'
