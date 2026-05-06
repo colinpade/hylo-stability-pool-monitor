@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-06T09:08:01.057860+00:00",
+  "generated_at_utc": "2026-05-06T11:15:36.728539+00:00",
   "strict_mode": true,
-  "source_event_count": 4800,
+  "source_event_count": 4826,
   "source_buy_event_count": 13,
-  "source_sell_event_count": 29,
+  "source_sell_event_count": 37,
   "deployment_count": 19,
   "lots": [
     {
@@ -889,6 +889,118 @@
           "realized_pnl": 9033.262432400697
         }
       ]
+    },
+    {
+      "signature": "bjXCBK49a15RsGR3GFsYsfmwrqrFdTVhjg4ZYwQe5qsizgATVzqu3Tdiu5jzYbtMVmqdEvcFYgYSPPm7QAz7RDP",
+      "utc": "2026-05-06T09:32:33+00:00",
+      "local": "2026-05-06T09:32:33+00:00",
+      "xsol_sold_unmatched": 3712.682687,
+      "hyusd_received_total": 282.735716,
+      "sale_price": 0.07615402118527455,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "4Hd1KdabGBEFn7Mq59fcb8iWCMsB5TKrriU884Y8X2nLLtsf2rTDtw2JofSvPtpDfvhVuuPpnbqBJw4MKizBVDLr",
+      "utc": "2026-05-06T09:40:50+00:00",
+      "local": "2026-05-06T09:40:50+00:00",
+      "xsol_sold_unmatched": 132524.295162,
+      "hyusd_received_total": 10116.08757,
+      "sale_price": 0.07633383416704023,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "awo5ma3ujqzxoW6NM7r5zDYT24hg8nkmhBpxhvWJHaYwXf9jLGhw9bBUTg726U1rH9QACt5sgbqAEEzmvCfdm4C",
+      "utc": "2026-05-06T09:42:33+00:00",
+      "local": "2026-05-06T09:42:33+00:00",
+      "xsol_sold_unmatched": 180392.445356,
+      "hyusd_received_total": 13809.74045,
+      "sale_price": 0.07655387354357783,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "2QzcQyBxxuLKPdgMGR1uEpktbbPpE8DoZV1t3oXbJdSgBU8FNLKQ5ciSt5XNaXBzdAsWBNffef5mLU8LPwgNdM2o",
+      "utc": "2026-05-06T09:55:50+00:00",
+      "local": "2026-05-06T09:55:50+00:00",
+      "xsol_sold_unmatched": 287867.093209,
+      "hyusd_received_total": 22142.842911,
+      "sale_price": 0.07692036857760481,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "2Kk4KPdg7K5y7ZGmCzrCW3kuK7hLUte9Eh5C8c9vnHL2Ds4enFYKgL5zFSusmQ2y318MHuefp4kwYH9LZ7w22mLF",
+      "utc": "2026-05-06T10:00:50+00:00",
+      "local": "2026-05-06T10:00:50+00:00",
+      "xsol_sold_unmatched": 90496.728535,
+      "hyusd_received_total": 6972.289332,
+      "sale_price": 0.07704465614249732,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "4dj7SDTjgQe1kx8eVJJ6zJF7qhvBickTuU1hax4ScYp67U8jfSFipunpJLUWiGBaLLpomhURy6Eo5w5Tvtt2ueee",
+      "utc": "2026-05-06T10:12:33+00:00",
+      "local": "2026-05-06T10:12:33+00:00",
+      "xsol_sold_unmatched": 127030.051432,
+      "hyusd_received_total": 9809.57082,
+      "sale_price": 0.07722244232303667,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "5dLKEz7jkrsgo22RWTgMJ4fVWLdmW4crbatHTAS3vTpTrRdTgPBJJSjiZihS94WGBHAvpBHAQpigdnVx5fo8F9zZ",
+      "utc": "2026-05-06T10:20:50+00:00",
+      "local": "2026-05-06T10:20:50+00:00",
+      "xsol_sold_unmatched": 276360.224327,
+      "hyusd_received_total": 21438.076179,
+      "sale_price": 0.07757294390394491,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "5j8dU9iN2ib2or8hKLxFf5cYFsnZFgnXTeZ36qqyaPDmUW5Mrze5Uwu3AsEKpX3661BSeWFsv1YeRYX4nr4EBhFv",
+      "utc": "2026-05-06T10:35:50+00:00",
+      "local": "2026-05-06T10:35:50+00:00",
+      "xsol_sold_unmatched": 54665.475268,
+      "hyusd_received_total": 4244.232942,
+      "sale_price": 0.07764009955447113,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
     }
   ]
 }
