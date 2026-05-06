@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-06T11:15:36.728539+00:00",
+  "generated_at_utc": "2026-05-06T13:02:50.848014+00:00",
   "strict_mode": true,
-  "source_event_count": 4826,
+  "source_event_count": 4856,
   "source_buy_event_count": 13,
-  "source_sell_event_count": 37,
+  "source_sell_event_count": 42,
   "deployment_count": 19,
   "lots": [
     {
@@ -995,6 +995,76 @@
       "xsol_sold_unmatched": 54665.475268,
       "hyusd_received_total": 4244.232942,
       "sale_price": 0.07764009955447113,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "51zTZfPtSQjwki6pGrYc4UzK6eGTpG1ktRQrDKcGeBPcYre6Yp5XYLXWHo5wtrvfEVhDze9LqgJuAiqWYDnQvtM1",
+      "utc": "2026-05-06T11:20:50+00:00",
+      "local": "2026-05-06T11:20:50+00:00",
+      "xsol_sold_unmatched": 351087.577042,
+      "hyusd_received_total": 27338.311764,
+      "sale_price": 0.07786749959748522,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "3KyGLCgdoUbLXd7VPRh5BcNrnHCtY7fWti3JpgSTGHCy2F1azr65aDRBAHXQbChUuoQcVEiSKpEeQcMyKeD9eeHj",
+      "utc": "2026-05-06T11:22:33+00:00",
+      "local": "2026-05-06T11:22:33+00:00",
+      "xsol_sold_unmatched": 201011.640451,
+      "hyusd_received_total": 15703.970646,
+      "sale_price": 0.07812468278337398,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "5Zhv12EvtV7VtXXhz76RXGjNUNB4VCzrau6uDuAm39PFvtXjM5gDM8YiGpoUmKWRtRN54kYfe4SqhTaAGGYgx2hg",
+      "utc": "2026-05-06T11:25:51+00:00",
+      "local": "2026-05-06T11:25:51+00:00",
+      "xsol_sold_unmatched": 39049.381753,
+      "hyusd_received_total": 3052.88948,
+      "sale_price": 0.07818022572829746,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "MxXLLTaPbyC8RMygz1YntonbDvRzDijsMkVFqy4xFcDQ2jvNY5KKK5meZY95id3xaoHYMt96iDmqU3tn5mtjrV5",
+      "utc": "2026-05-06T12:00:51+00:00",
+      "local": "2026-05-06T12:00:51+00:00",
+      "xsol_sold_unmatched": 58287.265863,
+      "hyusd_received_total": 4561.281383,
+      "sale_price": 0.07825519546106283,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "2HCwDEsqenoRBf582B5DacsjNmgWhkNXoBQLQrkZmr8h7YimNsJBP76NAdAKSyvZLkrbUfVB98Jcrdfbi2DFXecW",
+      "utc": "2026-05-06T12:52:33+00:00",
+      "local": "2026-05-06T12:52:33+00:00",
+      "xsol_sold_unmatched": 34983.353063,
+      "hyusd_received_total": 2737.998671,
+      "sale_price": 0.07826575874728922,
       "log_hints": [
         "SwapLeverToStable",
         "Swap",
