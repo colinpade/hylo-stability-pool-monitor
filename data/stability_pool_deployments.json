@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-05-09T00:11:12.505353+00:00",
+  "generated_at_utc": "2026-05-09T03:53:43.434718+00:00",
   "strict_mode": true,
-  "source_event_count": 5197,
+  "source_event_count": 5206,
   "source_buy_event_count": 13,
-  "source_sell_event_count": 58,
+  "source_sell_event_count": 59,
   "deployment_count": 19,
   "lots": [
     {
@@ -1289,6 +1289,20 @@
       "xsol_sold_unmatched": 8402.469513,
       "hyusd_received_total": 721.862379,
       "sale_price": 0.085910740632044,
+      "log_hints": [
+        "SwapLeverToStable",
+        "Swap",
+        "Burn"
+      ],
+      "allocations": []
+    },
+    {
+      "signature": "65RjYuC65HAe2o75oPHHTJEmkzzi17hmobUP5188DfCUyJ4qWrPKzu4Vr3QJ6JtP15bnSwHM7AY8mBCZxWFGQA8X",
+      "utc": "2026-05-09T01:40:50+00:00",
+      "local": "2026-05-09T01:40:50+00:00",
+      "xsol_sold_unmatched": 116072.863728,
+      "hyusd_received_total": 10016.2827,
+      "sale_price": 0.08629306091277038,
       "log_hints": [
         "SwapLeverToStable",
         "Swap",
