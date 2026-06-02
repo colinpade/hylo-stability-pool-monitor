@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-06-02T14:44:05.961150+00:00",
+  "generated_at_utc": "2026-06-02T18:26:55.828148+00:00",
   "strict_mode": true,
-  "source_event_count": 6865,
-  "source_buy_event_count": 13,
+  "source_event_count": 6915,
+  "source_buy_event_count": 17,
   "source_sell_event_count": 59,
-  "deployment_count": 19,
+  "deployment_count": 23,
   "lots": [
     {
       "lot_id": "lot-1",
@@ -862,6 +862,102 @@
           "realized_pnl": 9033.262432400697
         }
       ]
+    },
+    {
+      "lot_id": "lot-20",
+      "status": "open",
+      "signature": "2kCNXijG9wsBVeeu1Du3JeUuFQd8raNnQ56hLQj7neDCRhHTRy8XyRobbBkdiZEdUrUXfqyhEVmaYq9QUeK5X9Nu",
+      "solscan_url": "https://solscan.io/tx/2kCNXijG9wsBVeeu1Du3JeUuFQd8raNnQ56hLQj7neDCRhHTRy8XyRobbBkdiZEdUrUXfqyhEVmaYq9QUeK5X9Nu",
+      "slot": 423832800,
+      "block_time": 1780412555,
+      "utc": "2026-06-02T15:02:35+00:00",
+      "local": "2026-06-02T15:02:35+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.04315203800009349,
+      "entry_value": 19069.182421,
+      "xsol_bought": 441906.878673,
+      "remaining_xsol": 441906.878673,
+      "remaining_entry_value": 19069.182421,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-21",
+      "status": "open",
+      "signature": "46E24QZYdJcQfhtpS2nYfrmzP92cYyh8y6vfHYeCHGDLgAQHWqFeyq7a96AjLjcroDcK98R8mQnZhWERqhG65VSb",
+      "solscan_url": "https://solscan.io/tx/46E24QZYdJcQfhtpS2nYfrmzP92cYyh8y6vfHYeCHGDLgAQHWqFeyq7a96AjLjcroDcK98R8mQnZhWERqhG65VSb",
+      "slot": 423835843,
+      "block_time": 1780413756,
+      "utc": "2026-06-02T15:22:36+00:00",
+      "local": "2026-06-02T15:22:36+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.04274186500002949,
+      "entry_value": 22579.587504,
+      "xsol_bought": 528278.012763,
+      "remaining_xsol": 528278.012763,
+      "remaining_entry_value": 22579.587504,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-22",
+      "status": "open",
+      "signature": "3nH5bc9x2rqnVVj2Mk2fUtgy4e1yLi2VWnEYXeWwn7ZygxRwxsPK4RiCsNfiuLKwGFzFDoKbcKr7uKrmEFMttrRL",
+      "solscan_url": "https://solscan.io/tx/3nH5bc9x2rqnVVj2Mk2fUtgy4e1yLi2VWnEYXeWwn7ZygxRwxsPK4RiCsNfiuLKwGFzFDoKbcKr7uKrmEFMttrRL",
+      "slot": 423836241,
+      "block_time": 1780413915,
+      "utc": "2026-06-02T15:25:15+00:00",
+      "local": "2026-06-02T15:25:15+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.042448903000086226,
+      "entry_value": 20826.991699,
+      "xsol_bought": 490636.747408,
+      "remaining_xsol": 490636.747408,
+      "remaining_entry_value": 20826.991699,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-23",
+      "status": "open",
+      "signature": "2VFhtNKbhJyUZ9TsHjzuRL4ZGgfwmUVyCXFUwRMN2BhAoV2EkJdnG9iLa5nn78SWC1nf5WGKK3CMfiyTab7M9sfd",
+      "solscan_url": "https://solscan.io/tx/2VFhtNKbhJyUZ9TsHjzuRL4ZGgfwmUVyCXFUwRMN2BhAoV2EkJdnG9iLa5nn78SWC1nf5WGKK3CMfiyTab7M9sfd",
+      "slot": 423837336,
+      "block_time": 1780414353,
+      "utc": "2026-06-02T15:32:33+00:00",
+      "local": "2026-06-02T15:32:33+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.04092064000000733,
+      "entry_value": 112602.496444,
+      "xsol_bought": 2751728.625065,
+      "remaining_xsol": 2751728.625065,
+      "remaining_entry_value": 112602.496444,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
     }
   ],
   "unmatched_sells": [
