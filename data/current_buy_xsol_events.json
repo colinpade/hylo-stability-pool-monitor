@@ -1,13 +1,13 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-06-03T15:58:09+00:00",
+    "newest_utc": "2026-06-03T19:37:31+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-06-03T15:58:09+00:00"
+    "newest_local": "2026-06-03T19:37:31+00:00"
   },
-  "buy_xsol_event_count": 27,
-  "buy_xsol_total_hyusd_spent": 1052868.387224,
-  "buy_xsol_total_xsol_bought": 25054677.785439998,
+  "buy_xsol_event_count": 30,
+  "buy_xsol_total_hyusd_spent": 1138155.943916,
+  "buy_xsol_total_xsol_bought": 27705601.687774,
   "events": [
     {
       "utc": "2026-04-02T01:32:33+00:00",
@@ -384,6 +384,48 @@
       "entry_close": 0.0337351931699675,
       "matches_screenshot_row": false,
       "1h_return_pct": 0.9290270884166674,
+      "6h_return_pct": null,
+      "24h_return_pct": null
+    },
+    {
+      "utc": "2026-06-03T19:22:34+00:00",
+      "local": "2026-06-03T19:22:34+00:00",
+      "signature": "34giDUK7SDxjg3a3q4TYiUzpBaBXx7ToRN4MKJMJJHbVTKDWj5T5RXtB3KZ6LzRWMFBigcVxBgmH5MgV4LEwTok1",
+      "solscan_url": "https://solscan.io/tx/34giDUK7SDxjg3a3q4TYiUzpBaBXx7ToRN4MKJMJJHbVTKDWj5T5RXtB3KZ6LzRWMFBigcVxBgmH5MgV4LEwTok1",
+      "hyusd_spent": 21089.184137,
+      "xsol_bought": 648523.705427,
+      "implied_hyusd_per_xsol": 0.032518756000005415,
+      "entry_close": 0.036934152723177106,
+      "matches_screenshot_row": false,
+      "1h_return_pct": null,
+      "6h_return_pct": null,
+      "24h_return_pct": null
+    },
+    {
+      "utc": "2026-06-03T19:30:15+00:00",
+      "local": "2026-06-03T19:30:15+00:00",
+      "signature": "2REVNZ462gXMB6EkoXMdjbKuYf56ozqRPog8ostNvqhiDe1TMnGnbn59qmYGgKkVwVvZ7H9XwTZsAZHhRd9zAyQ2",
+      "solscan_url": "https://solscan.io/tx/2REVNZ462gXMB6EkoXMdjbKuYf56ozqRPog8ostNvqhiDe1TMnGnbn59qmYGgKkVwVvZ7H9XwTZsAZHhRd9zAyQ2",
+      "hyusd_spent": 33671.744719,
+      "xsol_bought": 1046156.009881,
+      "implied_hyusd_per_xsol": 0.03218616000000818,
+      "entry_close": 0.036934152723177106,
+      "matches_screenshot_row": false,
+      "1h_return_pct": null,
+      "6h_return_pct": null,
+      "24h_return_pct": null
+    },
+    {
+      "utc": "2026-06-03T19:32:33+00:00",
+      "local": "2026-06-03T19:32:33+00:00",
+      "signature": "3PpJoLkr95sQzUb5fF7mVCb2mMMPP1PP2twG7cmipAy1VYyooH3nDRU1AzuiTXFVXZAX1vYNh5tTmRnLKVY56PGd",
+      "solscan_url": "https://solscan.io/tx/3PpJoLkr95sQzUb5fF7mVCb2mMMPP1PP2twG7cmipAy1VYyooH3nDRU1AzuiTXFVXZAX1vYNh5tTmRnLKVY56PGd",
+      "hyusd_spent": 30526.627836,
+      "xsol_bought": 956244.187026,
+      "implied_hyusd_per_xsol": 0.03192346500002304,
+      "entry_close": 0.036934152723177106,
+      "matches_screenshot_row": false,
+      "1h_return_pct": null,
       "6h_return_pct": null,
       "24h_return_pct": null
     }
