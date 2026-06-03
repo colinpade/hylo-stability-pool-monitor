@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-06-03T01:49:52.510949+00:00",
+  "generated_at_utc": "2026-06-03T06:35:11.756134+00:00",
   "strict_mode": true,
-  "source_event_count": 6971,
-  "source_buy_event_count": 25,
+  "source_event_count": 7011,
+  "source_buy_event_count": 27,
   "source_sell_event_count": 59,
-  "deployment_count": 31,
+  "deployment_count": 33,
   "lots": [
     {
       "lot_id": "lot-1",
@@ -1147,6 +1147,54 @@
       "xsol_bought": 372806.617522,
       "remaining_xsol": 372806.617522,
       "remaining_entry_value": 12743.571063,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-32",
+      "status": "open",
+      "signature": "4iKMPjZKdQQPeVPNBgRjP4py4KQWKztkqnH5eyGXt81wxc9he5H6upLtQ5fLCXYbr1tJhNmtZVhLbJSbkxQ1sLc5",
+      "solscan_url": "https://solscan.io/tx/4iKMPjZKdQQPeVPNBgRjP4py4KQWKztkqnH5eyGXt81wxc9he5H6upLtQ5fLCXYbr1tJhNmtZVhLbJSbkxQ1sLc5",
+      "slot": 423947783,
+      "block_time": 1780458315,
+      "utc": "2026-06-03T03:45:15+00:00",
+      "local": "2026-06-03T03:45:15+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.03380479800000152,
+      "entry_value": 18058.842673,
+      "xsol_bought": 534209.453729,
+      "remaining_xsol": 534209.453729,
+      "remaining_entry_value": 18058.842673,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-33",
+      "status": "open",
+      "signature": "2UbuozHrFcL6cmAZAdNFd1wNqgLFMtu9QJ5NWXNAmSaibadp41k5jZXeMSoiJ9SGHfNM7LiFsFUW2SqSnENiDBUm",
+      "solscan_url": "https://solscan.io/tx/2UbuozHrFcL6cmAZAdNFd1wNqgLFMtu9QJ5NWXNAmSaibadp41k5jZXeMSoiJ9SGHfNM7LiFsFUW2SqSnENiDBUm",
+      "slot": 423948531,
+      "block_time": 1780458615,
+      "utc": "2026-06-03T03:50:15+00:00",
+      "local": "2026-06-03T03:50:15+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.0329991100000155,
+      "entry_value": 65417.722709,
+      "xsol_bought": 1982408.698567,
+      "remaining_xsol": 1982408.698567,
+      "remaining_entry_value": 65417.722709,
       "realized_hyusd": 0.0,
       "realized_pnl": 0.0,
       "sell_allocations": []
