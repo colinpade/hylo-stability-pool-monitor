@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-06-05T13:45:22.099950+00:00",
+  "generated_at_utc": "2026-06-05T16:22:26.295727+00:00",
   "strict_mode": true,
-  "source_event_count": 7830,
-  "source_buy_event_count": 53,
+  "source_event_count": 7935,
+  "source_buy_event_count": 54,
   "source_sell_event_count": 59,
-  "deployment_count": 59,
+  "deployment_count": 60,
   "lots": [
     {
       "lot_id": "lot-1",
@@ -1819,6 +1819,30 @@
       "xsol_bought": 2659608.786533,
       "remaining_xsol": 2659608.786533,
       "remaining_entry_value": 51915.340106,
+      "realized_hyusd": 0.0,
+      "realized_pnl": 0.0,
+      "sell_allocations": []
+    },
+    {
+      "lot_id": "lot-60",
+      "status": "open",
+      "signature": "31unYGDZGYxtFvgfZ3yXgW6EUgoVJ8WxM7RAPSKDj6c2Bu2jNYVZ8UPC9nojKimHPsBH7qnMdX5Hh4Mfmx2Ebjex",
+      "solscan_url": "https://solscan.io/tx/31unYGDZGYxtFvgfZ3yXgW6EUgoVJ8WxM7RAPSKDj6c2Bu2jNYVZ8UPC9nojKimHPsBH7qnMdX5Hh4Mfmx2Ebjex",
+      "slot": 424492552,
+      "block_time": 1780675358,
+      "utc": "2026-06-05T16:02:38+00:00",
+      "local": "2026-06-05T16:02:38+00:00",
+      "log_hints": [
+        "SwapStableToLever",
+        "RebalanceStableToLever",
+        "Swap"
+      ],
+      "strictly_confirmed": true,
+      "entry_price": 0.019169272000003887,
+      "entry_value": 6265.46582,
+      "xsol_bought": 326849.440083,
+      "remaining_xsol": 326849.440083,
+      "remaining_entry_value": 6265.46582,
       "realized_hyusd": 0.0,
       "realized_pnl": 0.0,
       "sell_allocations": []

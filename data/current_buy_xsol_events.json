@@ -1,13 +1,13 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-06-05T13:28:42+00:00",
+    "newest_utc": "2026-06-05T16:14:19+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-06-05T13:28:42+00:00"
+    "newest_local": "2026-06-05T16:14:19+00:00"
   },
-  "buy_xsol_event_count": 53,
-  "buy_xsol_total_hyusd_spent": 2396243.05161,
-  "buy_xsol_total_xsol_bought": 79250598.776743,
+  "buy_xsol_event_count": 54,
+  "buy_xsol_total_hyusd_spent": 2402508.51743,
+  "buy_xsol_total_xsol_bought": 79577448.21682599,
   "events": [
     {
       "utc": "2026-04-02T01:32:33+00:00",
@@ -749,6 +749,20 @@
       "matches_screenshot_row": false,
       "1h_return_pct": 7.218313395033027,
       "6h_return_pct": 10.58787811316706,
+      "24h_return_pct": null
+    },
+    {
+      "utc": "2026-06-05T16:02:38+00:00",
+      "local": "2026-06-05T16:02:38+00:00",
+      "signature": "31unYGDZGYxtFvgfZ3yXgW6EUgoVJ8WxM7RAPSKDj6c2Bu2jNYVZ8UPC9nojKimHPsBH7qnMdX5Hh4Mfmx2Ebjex",
+      "solscan_url": "https://solscan.io/tx/31unYGDZGYxtFvgfZ3yXgW6EUgoVJ8WxM7RAPSKDj6c2Bu2jNYVZ8UPC9nojKimHPsBH7qnMdX5Hh4Mfmx2Ebjex",
+      "hyusd_spent": 6265.46582,
+      "xsol_bought": 326849.440083,
+      "implied_hyusd_per_xsol": 0.019169272000003887,
+      "entry_close": 0.019244580203780524,
+      "matches_screenshot_row": false,
+      "1h_return_pct": null,
+      "6h_return_pct": null,
       "24h_return_pct": null
     }
   ],
