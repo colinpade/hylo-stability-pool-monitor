@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-06-05T10:33:02+00:00",
+    "newest_utc": "2026-06-05T13:28:42+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-06-05T10:33:02+00:00"
+    "newest_local": "2026-06-05T13:28:42+00:00"
   },
   "buy_xsol_event_count": 53,
   "buy_xsol_total_hyusd_spent": 2396243.05161,
@@ -664,7 +664,7 @@
       "entry_close": 0.022631887372030337,
       "matches_screenshot_row": false,
       "1h_return_pct": -9.812463625073843,
-      "6h_return_pct": null,
+      "6h_return_pct": -2.3397909205112533,
       "24h_return_pct": null
     },
     {
@@ -678,7 +678,7 @@
       "entry_close": 0.022270166834146374,
       "matches_screenshot_row": false,
       "1h_return_pct": -7.900420172127909,
-      "6h_return_pct": null,
+      "6h_return_pct": -0.7535565819373424,
       "24h_return_pct": null
     },
     {
@@ -692,7 +692,7 @@
       "entry_close": 0.021866669755529426,
       "matches_screenshot_row": false,
       "1h_return_pct": -7.574540200730673,
-      "6h_return_pct": null,
+      "6h_return_pct": -1.9835781488330206,
       "24h_return_pct": null
     },
     {
@@ -706,7 +706,7 @@
       "entry_close": 0.02099820625257812,
       "matches_screenshot_row": false,
       "1h_return_pct": -6.600782340072831,
-      "6h_return_pct": null,
+      "6h_return_pct": 3.9795006773041264,
       "24h_return_pct": null
     },
     {
@@ -720,7 +720,7 @@
       "entry_close": 0.01944162737520246,
       "matches_screenshot_row": false,
       "1h_return_pct": 1.898692182950068,
-      "6h_return_pct": null,
+      "6h_return_pct": 12.304539076136955,
       "24h_return_pct": null
     },
     {
@@ -734,7 +734,7 @@
       "entry_close": 0.020195281331259234,
       "matches_screenshot_row": false,
       "1h_return_pct": 0.5838510521050555,
-      "6h_return_pct": null,
+      "6h_return_pct": 8.540597477783528,
       "24h_return_pct": null
     },
     {
@@ -748,7 +748,7 @@
       "entry_close": 0.01961461668772009,
       "matches_screenshot_row": false,
       "1h_return_pct": 7.218313395033027,
-      "6h_return_pct": null,
+      "6h_return_pct": 10.58787811316706,
       "24h_return_pct": null
     }
   ],
