@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-06-05T23:40:32+00:00",
+    "newest_utc": "2026-06-06T01:51:32+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-06-05T23:40:32+00:00"
+    "newest_local": "2026-06-06T01:51:32+00:00"
   },
   "buy_xsol_event_count": 62,
   "buy_xsol_total_hyusd_spent": 2675945.815657,
@@ -776,7 +776,7 @@
       "entry_close": 0.01779359990409819,
       "matches_screenshot_row": false,
       "1h_return_pct": 1.1665517705745199,
-      "6h_return_pct": null,
+      "6h_return_pct": 7.509382688070398,
       "24h_return_pct": null
     },
     {
@@ -790,7 +790,7 @@
       "entry_close": 0.017370158090041832,
       "matches_screenshot_row": false,
       "1h_return_pct": 3.7132146713124703,
-      "6h_return_pct": null,
+      "6h_return_pct": 10.628077138128011,
       "24h_return_pct": null
     },
     {
@@ -804,7 +804,7 @@
       "entry_close": 0.017370158090041832,
       "matches_screenshot_row": false,
       "1h_return_pct": 3.7132146713124703,
-      "6h_return_pct": null,
+      "6h_return_pct": 10.628077138128011,
       "24h_return_pct": null
     },
     {
@@ -818,7 +818,7 @@
       "entry_close": 0.016836155468796635,
       "matches_screenshot_row": false,
       "1h_return_pct": 8.407761981117812,
-      "6h_return_pct": null,
+      "6h_return_pct": 14.778592413460977,
       "24h_return_pct": null
     },
     {
@@ -832,7 +832,7 @@
       "entry_close": 0.016361140142063395,
       "matches_screenshot_row": false,
       "1h_return_pct": 12.949255712028872,
-      "6h_return_pct": null,
+      "6h_return_pct": 16.348195273218245,
       "24h_return_pct": null
     },
     {
@@ -846,7 +846,7 @@
       "entry_close": 0.016361140142063395,
       "matches_screenshot_row": false,
       "1h_return_pct": 12.949255712028872,
-      "6h_return_pct": null,
+      "6h_return_pct": 16.348195273218245,
       "24h_return_pct": null
     },
     {
@@ -860,7 +860,7 @@
       "entry_close": 0.015611105343188048,
       "matches_screenshot_row": false,
       "1h_return_pct": 18.95106003567275,
-      "6h_return_pct": null,
+      "6h_return_pct": 22.008355606522677,
       "24h_return_pct": null
     },
     {
@@ -874,7 +874,7 @@
       "entry_close": 0.016470493788474858,
       "matches_screenshot_row": false,
       "1h_return_pct": 13.485165287015644,
-      "6h_return_pct": null,
+      "6h_return_pct": 15.594697285644488,
       "24h_return_pct": null
     }
   ],
