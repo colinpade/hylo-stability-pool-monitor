@@ -1,9 +1,9 @@
 {
   "current_deployment_window": {
     "oldest_utc": "2026-04-01T01:24:26+00:00",
-    "newest_utc": "2026-06-06T05:24:04+00:00",
+    "newest_utc": "2026-06-06T08:03:51+00:00",
     "oldest_local": "2026-03-31T20:24:26-05:00",
-    "newest_local": "2026-06-06T05:24:04+00:00"
+    "newest_local": "2026-06-06T08:03:51+00:00"
   },
   "buy_xsol_event_count": 67,
   "buy_xsol_total_hyusd_spent": 2949248.57934,
@@ -679,7 +679,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -7.900420172127909,
       "6h_return_pct": -0.7535565819373424,
-      "24h_return_pct": null
+      "24h_return_pct": -24.90585739701886
     },
     {
       "utc": "2026-06-05T06:00:15+00:00",
@@ -693,7 +693,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -7.574540200730673,
       "6h_return_pct": -1.9835781488330206,
-      "24h_return_pct": null
+      "24h_return_pct": -22.73906079277014
     },
     {
       "utc": "2026-06-05T06:15:15+00:00",
@@ -707,7 +707,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": -6.600782340072831,
       "6h_return_pct": 3.9795006773041264,
-      "24h_return_pct": null
+      "24h_return_pct": -18.751004184023124
     },
     {
       "utc": "2026-06-05T06:23:53+00:00",
@@ -721,7 +721,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": 1.898692182950068,
       "6h_return_pct": 12.304539076136955,
-      "24h_return_pct": null
+      "24h_return_pct": -10.463691235476968
     },
     {
       "utc": "2026-06-05T06:25:17+00:00",
@@ -735,7 +735,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": 0.5838510521050555,
       "6h_return_pct": 8.540597477783528,
-      "24h_return_pct": null
+      "24h_return_pct": -13.80503579038821
     },
     {
       "utc": "2026-06-05T07:12:35+00:00",
@@ -749,7 +749,7 @@
       "matches_screenshot_row": false,
       "1h_return_pct": 7.218313395033027,
       "6h_return_pct": 10.58787811316706,
-      "24h_return_pct": null
+      "24h_return_pct": -12.146794325446708
     },
     {
       "utc": "2026-06-05T16:02:38+00:00",
@@ -943,7 +943,7 @@
       "implied_hyusd_per_xsol": 0.014809368000002807,
       "entry_close": 0.01507188666874422,
       "matches_screenshot_row": false,
-      "1h_return_pct": null,
+      "1h_return_pct": 12.0921009942343,
       "6h_return_pct": null,
       "24h_return_pct": null
     }
