@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-07-01T15:43:10.387566+00:00",
+  "generated_at_utc": "2026-07-01T17:32:49.180855+00:00",
   "strict_mode": true,
-  "source_event_count": 13409,
+  "source_event_count": 13413,
   "source_buy_event_count": 67,
-  "source_sell_event_count": 816,
+  "source_sell_event_count": 819,
   "deployment_count": 73,
   "lots": [
     {
@@ -2643,10 +2643,10 @@
       "entry_price": 0.020060007000001576,
       "entry_value": 231113.076505,
       "xsol_bought": 11521086.533269,
-      "remaining_xsol": 2742387.3858399987,
-      "remaining_entry_value": 55012.310156666405,
-      "realized_hyusd": 277745.68995577673,
-      "realized_pnl": 101644.92360744311,
+      "remaining_xsol": 1257624.0433579986,
+      "remaining_entry_value": 25227.947113131744,
+      "realized_hyusd": 326194.3213817767,
+      "realized_pnl": 120309.19198990845,
       "sell_allocations": [
         {
           "sell_signature": "w3px6yLF2EKEJsDF4uRCgbdXB5Ah7SMmh45bmsxLucUzFGkeWy4kRdNniGiaBB6RzXi9ZjptjbMU2svfGtDzgAw",
@@ -2755,6 +2755,33 @@
           "hyusd_received": 92703.335321,
           "cost_basis_released": 57541.511281487714,
           "realized_pnl": 35161.82403951229
+        },
+        {
+          "sell_signature": "4S9hiW379Wu1RCoNsjXeexryQgG7tH7w1pEdYMR3MkrnSxNmLxKSja6uKc1j929PSnYE1fGaBQ5zVomSp919Hf1t",
+          "sell_utc": "2026-07-01T16:30:26+00:00",
+          "xsol_sold": 779717.988691,
+          "sale_price": 0.03254148710817459,
+          "hyusd_received": 25373.182876999996,
+          "cost_basis_released": 15641.14831116861,
+          "realized_pnl": 9732.034565831385
+        },
+        {
+          "sell_signature": "5nsixrq1oojsA9vqhGrFNgvDwZU9mS8HcbfWFJJiFpd5g7Z3cV6fEdJj1fi4DsVzYEuxfJYarXpato1BN3cjSLgT",
+          "sell_utc": "2026-07-01T16:32:35+00:00",
+          "xsol_sold": 66820.17352,
+          "sale_price": 0.03255946847173048,
+          "hyusd_received": 2175.629333,
+          "cost_basis_released": 1340.41314855252,
+          "realized_pnl": 835.2161844474799
+        },
+        {
+          "sell_signature": "4WWThYCNPccWJSd8hTba3WHmZaQNKEZnLhGXqK9WBJpQcGUtn9GhQuo5TnBbTM9Cut2rHznu5X8tse6kzoAwuyTW",
+          "sell_utc": "2026-07-01T17:25:28+00:00",
+          "xsol_sold": 638225.180271,
+          "sale_price": 0.032746779447225226,
+          "hyusd_received": 20899.819216,
+          "cost_basis_released": 12802.801583813529,
+          "realized_pnl": 8097.017632186471
         }
       ]
     },
