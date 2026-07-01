@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-07-01T20:59:44.694810+00:00",
+  "generated_at_utc": "2026-07-01T22:17:40.429786+00:00",
   "strict_mode": true,
-  "source_event_count": 13424,
+  "source_event_count": 13435,
   "source_buy_event_count": 67,
-  "source_sell_event_count": 820,
+  "source_sell_event_count": 825,
   "deployment_count": 73,
   "lots": [
     {
@@ -2627,7 +2627,7 @@
     },
     {
       "lot_id": "lot-57",
-      "status": "partial",
+      "status": "closed",
       "signature": "3Fwf9DckZt4kLx25UHAcCtms9VkgebCHrSBYibeRpRhp9yNeaFmzqryUGwU3kBdeGuRYxv6QMiNvcnVGJdG6R43y",
       "solscan_url": "https://solscan.io/tx/3Fwf9DckZt4kLx25UHAcCtms9VkgebCHrSBYibeRpRhp9yNeaFmzqryUGwU3kBdeGuRYxv6QMiNvcnVGJdG6R43y",
       "slot": 424405502,
@@ -2643,10 +2643,10 @@
       "entry_price": 0.020060007000001576,
       "entry_value": 231113.076505,
       "xsol_bought": 11521086.533269,
-      "remaining_xsol": 1153429.6762819986,
-      "remaining_entry_value": 23137.80738022645,
-      "realized_hyusd": 329609.7428877767,
-      "realized_pnl": 121634.47376300316,
+      "remaining_xsol": 0.0,
+      "remaining_entry_value": 0.0,
+      "realized_hyusd": 367792.36711598217,
+      "realized_pnl": 136679.29061098222,
       "sell_allocations": [
         {
           "sell_signature": "w3px6yLF2EKEJsDF4uRCgbdXB5Ah7SMmh45bmsxLucUzFGkeWy4kRdNniGiaBB6RzXi9ZjptjbMU2svfGtDzgAw",
@@ -2791,12 +2791,30 @@
           "hyusd_received": 3415.421506,
           "cost_basis_released": 2090.139732905294,
           "realized_pnl": 1325.2817730947063
+        },
+        {
+          "sell_signature": "53NQ3jVbE4PoKn6PCrwgepttEHf3dfi1zZZDim6mZvE68qEoi9jvPGF3HrLe8LDZX5suwJXAKRHH49cYmTa1Jrwg",
+          "sell_utc": "2026-07-01T21:32:33+00:00",
+          "xsol_sold": 433714.299288,
+          "sale_price": 0.03290271830886539,
+          "hyusd_received": 14270.379416,
+          "cost_basis_released": 8700.311879718058,
+          "realized_pnl": 5570.067536281942
+        },
+        {
+          "sell_signature": "Qk7quSiYJqj7e1V9ZB9KJqNYeuGYeNv2QNo46D4P4tbFyB4Y8qXbQFTpVWGgSUQYCT9cVyuDWRwri9iVzL2fW4c",
+          "sell_utc": "2026-07-01T21:35:27+00:00",
+          "xsol_sold": 719715.3769939987,
+          "sale_price": 0.03322458512985874,
+          "hyusd_received": 23912.24481220549,
+          "cost_basis_released": 14437.495500508387,
+          "realized_pnl": 9474.749311697102
         }
       ]
     },
     {
       "lot_id": "lot-58",
-      "status": "open",
+      "status": "partial",
       "signature": "44hqaaW6xWFufq9mBtocHQtVKxY6p7dKmLGFq84BmbDjaq9MNHhx1hpWutNSmWAwJL5wq6RnYVQy3HPDsGQNGDCS",
       "solscan_url": "https://solscan.io/tx/44hqaaW6xWFufq9mBtocHQtVKxY6p7dKmLGFq84BmbDjaq9MNHhx1hpWutNSmWAwJL5wq6RnYVQy3HPDsGQNGDCS",
       "slot": 424405718,
@@ -2812,11 +2830,48 @@
       "entry_price": 0.019950374000011938,
       "entry_value": 23327.677615,
       "xsol_bought": 1169285.228186,
-      "remaining_xsol": 1169285.228186,
-      "remaining_entry_value": 23327.677615,
-      "realized_hyusd": 0.0,
-      "realized_pnl": 0.0,
-      "sell_allocations": []
+      "remaining_xsol": 36028.20549499849,
+      "remaining_entry_value": 718.776174174508,
+      "realized_hyusd": 37814.73875679452,
+      "realized_pnl": 15205.837315969024,
+      "sell_allocations": [
+        {
+          "sell_signature": "Qk7quSiYJqj7e1V9ZB9KJqNYeuGYeNv2QNo46D4P4tbFyB4Y8qXbQFTpVWGgSUQYCT9cVyuDWRwri9iVzL2fW4c",
+          "sell_utc": "2026-07-01T21:35:27+00:00",
+          "xsol_sold": 333439.7140700014,
+          "sale_price": 0.03322458512985874,
+          "hyusd_received": 11078.396165794518,
+          "cost_basis_released": 6652.24700215357,
+          "realized_pnl": 4426.149163640948
+        },
+        {
+          "sell_signature": "5A3G51VQRjqo9dRociDRXhreSugDBj9prcybiNVHKVHMrVB3yXRV6VTxE15QVy76eem5FyTjHB1rNZcdtQ7Ut2nJ",
+          "sell_utc": "2026-07-01T21:40:27+00:00",
+          "xsol_sold": 30028.400782,
+          "sale_price": 0.03325554931312226,
+          "hyusd_received": 998.6109630000001,
+          "cost_basis_released": 599.077826223151,
+          "realized_pnl": 399.5331367768491
+        },
+        {
+          "sell_signature": "4XV7AqNpGn9Sj5RX4eWjeTH4qHSHYJYVyvAc5DogURAVQXgV4icNg6wEq7xWp9bnGAwWaYvNSkjRPXZNSC2DBKnX",
+          "sell_utc": "2026-07-01T21:52:33+00:00",
+          "xsol_sold": 412741.319231,
+          "sale_price": 0.033382235695885595,
+          "hyusd_received": 13778.228,
+          "cost_basis_released": 8234.34368391677,
+          "realized_pnl": 5543.884316083229
+        },
+        {
+          "sell_signature": "oEjvuRk3v4ZSub9xHBQ8ChVfDq3z5bVdW354veoY4UJ789LnX2cwovA57kTfb6Unxrmaxb2GDbYL6MZKq7SXU6W",
+          "sell_utc": "2026-07-01T21:55:27+00:00",
+          "xsol_sold": 357047.588608,
+          "sale_price": 0.03349554515863221,
+          "hyusd_received": 11959.503628,
+          "cost_basis_released": 7123.232928532002,
+          "realized_pnl": 4836.270699467998
+        }
+      ]
     },
     {
       "lot_id": "lot-59",
