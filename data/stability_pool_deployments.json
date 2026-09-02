@@ -1,7 +1,7 @@
 {
-  "generated_at_utc": "2026-09-02T10:44:32.365713+00:00",
+  "generated_at_utc": "2026-09-02T14:43:59.976965+00:00",
   "strict_mode": true,
-  "source_event_count": 19785,
+  "source_event_count": 19849,
   "source_buy_event_count": 67,
   "source_sell_event_count": 853,
   "deployment_count": 73,
